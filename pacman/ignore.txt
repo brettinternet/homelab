@@ -1,0 +1,6 @@
+networkmanager-fortisslvpn
+oomox
+openfortivpn
+qmk
+teensy-loader-cli
+yay

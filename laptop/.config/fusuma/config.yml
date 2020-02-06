@@ -1,0 +1,26 @@
+swipe:
+  3:
+    left:
+      command: "xdotool key alt+Right"
+    right:
+      command: "xdotool key alt+Left"
+
+  4:
+    left:
+      command: "i3-msg 'workspace next_on_output'"
+    right:
+      command: "i3-msg 'workspace prev_on_output'"
+pinch:
+  2:
+    in:
+      command: "xdotool key ctrl+plus"
+    out:
+      command: "xdotool key ctrl+minus"
+
+threshold:
+  swipe: 0.5
+  pinch: 0.2
+
+interval:
+  swipe: 0.2
+  pinch: 0.2

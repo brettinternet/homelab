@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Forked from: `./dotbot/tools/hg-subrepo/install`
+# https://github.com/anishathalye/dotbot/tree/master#integrate-with-existing-dotfiles
+
+set -e
+
+CONFIG="install.conf.yaml"
+DOTBOT_DIR="dotbot"
+
+DOTBOT_BIN="bin/dotbot"
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+cd "${BASEDIR}"
+
+
+CONFIGS_PATH="$BASEDIR/general"
+
+PRIVATE_ENV_SET=false
+PRIVATE_ENV_FILE="$HOME/.env"
+if [[ -f "$PRIVATE_ENV_FILE" ]]; then
+    source "$PRIVATE_ENV_FILE"
+    PRIVATE_ENV_SET=true
+else
+    export DOTBOT_ACTION="setup"
+    echo "Creating '.env' from '.env.example' to source local-only environment variables "
+    cp $CONFIGS_PATH/.env.example $CONFIGS_PATH/.env
+fi
+
+
+# setup | sync
+export DOTBOT_ACTION="${DOTBOT_ACTION:-sync}"
+
+if [[ "$DOTBOT_ACTION" = "setup" ]]; then
+    # When .env isn't set up yet (first time) or when "setup" is explicitly set from outside (in .env sourced above)
+    echo "Setting up environment..."
+elif [[ "$DOTBOT_ACTION" = "sync" ]]; then
+    # When script is run and .env is already set up (default)
+    echo "Syncing environment..."
+fi
+
+
+git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
+git submodule update --init --recursive "${DOTBOT_DIR}"
+
+"${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"

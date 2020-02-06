@@ -1,0 +1,7 @@
+configuration {
+    icon-theme: "Paper";
+    theme: "gruvbox-dark-hard";
+    font: "Fira Code 13";
+}
+
+/* vim:ft=css

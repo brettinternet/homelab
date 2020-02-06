@@ -1,0 +1,15 @@
+authy
+caps2esc
+downgrade
+fisher
+google-chrome
+networkmanager-wireguard-git
+nvm
+paper-icon-theme-git
+polybar
+rofi-emoji
+rofi-greenclip
+spotify
+tzupdate
+vim-plug
+xidlehook

@@ -1,0 +1,46 @@
+#!/bin/bash
+
+NAME=$(basename "$0")
+
+_usage() {
+    cat <<- EOF
+Usage:  $NAME [options]
+        Mute atomically - mutes every PulseAudio source
+
+Options:
+    -h      Display this message
+    -y      Mute
+    -n      Unmute
+            Mute is toggled when no option is specified
+
+EOF
+}
+
+ACTION="toggle"
+
+while getopts ":hyn" OPT; do
+    case $OPT in
+        h)
+            _usage
+            exit 0
+            ;;
+        y)
+            ACTION="1"
+            ;;
+        n)
+            ACTION="0"
+            ;;
+        *)
+            echo -e "Option does not exist: -$OPTARG"
+            _usage
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+# Source: https://askubuntu.com/a/1152002/664421
+pacmd list-sources | \
+    grep -oP 'index: \d+' | \
+    awk '{ print $2 }' | \
+    xargs -I{} pactl set-source-mute {} "$ACTION"

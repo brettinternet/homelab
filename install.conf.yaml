@@ -1,0 +1,94 @@
+# https://github.com/anishathalye/dotbot/tree/master#directives
+
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- clean: ["~", "~/.config"]
+
+- link:
+    ~/.env:
+      path: general/.env
+    ~/.aliases:
+      path: general/.aliases
+    ~/.bash_profile:
+      path: general/.bash_profile
+      force: true
+    ~/.bashrc:
+      path: general/.bashrc
+      force: true
+    ~/.zshrc:
+      path: general/.zshrc
+      if: '[ -x "$(command -v zsh)" ]'
+    ~/.zprofile:
+      path: general/.zprofile
+      if: '[ -x "$(command -v zsh)" ]'
+    ~/.editorconfig:
+      path: general/.editorconfig
+    ~/.profile:
+      path: general/.profile
+    ~/.vimrc:
+      path: general/.vimrc
+      force: true
+    ~/.vimrc.bundles:
+      path: general/.vimrc.bundles
+    ~/.tmux.conf:
+      path: general/.tmux.conf
+    ~/.xbindkeysrc:
+      path: general/.xbindkeysrc
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.xbindkeysrc-mouse:
+      path: general/.xbindkeysrc-mouse
+      if: '[ -x "$(command -v startx)" ] && [[ $(xinput | grep -q "Logitech MX Master") ]]'
+    ~/.xinitrc:
+      path: general/.xinitrc
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.Xmodmap:
+      path: general/.Xmodmap
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.xprofile:
+      path: general/.xprofile
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.Xresources:
+      path: general/.Xresources
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.xsession:
+      path: general/.xsession
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.screenlayout:
+      path: general/.screenlayout
+      force: true
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.config/:
+      glob: true
+      path: general/.config/*
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.config/chrome-flags.conf:
+      path: general/.config/chromium-flags.conf
+      if: '[ -x "$(command -v startx)" ]'
+    ~/.config/fusuma:
+      path: laptop/.config/fusuma
+      if: '[ "$IS_LAPTOP" = "true" ] && [ -x "$(command -v startx)" ]'
+    ~/.config/clight.conf:
+      path: laptop/.config/clight.conf
+      if: '[ "$IS_LAPTOP" = "true" ] && [ -x "$(command -v startx)" ]'
+
+- create:
+    - ~/dev
+    - ~/dev/me
+    - ~/dev/sandbox
+    - ~/.npm-global
+
+- shell:
+    - [git submodule update --init --recursive, Update submodules]
+    - command: "/bin/bash ./scripts/sync.sh"
+      description: Sync package lists
+      stdout: true
+      stderr: true
+      stdin: true
+    - [vim -c 'PlugUpgrade' -c 'PlugUpdate' -c 'qa!', Update vim-plug]
+    - command: '[[ "$SHELL" = *"zsh" ]] && (REHASH_FILE=$HOME/.cache/zsh/rehash; mkdir -p "${REHASH_FILE%/*}" && /usr/bin/touch -m "$REHASH_FILE") || echo "Skipping...current shell is $SHELL"'
+      stdout: true
+      stderr: true
+      description: Rehash zsh $PATH

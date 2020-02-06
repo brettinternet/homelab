@@ -1,0 +1,15 @@
+base
+base-devel
+dhcpcd
+dosfstools
+efibootmgr
+git
+grub
+gvim
+linux
+linux-firmware
+mtools
+nano
+os-prober
+python
+sudo
