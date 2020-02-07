@@ -37,42 +37,42 @@
       path: general/.tmux.conf
     ~/.xbindkeysrc:
       path: general/.xbindkeysrc
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.xbindkeysrc-mouse:
       path: general/.xbindkeysrc-mouse
-      if: '[ -x "$(command -v startx)" ] && [[ $(xinput | grep -q "Logitech MX Master") ]]'
+      if: 'xinput | grep -q "Logitech MX Master"'
     ~/.xinitrc:
       path: general/.xinitrc
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.Xmodmap:
       path: general/.Xmodmap
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.xprofile:
       path: general/.xprofile
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.Xresources:
       path: general/.Xresources
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.xsession:
       path: general/.xsession
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.screenlayout:
       path: general/.screenlayout
       force: true
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.config/:
       glob: true
       path: general/.config/*
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.config/chrome-flags.conf:
       path: general/.config/chromium-flags.conf
-      if: '[ -x "$(command -v startx)" ]'
+      if: 'xset q &>/dev/null'
     ~/.config/fusuma:
       path: laptop/.config/fusuma
-      if: '[ "$IS_LAPTOP" = "true" ] && [ -x "$(command -v startx)" ]'
+      if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
     ~/.config/clight.conf:
       path: laptop/.config/clight.conf
-      if: '[ "$IS_LAPTOP" = "true" ] && [ -x "$(command -v startx)" ]'
+      if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
 
 - create:
     - ~/dev
