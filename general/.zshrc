@@ -35,7 +35,7 @@ unsetopt flow_control menu_complete
 
 # -- Bindkeys ----------------------------------------
 
-bindkey -e
+bindkey -e # emacs mode
 
 # Source: https://wiki.archlinux.org/index.php/Zsh#Key_bindings
 #
@@ -186,16 +186,14 @@ MYPROMPT=1
 # Fish Alt+l mimic
 zstyle ":completion:file-complete::::" completer _files
 zle -C file-complete complete-word _generic
-#zstyle ':completion:file-complete:*' file-list true
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-#zstyle -e ':completion:*:default' list-colors 'reply=("${PREFIX:+=(#bi)($PREFIX:t)(?)*==04=02}:${(s.:.)LS_COLORS}")'
+zstyle -e ':completion:*:default' list-colors 'reply=("${PREFIX:+=(#bi)($PREFIX:t)(?)*==04=02}:${(s.:.)LS_COLORS}")'
 zstyle ':completion:*' menu select
 bindkey '^[l' file-complete
 
 zstyle ':completion::complete:*' use-cache 1
 zstyle ':completion::complete:*' cache-path $ZSH_CACHE_DIR
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+# zstyle ':completion:*' list-colors ''
+# zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
 zstyle ":completion:*:descriptions" format "%B%d%b"
