@@ -1,5 +1,4 @@
 authy
-caps2esc
 downgrade
 fisher
 google-chrome
