@@ -11,11 +11,13 @@ chromium
 code
 dialog
 dmenu
+dnsmasq
 docker
 docker-compose
 dotnet-runtime
 dotnet-sdk
 dunst
+ebtables
 evince
 feh
 firefox
@@ -31,6 +33,7 @@ i3-gaps
 i3lock
 i3status
 imagemagick
+kubectl
 libnotify
 man-db
 mesa
@@ -56,7 +59,9 @@ pulseaudio
 pulseaudio-alsa
 pulseaudio-bluetooth
 python
+qemu
 redshift
+reflector
 rofi
 ruby
 scrot
@@ -80,6 +85,7 @@ ufw
 unclutter
 unzip
 vifm
+virt-manager
 vlc
 w3m
 wireguard-arch

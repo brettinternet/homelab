@@ -115,6 +115,7 @@ for_window [class="fontforge"] floating enable
 for_window [class="Thunderbird" title="Address Book"] floating enable
 for_window [title="XBindKey: Hit a key"] floating enable
 for_window [instance="Places" class="firefox"] floating enable
+for_window [class="Virt-manager"] floating enable
 
 
 # -- Navigation ----------------------------------------

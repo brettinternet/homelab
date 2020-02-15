@@ -31,8 +31,9 @@
 ### New OS
 
 1. boot into system and start/enable `dhcpcd`
-1. `useradd -m -G wheel,storage,input,video -s /bin/bash archie` ([user mgmt](https://wiki.archlinux.org/index.php/Users_and_groups#User_management))
+1. `useradd -m -G wheel,storage -s /bin/bash archie` ([user mgmt](https://wiki.archlinux.org/index.php/Users_and_groups#User_management))
+   - Other groups to consider: `input,video,docker,libvirt`
 1. `passwd archie`
 1. edit sudoers config with `export EDITOR=vim; visudo /etc/sudoers` to allow wheel group access to [sudo](https://wiki.archlinux.org/index.php/Sudo#Configuration)
 1. Login as user
-1.`git clone --depth 1 https://github.com/brettinternet/dotfiles` 
+1. `git clone --depth 1 https://github.com/brettinternet/linux`
