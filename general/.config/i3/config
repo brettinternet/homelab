@@ -84,13 +84,13 @@ set $PLAYER Spotify
 bindsym $mod+Shift+semicolon move scratchpad
 for_window [instance="^$TERMINAL-scratchpad1$"] move scratchpad, resize set 50 ppt 60 ppt
 for_window [instance="^$TERMINAL-scratchpad2$"] move scratchpad, resize set 600 px 100 ppt, move position 0 px 0 px, sticky enable, resize shrink down 22 px, scratchpad show
-for_window [class="Spotify"] move scratchpad, resize set 60 ppt 80 ppt, move absolute position center
+for_window [class="$PLAYER"] move scratchpad
 
 bindsym $mod+semicolon [instance="^$TERMINAL-scratchpad1$"] scratchpad show, move position center
 bindsym $mod+apostrophe [instance="^$TERMINAL-scratchpad2$"] scratchpad show
 bindsym $mod+a [class="$BROWSER1"] scratchpad show, resize set 60 ppt 70 ppt, move position center
 bindsym $mod+Shift+a [class="$BROWSER2"] scratchpad show, resize set 95 ppt 95 ppt, move position center
-bindsym $mod+w [class="$PLAYER"] scratchpad show
+bindsym $mod+w [class="$PLAYER"] scratchpad show, resize set 60 ppt 80 ppt, move position center
 
 # Floating
 for_window [window_role="pop-up"] floating enable

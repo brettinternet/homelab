@@ -20,7 +20,7 @@ bash -c $XRANDR_DIR/$WORKSTATION.sh
 # set DPMS timeouts to zero https://wiki.archlinux.org/index.php/Display_Power_Management_Signaling#Modify_DPMS_and_screensaver_settings_with_a_command
 # Instead of xss-lock responding to DPMS settings (https://wiki.archlinux.org/index.php/Session_lock#xss-lock), we use xidlehook below
 # TODO: Perhaps this should be different if host is a laptop
-xset -b dpms 0 0 0
+xset -b dpms 0 0 0 s off
 
 # systemd hook handler
 # https://wiki.archlinux.org/index.php/Power_management#xss-lock
