@@ -87,8 +87,8 @@ sync () (
 
     LIST_OF_PACKAGES=$(get_packages_from_lists "${PACKAGE_LISTS[@]}")
     [ "$INCLUDE_AUR" = true ] && AUR_LIST_OF_PACKAGES=$(get_packages_from_lists "${FOREIGN_PACKAGE_LISTS[@]}")
-    LOCALLY_INSTALLED_PACKAGES=$(comm -23 <(pacman -Qeq | sort) <(pacman -Qgq base base-devel | sort))
-    LOCALLY_INSTALLED_NATIVE_PACKAGES=$(comm -23 <(pacman -Qeqn | sort) <(pacman -Qgq base base-devel | sort))
+    LOCALLY_INSTALLED_PACKAGES=$(comm -23 <(pacman -Qeq | sort) <(pacman -Qgq base-devel | sort))
+    LOCALLY_INSTALLED_NATIVE_PACKAGES=$(comm -23 <(pacman -Qeqn | sort) <(pacman -Qgq base-devel | sort))
     LOCALLY_INSTALLED_FOREIGN_PACKAGES=$(comm -23 <(pacman -Qeqm | sort) <(echo "yay"))
 
     count_lines () {
