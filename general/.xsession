@@ -31,7 +31,7 @@ xss-lock -- lock &
 THIRTY_MIN=1800
 FORTY_FIVE_MIN=2700
 LOCK_TIMEOUT=$THIRTY_MIN
-SLEEP_TIMEOUT=$FORT_FIVE_MIN
+SLEEP_TIMEOUT=$FORTY_FIVE_MIN
 xidlehook --not-when-fullscreen --not-when-audio \
     --timer $(($LOCK_TIMEOUT - 30)) "notify-send -u critical -t 29000 'Locking soon...'" '' \
     --timer $LOCK_TIMEOUT lock '' \
