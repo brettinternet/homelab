@@ -15,6 +15,8 @@ if [ ! -f $TMP_IMAGE ]; then
   convert -resize "${RESOLUTION}^" -gravity Center -crop "${RESOLUTION}+0+0" "$IMAGE_DIR/$RANDOM_FILE" "$TMP_IMAGE"
 fi
 
+playerctl pause
+
 revert() {
     # Set DPMS timeouts to zero instead of xset -dpms
     # https://wiki.archlinux.org/index.php/Display_Power_Management_Signaling#Modify_DPMS_and_screensaver_settings_with_a_command
