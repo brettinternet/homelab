@@ -39,7 +39,7 @@ set ignorecase                              " Search
 set smartcase                               " case-sensitive search if any caps
 set incsearch                               " search as you type
 set wrapscan
-"set hlsearch
+set hlsearch
 
 " Enable basic mouse behavior such as resizing buffers.
 set mouse=a
