@@ -58,9 +58,11 @@ while getopts ":hewcbrpd" opt; do
             # Used by sr for custom search `S`; https://gitlab.com/surfraw/Surfraw/-/wikis/Configuration
             export SURFRAW_customsearch_provider="${SURFRAW_customsearch_provider:-google}"
             # Available elvi: https://gitlab.com/surfraw/Surfraw/-/wikis/current-elvi
-            SEARCH_DOMAINS=$(sr -elvi | awk -F'-' '{print $1}' \
+            # TODO: add custom elvi: site:stackexchange.com OR site:stackoverflow.com "query"
+            # use inspiration from: https://github.com/davatorium/rofi-scripts/tree/master/rofi-surfraw
+            ELVI=$(sr -elvi | awk -F'-' '{print $1}' \
                 | sed '/:/d' | awk '{$1=$1};1')
-            QUERY=$(echo "$SEARCH_DOMAINS" | rofi \
+            QUERY=$(echo "$ELVI" | rofi \
                 -kb-row-select 'Tab' -kb-row-tab 'Control+space' \
                 -dmenu -i -p 'web' -location 8 \
                 -width 20 -lines 8 \
@@ -70,7 +72,7 @@ while getopts ":hewcbrpd" opt; do
                 ARGS=()
                 DOMAIN=$(echo $QUERY | head -n1 | awk '{print $1;}')
                 # Custom search if no domain is matched
-                [[ ! $(echo $SEARCH_DOMAINS | grep -w $DOMAIN) ]] && ARGS+=( 'S' )
+                [[ ! $(echo $ELVI | grep -w $DOMAIN) ]] && ARGS+=( 'S' )
                 ARGS+=( "$QUERY" )
                 surfraw -browser="$BROWSER" ${ARGS[@]} && \
                     i3-msg "[class=$BROWSER] focus" &> /dev/null
