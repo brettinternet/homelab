@@ -8,7 +8,7 @@ fi
 
 # https://wiki.archlinux.org/index.php/Sudo#Using_visudo
 export VISUAL=vim
-export EDITOR=vim
+export EDITOR="$VISUAL"
 
 # If we haven't set the shell yet, use bash
 if [ -z "$SHELL" ]; then
