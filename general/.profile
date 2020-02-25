@@ -19,8 +19,10 @@ fi
 if which ruby >/dev/null && which gem >/dev/null; then
     PATH="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin:$PATH"
 fi
-# https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
-export PATH=~/.npm-global/bin:$PATH
+# global NPM packages: https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
+# Haskell stack et al
+CUSTOM_PATH=~/.npm-global/bin:~/.local/bin
+export PATH=$CUSTOM_PATH:$PATH
 
 # https://wiki.archlinux.org/index.php/Environment_variables#Default_programs
 if [ -n "$DISPLAY" ]; then
