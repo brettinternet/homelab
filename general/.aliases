@@ -81,6 +81,7 @@ alias fe='vim ~/.config/fish/config.fish'
 
 # Git Aliases
 alias g='git'
+alias gb='git branch'
 alias gs='git status'
 alias gst='git stash'
 alias gsp='git stash pop'
