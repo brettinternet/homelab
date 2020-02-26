@@ -21,7 +21,9 @@ if which ruby >/dev/null && which gem >/dev/null; then
 fi
 # global NPM packages: https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
 # Haskell stack et al
-CUSTOM_PATH=~/.npm-global/bin:~/.local/bin
+# Also, set custom gopath because I prefer it to be a hidden folder
+export GOPATH=~/.go
+CUSTOM_PATH=~/.npm-global/bin:~/.local/bin:$GOPATH/bin
 export PATH=$CUSTOM_PATH:$PATH
 
 # https://wiki.archlinux.org/index.php/Environment_variables#Default_programs
