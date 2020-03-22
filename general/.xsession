@@ -34,7 +34,7 @@ LOCK_TIMEOUT=$THIRTY_MIN
 SLEEP_TIMEOUT=$FORTY_FIVE_MIN
 xidlehook --not-when-fullscreen --not-when-audio \
     --timer $(($LOCK_TIMEOUT - 30)) "notify-send -u critical -t 29000 'Locking soon...'" '' \
-    --timer $LOCK_TIMEOUT lock '' \
+    --timer $LOCK_TIMEOUT $MY_BIN/lock '' \
     --timer $SLEEP_TIMEOUT 'systemctl hibernate' '' &
 
 xbindkeys
