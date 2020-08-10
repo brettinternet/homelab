@@ -117,7 +117,7 @@ draw_bold_text_with_bright_colors: false
 #
 # To completely disable the visual bell, set its duration to 0.
 #
-visual_bell:
+bell:
     animation: EaseOutExpo
     color: "0x282828"
     duration: 0

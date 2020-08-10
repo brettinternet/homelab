@@ -58,7 +58,6 @@ LON="-111.8084499"
 redshift -l "$LAT:$LON" -m randr -t 6500:3000 &
 
 if [[ "$IS_LAPTOP" = "true" ]]; then
-    clight &
     fusuma -d 2>&1
     # xinput set-prop 12 268 1 # for touchpad tap
 fi

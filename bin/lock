@@ -15,7 +15,10 @@ if [ ! -f $TMP_IMAGE ]; then
   convert -resize "${RESOLUTION}^" -gravity Center -crop "${RESOLUTION}+0+0" "$IMAGE_DIR/$RANDOM_FILE" "$TMP_IMAGE"
 fi
 
-playerctl pause
+function pause {
+    STATUS=$(playerctl status)
+    [ "$STATUS" = "Playing" ] && playerctl --all-players stop
+}
 
 revert() {
     # Set DPMS timeouts to zero instead of xset -dpms
@@ -26,6 +29,8 @@ revert() {
 
 # Pause notifications: https://wiki.archlinux.org/index.php/Dunst#Disable_dunst_temporarily
 notify-send "DUNST_COMMAND_PAUSE"
+
+pause
 
 # Display power mgmt signaling; in seconds: standby, suspend, off
 FIFTEEN_MIN=900

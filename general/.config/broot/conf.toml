@@ -1,10 +1,11 @@
-
 # This configuration file lets you define new commands
 # or change the shortcut or triggering keys of built-in verbs.
 # You can change the colors of broot too.
 #
 # Configuration documentation is available at https://dystroy.org/broot
 #
+
+default_flags = "gh"
 
 #####################
 # user defined verbs:
