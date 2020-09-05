@@ -12,7 +12,7 @@ function work_in_progress() {
 }
 
 # Source: https://github.com/ohmyzsh/ohmyzsh/blob/4e45e12dc355e3ba34e7e40ce4936fb222f0155c/plugins/git/git.plugin.zsh#L257
-alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]"'
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skipci]"'
 alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
 
 # Source: https://github.com/ohmyzsh/ohmyzsh/blob/1546e1226a7b739776bda43f264b221739ba0397/lib/git.zsh#L68-L81
