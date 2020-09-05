@@ -1,10 +1,11 @@
-authy
+authy-snap
 downgrade
 fisher
 google-chrome
 networkmanager-wireguard-git
 nvm
 paper-icon-theme-git
+picom-git
 polybar
 rofi-emoji
 rofi-greenclip

@@ -9,6 +9,7 @@ bluez-utils
 broot
 chromium
 code
+dbeaver
 dialog
 dmenu
 dnsmasq
@@ -53,8 +54,9 @@ otf-fira-code
 otf-fira-sans
 otf-latin-modern
 pavucontrol
-picom
+peek
 playerctl
+postgresql
 pulseaudio
 pulseaudio-alsa
 pulseaudio-bluetooth
@@ -64,6 +66,7 @@ redshift
 reflector
 rofi
 ruby
+rustup
 scrot
 solaar
 speedtest-cli
@@ -88,7 +91,6 @@ vifm
 virt-manager
 vlc
 w3m
-wireguard-arch
 xautolock
 xautomation
 xbindkeys
