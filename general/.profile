@@ -23,7 +23,7 @@ fi
 # Haskell stack et al
 # Also, set custom gopath because I prefer it to be a hidden folder
 export GOPATH=~/.go
-CUSTOM_PATH=~/.npm-global/bin:~/.local/bin:$GOPATH/bin
+CUSTOM_PATH=~/.npm-global/bin:~/.local/bin:$GOPATH/bin:~/.cargo/bin
 export PATH=$CUSTOM_PATH:$PATH
 
 # https://wiki.archlinux.org/index.php/Environment_variables#Default_programs
