@@ -34,7 +34,7 @@ LOCK_TIMEOUT=$THIRTY_MIN
 SLEEP_TIMEOUT=$FORTY_FIVE_MIN
 LOCK_WARN_ID=6313
 xidlehook --not-when-fullscreen --not-when-audio \
-    --timer $(($LOCK_TIMEOUT - 30)) "dunstify -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "dunstify -C $LOCK_WARN_ID" \
+    --timer $(($LOCK_TIMEOUT - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "dunstify -C $LOCK_WARN_ID" \
     --timer $LOCK_TIMEOUT $MY_BIN/lock '' \
     --timer $SLEEP_TIMEOUT 'systemctl hibernate' '' &
 
