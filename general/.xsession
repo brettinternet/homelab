@@ -29,14 +29,12 @@ xset -b dpms 0 0 0 s off
 xss-lock -- lock &
 
 THIRTY_MIN=1800
-FORTY_FIVE_MIN=2700
-LOCK_TIMEOUT=$THIRTY_MIN
-SLEEP_TIMEOUT=$FORTY_FIVE_MIN
 LOCK_WARN_ID=6313
+CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
 xidlehook --not-when-fullscreen --not-when-audio \
-    --timer $(($LOCK_TIMEOUT - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "dunstify -C $LOCK_WARN_ID" \
-    --timer $LOCK_TIMEOUT $MY_BIN/lock '' \
-    --timer $SLEEP_TIMEOUT 'systemctl hibernate' '' &
+    --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" $CLEAR_LOCK_WARN \
+    --timer 30 $MY_BIN/lock $CLEAR_LOCK_WARN \
+    --timer $THIRTY_MIN 'systemctl hibernate' $CLEAR_LOCK_WARN &
 
 xbindkeys
 # Only use b:6 and b:7 with MX Master mouse, otherwise it's a handle to compete with x-axis scroll
