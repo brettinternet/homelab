@@ -44,7 +44,7 @@ fi
 
 # Note: Actually runs picom, the compton fork
 # https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
-picom -b #--experimental-backends
+picom -b --experimental-backends
 
 feh --no-fehbg --randomize --bg-fill $MY_WALLPAPERS/* &
 
