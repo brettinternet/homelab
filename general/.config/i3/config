@@ -118,6 +118,7 @@ for_window [instance="Places" class="firefox"] floating enable
 for_window [class="Virt-manager"] floating enable
 for_window [class="Network Connections"] floating enable
 for_window [class="opensnitch-ui"] floating enable
+for_window [class="kgpg"] floating enable
 
 
 # -- Navigation ----------------------------------------
