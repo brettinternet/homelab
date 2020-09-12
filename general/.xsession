@@ -33,7 +33,7 @@ LOCK_WARN_ID=6313
 CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
 xidlehook --not-when-fullscreen --not-when-audio \
     --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
-    --timer 30 $MY_BIN/lock $CLEAR_LOCK_WARN \
+    --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" \
     --timer $THIRTY_MIN 'systemctl hibernate' "$CLEAR_LOCK_WARN" &
 
 xbindkeys
@@ -42,9 +42,9 @@ if xinput | grep -q "Logitech MX Master"; then
     xbindkeys -f "$HOME/.xbindkeysrc-mouse"
 fi
 
-# Note: Actually runs picom, the compton fork
-# https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
-picom -b --experimental-backends
+# Note: `experimental-backends` allows for dual kawase
+# `no-fading-openclose`: https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
+picom -b --experimental-backends --no-fading-openclose
 
 feh --no-fehbg --randomize --bg-fill $MY_WALLPAPERS/* &
 
