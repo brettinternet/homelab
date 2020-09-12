@@ -83,14 +83,14 @@ set $PLAYER Spotify
 # Scratchpad
 bindsym $mod+Shift+semicolon move scratchpad
 for_window [instance="^$TERMINAL-scratchpad1$"] move scratchpad, resize set 50 ppt 60 ppt
-for_window [instance="^$TERMINAL-scratchpad2$"] move scratchpad, resize set 600 px 100 ppt, move position 0 px 0 px, sticky enable, resize shrink down 22 px, scratchpad show
-for_window [class="$PLAYER"] move scratchpad
+for_window [instance="^$TERMINAL-scratchpad2$"] move scratchpad, resize set 600 px 100 ppt, move position 0 px 0 px, sticky enable # , resize shrink down 22 px
+for_window [class="$PLAYER"] move scratchpad, move position center
 
 bindsym $mod+semicolon [instance="^$TERMINAL-scratchpad1$"] scratchpad show, move position center
 bindsym $mod+apostrophe [instance="^$TERMINAL-scratchpad2$"] scratchpad show
 bindsym $mod+a [class="$BROWSER1"] scratchpad show, resize set 60 ppt 70 ppt, move position center
 bindsym $mod+Shift+a [class="$BROWSER2"] scratchpad show, resize set 95 ppt 95 ppt, move position center
-bindsym $mod+w [class="$PLAYER"] scratchpad show, resize set 60 ppt 80 ppt, move position center
+bindsym $mod+w [class="$PLAYER"] scratchpad show
 
 # Floating
 for_window [window_role="pop-up"] floating enable
@@ -277,7 +277,8 @@ client.background       #ffffff
 bar {
     i3bar_command i3bar -t
     status_command i3status
-    position bottom
+    position top
+    mode hide
 
     # https://i3wm.org/docs/userguide.html#_named_workspaces
     strip_workspace_numbers yes
@@ -289,14 +290,14 @@ bar {
     separator_symbol " "
 
     colors {
-        background #28282800
+        background #282828AA
         statusline #fbf1c7
         separator  #504945
 
         #                  border  backgr. text
-        focused_workspace  #00000000 #8ec07c #282828
-        active_workspace   #00000000 #d79921 #282828
-        inactive_workspace #00000000 #3c3836 #d5c4a1
+        focused_workspace  #282828AA #8ec07c #282828
+        active_workspace   #282828AA #d79921 #282828
+        inactive_workspace #282828AA #3c3836 #d5c4a1
         binding_mode       #cc241d #cc241d #16a085
         urgent_workspace   #cc241d #cc241d #282828
     }
@@ -371,3 +372,5 @@ mode "$mode_gaps_outer" {
 
 # TODO: implement jump mode
 # https://github.com/orestisfl/dotfiles/blob/dcfc0e3d59e45d9d91d8e62603e06d56c5437cd6/i3/.i3/include/99.modes.config#L27-L126
+
+# vim:ft=cfg

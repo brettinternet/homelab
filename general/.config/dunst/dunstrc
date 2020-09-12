@@ -354,4 +354,4 @@
     appname = "clipboard"
     history_ignore = yes
 
-# vim: ft=cfg
+# vim:ft=cfg
