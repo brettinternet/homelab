@@ -67,7 +67,7 @@ nm-applet &
 blueman-applet &
 
 if [[ "$(solaar show 2>&1)" != *"Logitech receiver not found" ]]; then
-    solaar &
+    solaar -w hide &
 fi
 
 if [[ "$IS_LAPTOP" = "true" && -x "$(command -v cbatticon)" ]]; then
