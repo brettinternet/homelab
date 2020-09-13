@@ -72,7 +72,7 @@ bindsym $mod+Shift+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-
 bindsym $mod+Ctrl+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-%d_%H-%M-%S_$wx$h.png' -d 5 -e 'mv $f ~/Downloads/ && gimp ~/Downloads/$f &' && notify-send -a 'system' 'Scrot' 'Screenshot captured of selected window'
 
 
-# -- Application Behavior ----------------------------------------
+# -- Applications ----------------------------------------
 
 set $TERMINAL alacritty
 set $BROWSER firefox
@@ -120,6 +120,23 @@ for_window [class="Network Connections"] floating enable
 for_window [class="opensnitch-ui"] floating enable
 for_window [class="kgpg"] floating enable
 
+# Quick launcher
+set $mode_launcher Launch: [a]lacritty [f]irefox [c]hromium [s]potify c[o]de [n]emo a[u]thy [t]hunderbird [p]eek
+bindsym $mod+Shift+d mode "$mode_launcher"
+
+mode "$mode_launcher" {
+    bindsym a exec alacritty, mode "default"
+    bindsym f exec firefox, mode "default"
+    bindsym c exec chromium, mode "default"
+    bindsym s exec spotify, mode "default"
+    bindsym o exec code, mode "default"
+    bindsym n exec nemo, mode "default"
+    bindsym u exec authy, mode "default"
+
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym $mod+Shift+d mode "default"
+}
 
 # -- Navigation ----------------------------------------
 
@@ -249,7 +266,6 @@ mode "resize" {
         bindsym k resize shrink height 5 px or 5 ppt
         bindsym l resize grow width 5 px or 5 ppt
 
-        # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
         bindsym Escape mode "default"
         bindsym $mod+r mode "default"
@@ -298,7 +314,7 @@ bar {
         focused_workspace  #282828AA #8ec07c #282828
         active_workspace   #282828AA #d79921 #282828
         inactive_workspace #282828AA #3c3836 #d5c4a1
-        binding_mode       #cc241d #cc241d #16a085
+        binding_mode       #b16286 #b16286 #fbf1c7
         urgent_workspace   #cc241d #cc241d #282828
     }
 }
