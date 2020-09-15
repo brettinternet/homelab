@@ -58,7 +58,7 @@ bindsym $mod+Ctrl+m exec pavucontrol
 bindsym $mod+Ctrl+n exec blueman-manager
 
 # Restart dunst
-bindsym $mod+Shift+d --release exec --no-startup-id pkill dunst && dunst &
+bindsym $mod+Ctrl+d --release exec --no-startup-id pkill dunst && dunst &
 bindsym $mod+t exec --no-startup-id pkill picom; exec notify-send -a 'system' 'Picom stopped' -r '2348'
 bindsym $mod+Ctrl+t exec --no-startup-id picom --experimental-backends -b; exec notify-send -a 'system' 'Picom started' -r '2348'
 
