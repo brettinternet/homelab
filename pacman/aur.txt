@@ -1,4 +1,4 @@
-authy-snap
+authy
 downgrade
 fisher
 google-chrome
