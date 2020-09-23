@@ -26,6 +26,7 @@ default_floating_border none
 # Hide borders
 hide_edge_borders smart
 
+title_align center
 for_window [class=".*"] title_format <span>%class - %title</span>
 #
 # Disables all borders
