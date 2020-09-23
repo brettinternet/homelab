@@ -51,8 +51,6 @@ npm
 nvidia
 nvidia-settings
 openssh
-otf-fira-code
-otf-fira-sans
 otf-latin-modern
 pavucontrol
 peek
@@ -80,6 +78,8 @@ tk
 tmux
 trash-cli
 ttf-droid
+ttf-fira-code
+ttf-fira-sans
 ttf-font-awesome
 ttf-inconsolata
 ttf-liberation
