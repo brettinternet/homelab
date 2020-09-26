@@ -76,7 +76,6 @@ bindsym $mod+Ctrl+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-%
 # -- Applications ----------------------------------------
 
 set $TERMINAL alacritty
-set $BROWSER firefox
 set $BROWSER1 Chromium
 set $BROWSER2 Google-chrome
 set $PLAYER Spotify

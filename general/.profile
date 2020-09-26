@@ -28,7 +28,7 @@ export PATH=$CUSTOM_PATH:$PATH
 
 # https://wiki.archlinux.org/index.php/Environment_variables#Default_programs
 if [ -n "$DISPLAY" ]; then
-    export BROWSER=firefox
+    export BROWSER=chromium
 else
     export BROWSER=w3m
 fi
