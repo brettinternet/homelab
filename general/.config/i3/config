@@ -196,9 +196,9 @@ bindsym $mod+f fullscreen toggle
 
 set $SYSTEM_DUNST_ID 823491
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+p layout toggle split; exec dunstify -r $SYSTEM_DUNST_ID -a 'system' 'i3' 'split mode'
-bindsym $mod+o layout stacking; exec dunstify -r $SYSTEM_DUNST_ID -a 'system' 'i3' 'stacked mode'
-bindsym $mod+i layout tabbed; exec dunstify -r $SYSTEM_DUNST_ID -a 'system' 'i3' 'tabbed mode'
+bindsym $mod+p layout toggle split; exec --no-startup-id dunstify -r $SYSTEM_DUNST_ID -a 'system' 'i3' 'split mode'
+bindsym $mod+o layout stacking; exec --no-startup-id dunstify -r $SYSTEM_DUNST_ID -a 'system' 'i3' 'stacked mode'
+bindsym $mod+i layout tabbed; exec --no-startup-id dunstify -r $SYSTEM_DUNST_ID -a 'system' 'i3' 'tabbed mode'
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
