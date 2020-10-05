@@ -54,9 +54,9 @@ bindsym $mod+e --release exec --no-startup-id control-center -w
 bindsym $mod+Shift+period --release exec --no-startup-id control-center -e
 
 # Sound mixer
-bindsym $mod+Ctrl+m exec pavucontrol
+bindsym $mod+Ctrl+m exec --no-startup-id pavucontrol
 # Bluetooth controller
-bindsym $mod+Ctrl+n exec blueman-manager
+bindsym $mod+Ctrl+n exec --no-startup-id blueman-manager
 
 # Restart dunst
 bindsym $mod+Ctrl+d --release exec --no-startup-id pkill dunst && dunst &
@@ -125,13 +125,13 @@ set $mode_launcher Launch: [a]lacritty [f]irefox [c]hromium [s]potify c[o]de [n]
 bindsym $mod+Shift+d mode "$mode_launcher"
 
 mode "$mode_launcher" {
-    bindsym a exec alacritty, mode "default"
-    bindsym f exec firefox, mode "default"
-    bindsym c exec chromium, mode "default"
-    bindsym s exec spotify, mode "default"
-    bindsym o exec code, mode "default"
-    bindsym n exec nemo, mode "default"
-    bindsym u exec authy, mode "default"
+    bindsym a exec --no-startup-id alacritty, mode "default"
+    bindsym f exec --no-startup-id firefox, mode "default"
+    bindsym c exec --no-startup-id chromium, mode "default"
+    bindsym s exec --no-startup-id spotify, mode "default"
+    bindsym o exec --no-startup-id code, mode "default"
+    bindsym n exec --no-startup-id nemo, mode "default"
+    bindsym u exec --no-startup-id authy, mode "default"
 
     bindsym Escape mode "default"
     bindsym Return mode "default"
@@ -214,7 +214,7 @@ bindsym $mod+space focus mode_toggle
 
 # toggle sticky
 # https://bbs.archlinux.org/viewtopic.php?pid=920994#p920994
-bindsym $mod+Shift+s sticky toggle; exec TARGET_WINDOW="$(xprop -id $(xprop -root _NET_ACTIVE_WINDOW | cut -d ' ' -f 5) | awk '/WM_CLASS/{print $4}' | sed 's/\"//g')" && notify-send -a 'system' 'i3' "sticky toggle: $TARGET_WINDOW"
+bindsym $mod+Shift+s sticky toggle; exec --no-startup-id TARGET_WINDOW="$(xprop -id $(xprop -root _NET_ACTIVE_WINDOW | cut -d ' ' -f 5) | awk '/WM_CLASS/{print $4}' | sed 's/\"//g')" && notify-send -a 'system' 'i3' "sticky toggle: $TARGET_WINDOW"
 
 #navigate workspaces next / previous
 bindsym $mod+Ctrl+Right workspace next
@@ -340,7 +340,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3 and end the X session?' -B 'Exit' 'i3-msg exit'"
 
 # System
-bindsym $mod+shift+x exec lock
+bindsym $mod+shift+x exec --no-startup-id lock
 
 # -- Gaps ----------------------------------------
 
