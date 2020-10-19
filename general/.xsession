@@ -72,7 +72,7 @@ fi
 
 if [[ "$IS_LAPTOP" = "true" && -x "$(command -v cbatticon)" ]]; then
     cbatticon -u 20 -r 3 \
-        -x notifyBattery \
+        -x notify-battery \
         -c "/usr/bin/systemctl hibernate" &
 fi
 

@@ -39,19 +39,19 @@ for_window [class=".*"] title_format <span>%class - %title</span>
 bindsym $mod+Return exec i3-sensible-terminal
 
 # Application menu
-bindsym $mod+d --release exec --no-startup-id controlCenter -r
+bindsym $mod+d --release exec --no-startup-id control-center -r
 # Power menu
-bindsym $mod+Ctrl+q --release exec --no-startup-id controlCenter -p
+bindsym $mod+Ctrl+q --release exec --no-startup-id control-center -p
 # Clipboard menu
-bindsym $mod+c --release exec --no-startup-id controlCenter -c
-bindsym $mod+Ctrl+c exec --no-startup-id clipboardClear
-bindsym $mod+Shift+c exec --no-startup-id clipboardPause
+bindsym $mod+c --release exec --no-startup-id control-center -c
+bindsym $mod+Ctrl+c exec --no-startup-id clipboard-clear
+bindsym $mod+Shift+c exec --no-startup-id clipboard-pause
 # Web search
-bindsym $mod+s --release exec --no-startup-id controlCenter -b
+bindsym $mod+s --release exec --no-startup-id control-center -b
 # Window navigation
-bindsym $mod+e --release exec --no-startup-id controlCenter -w
+bindsym $mod+e --release exec --no-startup-id control-center -w
 # Emoji selection
-bindsym $mod+Shift+period --release exec --no-startup-id controlCenter -e
+bindsym $mod+Shift+period --release exec --no-startup-id control-center -e
 
 # Sound mixer
 bindsym $mod+Ctrl+m exec pavucontrol

@@ -34,7 +34,7 @@ if [ -n "$BRIGHTNESS" ]; then
     ICON="whitebalance"
     dunstify -a "$NAME" -u low -i "$ICON" -r "$MSG_ID" \
         "Brightness: ${BRIGHTNESS}%" \
-        "$(getProgressString 10 "<b> </b>"  " " $BRIGHTNESS)"
+        "$(get-progress-string 10 "<b> </b>"  " " $BRIGHTNESS)"
 fi
 
 exit 0

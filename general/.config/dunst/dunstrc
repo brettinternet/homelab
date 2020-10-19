@@ -180,7 +180,7 @@
     ### Misc/Advanced ###
 
     # dmenu path.
-    dmenu = controlCenter -d
+    dmenu = control-center -d
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/chromium
@@ -328,11 +328,11 @@
 #    urgency = normal
 
 [volume]
-    appname = "changeVolume"
+    appname = "change-volume"
     history_ignore = yes
 
 [brightness]
-    appname = "changeBrightness"
+    appname = "change-brightness"
     history_ignore = yes
 
 [system]
@@ -345,8 +345,8 @@
     history_ignore = yes
     urgency = low
 
-[notifyBattery]
-    appname = "notifyBattery"
+[notify-battery]
+    appname = "notify-battery"
     history_ignore = yes
     urgency = low
 

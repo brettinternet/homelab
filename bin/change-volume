@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap "kill 0" EXIT
+
 # Forked from: https://wiki.archlinux.org/index.php/Dunst#Using_dunstify_as_volume/brightness_level_indicator
 # extends `pactl` with side effects
 # Use pulseaudio parse scripts from https://github.com/graysky2/pulseaudio-ctl/blob/master/common/pulseaudio-ctl.in
@@ -8,7 +10,7 @@ NAME=$(basename "$0")
 
 # Arbitrary but unique message id
 MSG_ID="991049"
-SINK=$(pacmd list-sinks|awk '/\* index:/{ print $3 }') || "@DEFAULT_SINK@"
+SINK=$(pacmd list-sinks | awk '/\* index:/{ print $3 }') || "@DEFAULT_SINK@"
 
 # Change the volume using pulseaudio
 if [[ "$@" = "mute" || "$@" = "toggle" ]]; then
@@ -17,8 +19,8 @@ else
     pactl set-sink-volume "$SINK" "$@"
 fi
 
-VOLUME="$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/[%|,]//g')" # number
-MUTED="$(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')" # yes | no
+VOLUME="$(pacmd list-sinks | grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/[%|,]//g')" # number
+MUTED="$(pacmd list-sinks | grep -A 15 '* index' | awk '/muted:/{ print $2 }')" # yes | no
 MAX_THRESHOLD="100"
 
 # Correct for max threshold
@@ -76,7 +78,7 @@ else
 
     notify -a "$NAME" -u low -i $ICON_VOLUME -r "$MSG_ID" \
         "Volume: ${VOLUME}%" \
-        "$(getProgressString 10 "<b> </b>" " " $VOLUME)" &
+        "$(get-progress-string 10 "<b> </b>" " " $VOLUME)" &
 
     # Play the volume changed sound
     canberra-gtk-play -i audio-volume-change -d "$NAME" &
@@ -85,7 +87,7 @@ fi
 PLAYER="spotify"
 PLAYER_STATUS=$(playerctl -p "$PLAYER" status)
 if [ "$PLAYER_STATUS" = "Playing" ]; then
-    notifySpotify &
+    notify-spotify &
 fi
 
-exit 0
+wait

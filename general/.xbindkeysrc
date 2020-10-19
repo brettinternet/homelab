@@ -47,34 +47,34 @@
 # -- Multimedia keys ----------------------------------------
 
 # Increase volume
-"changeVolume +3%"
+"change-volume +3%"
     XF86AudioRaiseVolume
 
 # Decrease volume
-"changeVolume -3%"
+"change-volume -3%"
     XF86AudioLowerVolume
 
 # Mute volume
-"changeVolume mute"
+"change-volume mute"
     XF86AudioMute
 
 # Backlight
-"changeBrightness -A 10"
+"change-brightness -A 10"
     XF86MonBrightnessUp
 
-"changeBrightness -A 5"
+"change-brightness -A 5"
     Control+XF86MonBrightnessUp
 
-"changeBrightness -U 10"
+"change-brightness -U 10"
     XF86MonBrightnessDown
 
-"changeBrightness -U 5"
+"change-brightness -U 5"
     Control+XF86MonBrightnessDown
 
-"changeBrightness -S 100"
+"change-brightness -S 100"
     Shift+XF86MonBrightnessUp
 
-"changeBrightness -S 0"
+"change-brightness -S 0"
     Shift+XF86MonBrightnessDown
 
 # Audio
@@ -104,7 +104,7 @@
     Mod4+slash
 
 # Random
-"notifyBattery"
+"notify-battery"
     Mod4+XF86Tools
 
 "mute"

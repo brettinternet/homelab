@@ -26,6 +26,6 @@ fi
 
 dunstify -a "$NAME" -u low -i "$ICON" -r "$MSG_ID" \
     "Battery: ${CAPACITY}%" \
-    "$(getProgressString 10 "<b> </b>"  " " $CAPACITY)"
+    "$(get-progress-string 10 "<b> </b>"  " " $CAPACITY)"
 
 exit 0

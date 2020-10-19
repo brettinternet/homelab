@@ -2,15 +2,15 @@
 
 # Source: https://github.com/Fabian-G/dotfiles/tree/c689ada62d0d74ba60df6d5e808602140c9ef339/scripts/bin
 
-# getProgressString <TOTAL ITEMS> <FILLED LOOK> <NOT FILLED LOOK> <STATUS>
+# get-progress-string <TOTAL ITEMS> <FILLED LOOK> <NOT FILLED LOOK> <STATUS>
 # For instance:
-# $ getProgressString 10 "#" "-" 50
+# $ get-progress-string 10 "#" "-" 50
 # #####-----
 # Note: if you want to use | in your progress bar string you need to change the delimiter in the sed commands
 
 # ARGS
 ITEMS="$1" # The total number of items(the width of the bar)
-FILLED_ITEM="$2" # The look of a filled item 
+FILLED_ITEM="$2" # The look of a filled item
 NOT_FILLED_ITEM="$3" # The look of a not filled item
 STATUS="$4" # The current progress status in percent
 
