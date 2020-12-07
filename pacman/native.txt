@@ -2,6 +2,7 @@ alacritty
 alsa-plugins
 alsa-utils
 arandr
+baobab
 bc
 blueman
 bluez
