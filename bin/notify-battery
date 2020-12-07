@@ -2,8 +2,6 @@
 
 NAME=$(basename "$0")
 
-MSG_ID="489472"
-
 STATUS=$(cat /sys/class/power_supply/BAT*/status)
 CAPACITY=$(cat /sys/class/power_supply/BAT*/capacity)
 
@@ -24,7 +22,8 @@ if [[ "$STATUS" = "Charging"  ]]; then
     ICON="$ICON-charging"
 fi
 
-dunstify -a "$NAME" -u low -i "$ICON" -r "$MSG_ID" \
+dunstify -a "$NAME" -u low -i "$ICON" \
+    -h string:x-dunst-stack-tag:"$NAME" \
     "Battery: ${CAPACITY}%" \
     "$(get-progress-string 10 "<b> </b>"  " " $CAPACITY)"
 

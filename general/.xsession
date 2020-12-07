@@ -37,7 +37,7 @@ xidlehook --not-when-fullscreen --not-when-audio \
     --timer $THIRTY_MIN 'systemctl hibernate' "$CLEAR_LOCK_WARN" &
 
 xbindkeys
-# Only use b:6 and b:7 with MX Master mouse, otherwise it's a handle to compete with x-axis scroll
+# Only use b:6 and b:7 with MX Master mouse, otherwise it conflicts with x-axis scroll on touchpads
 if xinput | grep -q "Logitech MX Master"; then
     xbindkeys -f "$HOME/.xbindkeysrc-mouse"
 fi

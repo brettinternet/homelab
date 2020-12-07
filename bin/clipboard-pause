@@ -3,7 +3,6 @@
 # Fork: https://github.com/erebe/greenclip/issues/5#issuecomment-284980925
 # https://developer.gnome.org/notification-spec/#signals
 
-MSG_ID='38264'
 TIMEOUT=30
 NAME=$(basename "$0")
 APPNAME="clipboard"
@@ -29,12 +28,15 @@ function revert {
     # SIGCONT to unfreeze process
     ps axf | grep 'greenclip daemon' | grep -v grep | awk '{print $1}' | xargs kill -18
 
-    dunstify -a "$APPNAME" -u 'low' -r "$MSG_ID" "Clipboard" "Daemon resumed."
+    dunstify -a "$APPNAME" -u 'low' \
+        -h string:x-dunst-stack-tag:"$NAME" \
+        "Clipboard" "Daemon resumed."
 }
 
 trap revert INT
 
-dunstify -a "$APPNAME" -u 'critical' -t "30000" -r "$MSG_ID" \
+dunstify -a "$APPNAME" -u 'critical' -t "30000" \
+    -h string:x-dunst-stack-tag:"$NAME" \
     --action="default,Continue" \
     "Clipboard" "Daemon paused. Dismiss to resume or wait $TIMEOUT seconds."
 

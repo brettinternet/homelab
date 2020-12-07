@@ -4,9 +4,6 @@
 
 NAME=$(basename "$0")
 
-# Arbitrary but unique message id
-MSG_ID="981141"
-
 #COMMAND="xbacklight -time 100 -steps 10"
 COMMAND="brillo -u 100000"
 
@@ -32,7 +29,8 @@ BRIGHTNESS=$(round_up "$(get_current_brightness)")
 if [ -n "$BRIGHTNESS" ]; then
     #ICON="display-brightness-low-symbolic"
     ICON="whitebalance"
-    dunstify -a "$NAME" -u low -i "$ICON" -r "$MSG_ID" \
+    dunstify -a "$NAME" -u low -i "$ICON" \
+        -h string:x-dunst-stack-tag:"$NAME" \
         "Brightness: ${BRIGHTNESS}%" \
         "$(get-progress-string 10 "<b> </b>"  " " $BRIGHTNESS)"
 fi

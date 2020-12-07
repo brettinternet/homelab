@@ -47,7 +47,7 @@
 # -- Multimedia keys ----------------------------------------
 
 # Increase volume
-"change-volume +3%"
+"exec change-volume +3%"
     XF86AudioRaiseVolume
 
 # Decrease volume

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-MSG_ID="234552"
 APP="Spotify"
 PLAYER="spotify" # $(playerctl -l)
 
@@ -28,8 +27,9 @@ open_player () {
 
 ICON="spotify"
 ACTION=$(
-    dunstify -a "$APP" -r "$MSG_ID" -u "low" -i "$ICON" \
+    dunstify -a "$APP" -u "low" -i "$ICON" \
         -A "default,Open Album" \
+        -h string:x-dunst-stack-tag:"$APP" \
         "$TRACK_TITLE" "$TRACK_ARTIST - $TRACK_ALBUM"
 )
 

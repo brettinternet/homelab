@@ -1,6 +1,5 @@
 #!/bin/bash
 
-MSG_ID="432895"
 APPNAME="clipboard"
 
 # Kill current daemon
@@ -16,4 +15,5 @@ greenclip print ' '
 # Restart daemon
 greenclip daemon &> /dev/null &
 
-dunstify -a "$APPNAME" -r "$MSG_ID" "Clipboard" "History cleared"
+dunstify -a "$APPNAME" -h string:x-dunst-stack-tag:"$APPNAME" \
+    "Clipboard" "History cleared"

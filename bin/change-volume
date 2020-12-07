@@ -1,15 +1,14 @@
 #!/bin/bash
 
-trap "kill 0" EXIT
-
 # Forked from: https://wiki.archlinux.org/index.php/Dunst#Using_dunstify_as_volume/brightness_level_indicator
 # extends `pactl` with side effects
 # Use pulseaudio parse scripts from https://github.com/graysky2/pulseaudio-ctl/blob/master/common/pulseaudio-ctl.in
 
+# For dunstify appname (to manage in settings) and
+# stack tags (which work better than replacing IDs: https://github.com/dunst-project/dunst/issues/672#issuecomment-554513535)
 NAME=$(basename "$0")
 
 # Arbitrary but unique message id
-MSG_ID="991049"
 SINK=$(pacmd list-sinks | awk '/\* index:/{ print $3 }') || "@DEFAULT_SINK@"
 
 # Change the volume using pulseaudio
@@ -58,6 +57,8 @@ notify () {
     ACTION=$(
         dunstify --action="$DEFAULT_ACTION,Open $VOLUME_CONTROL_APP" \
             --action="$PAUSE_ACTION,Pause" \
+            -a "$NAME" -u low \
+            -h string:x-dunst-stack-tag:"$NAME" \
             "$@"
     )
     handle_action $ACTION
@@ -65,7 +66,7 @@ notify () {
 
 if [[ "$VOLUME" == "0" || "$MUTED" == "yes" ]]; then
     ICON_MUTED="audio-volume-muted"
-    notify -a "$NAME" -u low -i $ICON_MUTED -r "$MSG_ID" "Volume muted" &
+    notify -i $ICON_MUTED "Volume muted" &
 else
     ICON_VOLUME="audio-volume-high"
     THRESHOLD_MEDIUM=66
@@ -76,7 +77,7 @@ else
         ICON_VOLUME="audio-volume-medium"
     fi
 
-    notify -a "$NAME" -u low -i $ICON_VOLUME -r "$MSG_ID" \
+    notify -i $ICON_VOLUME \
         "Volume: ${VOLUME}%" \
         "$(get-progress-string 10 "<b> </b>" " " $VOLUME)" &
 
@@ -89,5 +90,3 @@ PLAYER_STATUS=$(playerctl -p "$PLAYER" status)
 if [ "$PLAYER_STATUS" = "Playing" ]; then
     notify-spotify &
 fi
-
-wait
