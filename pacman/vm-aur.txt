@@ -1,0 +1,10 @@
+downgrade
+google-chrome
+nvm
+paper-icon-theme-git
+picom-git
+rofi-emoji
+rofi-greenclip
+tzupdate
+vim-plug
+xidlehook
