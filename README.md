@@ -1,13 +1,12 @@
 # Linux
 
-- general: dotfiles for all my workstations
-- laptop: dotfiles for my only laptop
-- colors: [gruvbox](https://github.com/morhetz/gruvbox) and [gruvbox-material](https://github.com/sainnhe/gruvbox-material-vscode)
+- [src](./src): dotfiles
 - [pacman package lists](./pacman): package lists for arch
 - [scripts](./scripts): assorted scripts for maintenance
 - [bin](./bin): chmod +x
 - [functions](./functions): shell fns
 - [docs](./docs): notes
+- colors: [gruvbox](https://github.com/morhetz/gruvbox) and [gruvbox-material](https://github.com/sainnhe/gruvbox-material-vscode)
 
 ![desktop screenshot](./docs/screenshot.png)
 
