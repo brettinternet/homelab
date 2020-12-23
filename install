@@ -14,7 +14,7 @@ BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${BASEDIR}"
 
 
-CONFIGS_PATH="$BASEDIR/general"
+CONFIGS_PATH="$BASEDIR/src"
 
 PRIVATE_ENV_SET=false
 PRIVATE_ENV_FILE="$HOME/.env"
