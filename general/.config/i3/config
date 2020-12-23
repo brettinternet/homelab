@@ -32,6 +32,8 @@ for_window [class=".*"] title_format <span>%class - %title</span>
 # Disables all borders
 #for_window [class=".*"] border pixel 0
 
+# Enforce borders on all windows
+for_window [class=.*] border pixel 3
 
 # -- Applications ----------------------------------------
 
@@ -119,6 +121,8 @@ for_window [class="Virt-manager"] floating enable
 for_window [class="Network Connections"] floating enable
 for_window [class="opensnitch-ui"] floating enable
 for_window [class="kgpg"] floating enable
+for_window [class="Seahorse"] floating enable
+for_window [class="Baobab"] floating enable
 
 # Quick launcher
 set $mode_launcher Launch: [a]lacritty [f]irefox [c]hromium [s]potify c[o]de [n]emo a[u]thy [t]hunderbird [p]eek
@@ -254,9 +258,6 @@ bindsym $mod+Shift+6 move container to workspace $ws6
 bindsym $mod+Shift+7 move container to workspace $ws7
 bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
-
-# switch to workspace with urgent window automatically
-#for_window [urgent=latest] focus
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
