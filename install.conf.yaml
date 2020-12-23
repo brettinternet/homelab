@@ -9,69 +9,70 @@
 
 - link:
     ~/.env:
-      path: general/.env
+      path: src/.env
     ~/.aliases:
-      path: general/.aliases
+      path: src/.aliases
     ~/.bash_profile:
-      path: general/.bash_profile
+      path: src/.bash_profile
       force: true
     ~/.bashrc:
-      path: general/.bashrc
+      path: src/.bashrc
       force: true
     ~/.zshrc:
-      path: general/.zshrc
+      path: src/.zshrc
       if: '[ -x "$(command -v zsh)" ]'
     ~/.zprofile:
-      path: general/.zprofile
+      path: src/.zprofile
       if: '[ -x "$(command -v zsh)" ]'
     ~/.editorconfig:
-      path: general/.editorconfig
+      path: src/.editorconfig
     ~/.profile:
-      path: general/.profile
+      path: src/.profile
     ~/.vimrc:
-      path: general/.vimrc
+      path: src/.vimrc
       force: true
     ~/.vimrc.bundles:
-      path: general/.vimrc.bundles
+      path: src/.vimrc.bundles
     ~/.tmux.conf:
-      path: general/.tmux.conf
+      path: src/.tmux.conf
     ~/.xbindkeysrc:
-      path: general/.xbindkeysrc
-      if: 'xset q &>/dev/null'
+      path: src/.xbindkeysrc
+      if: "xset q &>/dev/null"
     ~/.xbindkeysrc-mouse:
-      path: general/.xbindkeysrc-mouse
+      path: src/.xbindkeysrc-mouse
       if: 'xinput | grep -q "Logitech MX Master"'
     ~/.xinitrc:
-      path: general/.xinitrc
-      if: 'xset q &>/dev/null'
+      path: src/.xinitrc
+      if: "xset q &>/dev/null"
     ~/.Xmodmap:
-      path: general/.Xmodmap
-      if: 'xset q &>/dev/null'
+      path: src/.Xmodmap
+      if: "xset q &>/dev/null"
     ~/.xprofile:
-      path: general/.xprofile
-      if: 'xset q &>/dev/null'
+      path: src/.xprofile
+      if: "xset q &>/dev/null"
     ~/.Xresources:
-      path: general/.Xresources
-      if: 'xset q &>/dev/null'
+      path: src/.Xresources
+      if: "xset q &>/dev/null"
     ~/.xsession:
-      path: general/.xsession
-      if: 'xset q &>/dev/null'
+      path: src/.xsession
+      if: "xset q &>/dev/null"
     ~/.screenlayout:
-      path: general/.screenlayout
+      path: src/.screenlayout
       force: true
-      if: 'xset q &>/dev/null'
+      if: "xset q &>/dev/null"
     ~/.config/:
       glob: true
-      path: general/.config/*
-      if: 'xset q &>/dev/null'
+      path: src/.config/*
+      if: "xset q &>/dev/null"
     ~/.config/chrome-flags.conf:
-      path: general/.config/chromium-flags.conf
-      if: 'xset q &>/dev/null'
+      path: src/.config/chromium-flags.conf
+      if: "xset q &>/dev/null"
+    ###### laptop ######
     ~/.config/fusuma:
-      path: laptop/.config/fusuma
+      path: src/.config/fusuma
       if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
     ~/.config/clight.conf:
-      path: laptop/.config/clight.conf
+      path: src/.config/clight.conf
       if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
 
 - create:
@@ -92,3 +93,10 @@
       stdout: true
       stderr: true
       description: Rehash zsh $PATH
+    - [
+        sudo reflector --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist,
+        Organize the mirror list,
+      ]
+    - command: cat ./scripts/clean.sh
+      stdout: true
+      description: Hint suggested commands
