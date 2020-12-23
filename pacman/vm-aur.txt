@@ -1,10 +1,11 @@
 downgrade
-google-chrome
 nvm
-paper-icon-theme-git
-picom-git
-rofi-emoji
-rofi-greenclip
 tzupdate
 vim-plug
-xidlehook
+downgrade
+nvm
+tzupdate
+vim-plug
+paper-icon-theme-git
+picom-git
+rofi-greenclip

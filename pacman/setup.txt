@@ -11,5 +11,4 @@ linux-firmware
 mtools
 nano
 os-prober
-python
 sudo

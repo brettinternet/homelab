@@ -1,0 +1,4 @@
+downgrade
+nvm
+tzupdate
+vim-plug
