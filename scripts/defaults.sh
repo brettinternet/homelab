@@ -1,6 +1,7 @@
 #!/bin/bash
 
-### Nemo
+# https://wiki.archlinux.org/index.php/Xdg-utils#xdg-settings
+xdg-settings set default-web-browser chromium.desktop
 
 # https://wiki.archlinux.org/index.php/Nemo#Set_Nemo_as_default_file_browser
 xdg-mime default nemo.desktop inode/directory application/x-gnome-saved-search
