@@ -65,6 +65,7 @@ fi
 
 nm-applet &
 blueman-applet &
+opensnitch-ui &
 
 if [[ "$(solaar show 2>&1)" != *"Logitech receiver not found" ]]; then
     solaar -w hide &
