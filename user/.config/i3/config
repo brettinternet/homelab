@@ -123,6 +123,7 @@ for_window [class="opensnitch-ui"] floating enable
 for_window [class="kgpg"] floating enable
 for_window [class="Seahorse"] floating enable
 for_window [class="Baobab"] floating enable
+for_window [class="qt5ct"] floating enable
 
 # Quick launcher
 set $mode_launcher Launch: [a]lacritty [f]irefox [c]hromium [s]potify c[o]de [n]emo a[u]thy [t]hunderbird [p]eek
@@ -308,7 +309,7 @@ bar {
     tray_output primary
     tray_padding 5
 
-    font pango:Latin Modern Mono 8
+    font pango:Ubuntu Mono 9
     separator_symbol " "
 
     colors {

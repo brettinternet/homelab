@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# non-standard, used by https://build.i3wm.org/docs/i3-sensible-terminal.html
+export TERMINAL=alacritty
+
+# Used to configure QT apps with qt5ct (especially set font family -
+# unless there's an easier way? Such as QT_QPA_FONT?)
+# Perhaps use the tool to create fontconfig
+export QT_QPA_PLATFORMTHEME=qt5ct
