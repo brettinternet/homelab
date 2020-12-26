@@ -1,6 +1,6 @@
 # Linux
 
-- [src](./src): dotfiles
+- [user](./user): user dotfiles
 - [pacman package lists](./pacman): package lists for arch
 - [scripts](./scripts): assorted scripts for maintenance
 - [bin](./bin): chmod +x
