@@ -2,6 +2,25 @@
 
 alias mirror='sudo reflector --protocol https --latest 50 --number 20 --sort rate --save /etc/pacman.d/mirrorlist --verbose'
 
+# Update pacman with yay
+# Source: https://unix.stackexchange.com/a/384102/224048
+# You may add "--console-log-level=warn" as an aria2 arg to simmer down `/etc/powerpill/powerpill.json`
+pac() {
+  # Downgrade permissions as AUR helpers expect to be run as a non-root user, $UID is read-only in {ba,z}sh
+  export pacman_program="sudo -u #$UID /usr/bin/yay --pacman powerpill"
+
+  # pacmatic needs to be run as root: https://github.com/keenerd/pacmatic/issues/35
+  pacmatic_update() {
+    sudo --preserve-env=pacman_program /usr/bin/pacmatic "$@"
+  }
+
+  if [[ -z "$@" ]]; then
+    pacmatic_update -Syu
+  else
+    pacmatic_update "$@"
+  fi
+}
+
 # Source: OMZ
 
 # List all installed packages with a short description
@@ -20,7 +39,7 @@ function pacdisowned() {
   fs=$tmp/fs
 
   mkdir "$tmp"
-  trap  'rm -rf "$tmp"' EXIT
+  trap  '/bin/rm -rf "$tmp"' EXIT
 
   pacman -Qlq | sort -u > "$db"
 
@@ -44,6 +63,26 @@ if [ -x "$(command -v xdg-open)" ]; then
     }
 fi
 
+# Pacman hygiene
+function pacman_clean() {
+  ORPHANS=$(pacman -Qtdq)
+  if [[ $ORPHANS ]]; then
+    # Remove pacman orphans
+    sudo pacman -Rns $ORPHANS
+  fi
+
+  if [ -x "$(command -v xdg-open)" ]; then
+    # Update configuration files
+    # https://wiki.archlinux.org/index.php/Pacman/Pacnew_and_Pacsave
+    sudo pacdiff
+  else
+    echo "Install pacdiff to update configuration files"
+  fi
+
+  # Clean up pacman cache
+  sudo pacman -Sc
+}
+
 # Helpful Pacman cmds
 function pacman_help {
     cat <<- EOF
@@ -58,7 +97,7 @@ sudo pacman -R 	Remove packages, keeping its settings and dependencies
 sudo pacman -Rns 	Remove packages, including its settings and dependencies
 pacman -Si 	Display information about a package in the repositories
 pacman -Ss 	Search for packages in the repositories
-sudo pacman -Rs $(pacman -Qtdq) 	Delete all orphaned packages
+sudo pacman -Rns $(pacman -Qtdq) 	Delete all orphaned packages
 sudo pacman -Sy && sudo abs && sudo aur 	Update and refresh the local package, ABS and AUR databases
 sudo pacman -Sy && sudo abs 	Update and refresh the local package and ABS databases
 sudo pacman -Sy && sudo aur 	Update and refresh the local package and AUR databases

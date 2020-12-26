@@ -97,6 +97,7 @@
         sudo reflector --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist,
         Organize the mirror list,
       ]
-    - command: cat ./scripts/clean.sh
+    - command: |
+        echo "Consider running pacman_clean occasionally from pacman.sh"
       stdout: true
-      description: Hint suggested commands
+      description: Hints
