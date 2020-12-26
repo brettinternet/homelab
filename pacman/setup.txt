@@ -1,5 +1,4 @@
 base
-base-devel
 dhcpcd
 dosfstools
 efibootmgr
@@ -11,4 +10,3 @@ linux-firmware
 mtools
 nano
 os-prober
-sudo
