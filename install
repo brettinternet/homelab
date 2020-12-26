@@ -7,26 +7,25 @@ set -e
 
 CONFIG="install.conf.yaml"
 DOTBOT_DIR="dotbot"
-
 DOTBOT_BIN="bin/dotbot"
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "${BASEDIR}"
+CONFIGS_PATH="$BASEDIR/user"
 
-
-CONFIGS_PATH="$BASEDIR/src"
-
-PRIVATE_ENV_SET=false
-PRIVATE_ENV_FILE="$HOME/.env"
-if [[ -f "$PRIVATE_ENV_FILE" ]]; then
-    source "$PRIVATE_ENV_FILE"
-    PRIVATE_ENV_SET=true
+PRIVATE_ENV_FILE_LINK="$HOME/.env"
+PRIVATE_ENV_FILE_SOURCE="$CONFIGS_PATH/.env"
+# If file exists and is already linked
+if [[ -f "$PRIVATE_ENV_FILE_LINK" ]]; then
+    source "$PRIVATE_ENV_FILE_LINK"
+# Else if file exists, but link is broken
+elif [[ -f "$PRIVATE_ENV_FILE_SOURCE" ]]; then
+    source "$PRIVATE_ENV_FILE_SOURCE"
 else
     export DOTBOT_ACTION="setup"
     echo "Creating '.env' from '.env.example' to source local-only environment variables "
-    cp $CONFIGS_PATH/.env.example $CONFIGS_PATH/.env
+    cp $CONFIGS_PATH/.env.example $PRIVATE_ENV_FILE_SOURCE
 fi
-
 
 # setup | sync
 export DOTBOT_ACTION="${DOTBOT_ACTION:-sync}"
@@ -38,7 +37,6 @@ elif [[ "$DOTBOT_ACTION" = "sync" ]]; then
     # When script is run and .env is already set up (default)
     echo "Syncing environment..."
 fi
-
 
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
