@@ -18,14 +18,14 @@ sed -e "/^#/d" -e "s/#.*//" packages.txt | pacman -S --needed -
 
 ### AUR
 
-Install yay:
+Install [yay](https://github.com/Jguer/yay) (or you may consider using aurutils with [aurto](https://github.com/alexheretic/aurto) instead)
 
 ```sh
 git clone https://aur.archlinux.org/yay.git
 cd yay && makepkg -si
 ```
 
-Build and install AUR packages with yay:
+Build and install AUR packages with yay
 
 ```sh
 yay -S - < packages/aur.txt
