@@ -59,13 +59,13 @@ Since I don't use a display manager, it may be practical to implement power sett
 
 ### Input
 
--   [Logitech MX Master](https://wiki.archlinux.org/index.php/Logitech_MX_Master)
--   [Mouse Acceleration](https://wiki.archlinux.org/index.php/Mouse_acceleration)
+- [Logitech MX Master](https://wiki.archlinux.org/index.php/Logitech_MX_Master)
+- [Mouse Acceleration](https://wiki.archlinux.org/index.php/Mouse_acceleration)
 
 #### Laptops
 
 - [TouchPad Synaptics](https://wiki.archlinux.org/index.php/Touchpad_Synaptics)
-    - [TouchPad remapping note](https://wiki.archlinux.org/index.php/Libinput#Manual_button_re-mapping)
+  - [TouchPad remapping note](https://wiki.archlinux.org/index.php/Libinput#Manual_button_re-mapping)
 
 ### Display
 
