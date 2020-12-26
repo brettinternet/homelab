@@ -74,8 +74,7 @@ while getopts ":hewcbrpd" opt; do
                 # Custom search if no domain is matched
                 [[ ! $(echo $ELVI | grep -w $DOMAIN) ]] && ARGS+=( 'S' )
                 ARGS+=( "$QUERY" )
-                surfraw -browser="$BROWSER" ${ARGS[@]} && \
-                    i3-msg "[class=$BROWSER] focus" &> /dev/null
+                surfraw -browser=/usr/bin/xdg-open ${ARGS[@]}
             fi
             exit 0
             ;;
