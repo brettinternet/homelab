@@ -11,6 +11,7 @@ neofetch
 networkmanager
 nvidia
 openssh
+pacmatic
 reflector
 speedtest-cli
 terminus-font

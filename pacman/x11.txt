@@ -7,12 +7,12 @@ bc
 blueman
 bluez
 bluez-utils
-ebtables
 chromium
 code
 dmenu
 dnsmasq
 dunst
+ebtables
 evince
 feh
 firefox
@@ -37,10 +37,11 @@ pulseaudio
 pulseaudio-alsa
 pulseaudio-bluetooth
 qemu
+qt5ct
 redshift
 rofi
-seahorse
 scrot
+seahorse
 solaar
 surfraw
 ttf-fira-code

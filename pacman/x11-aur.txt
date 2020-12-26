@@ -1,6 +1,7 @@
 authy
 google-chrome
 networkmanager-wireguard-git
+opensnitch-git
 paper-icon-theme-git
 picom-git
 polybar
