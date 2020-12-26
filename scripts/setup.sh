@@ -21,35 +21,43 @@ change_shell () {
     fi
 }
 
-while true; do
-    read -p "Do you wish to change your shell to $MY_SHELL? [Y/n] " ANS
-    ANS=${ANS:-Y}
-    case $ANS in
-        [Yy]*)
-            change_shell
-            break;;
-        [Nn]*)
-            break;;
-        *)
-            echo "Please answer yes or no."
-            ;;
-  esac
-done
+if [ "$SHELL" != "$MY_SHELL" ]; then
+    while true; do
+        read -p "Do you wish to change your shell to $MY_SHELL? [Y/n] " ANS
+        ANS=${ANS:-Y}
+        case $ANS in
+            [Yy]*)
+                change_shell
+                break;;
+            [Nn]*)
+                break;;
+            *)
+                echo "Please answer yes or no."
+                ;;
+    esac
+    done
+else
+    echo "\xE2\x9C\x94 Current shell is $SHELL"
+fi
 
-while true; do
-    read -p "Do you wish to install yay? [Y/n] " ANS
-    ANS=${ANS:-Y}
-    case $ANS in
-        [Yy]*)
-            build_yay
-            break;;
-        [Nn]*)
-            break;;
-        *)
-            echo "Please answer yes or no."
-            ;;
-  esac
-done
+if ! hash yay 2>/dev/null; then
+    while true; do
+        read -p "Do you wish to install yay? [Y/n] " ANS
+        ANS=${ANS:-Y}
+        case $ANS in
+            [Yy]*)
+                build_yay
+                break;;
+            [Nn]*)
+                break;;
+            *)
+                echo "Please answer yes or no."
+                ;;
+    esac
+    done
+else
+    echo "\xE2\x9C\x94 yay is installed"
+fi
 
 while true; do
     read -p "Do you wish to run the defaults script to setup preferred defaults? [Y/n] " ANS
