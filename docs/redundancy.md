@@ -1,0 +1,10 @@
+# Redundancy
+
+### Clone drive
+
+1. Download [Clonezilla ISO](https://clonezilla.org/downloads/download.php?branch=stable)
+1. Copy image ISO to USB drive
+   1. Find USB drive name with `lsblk`
+   1. Run: `sudo dd bs=4M if=~/Downloads/clonezilla-live-2.7.0-10-amd64.iso of=/dev/sdb conv=fdatasync` ([example](https://www.howtogeek.com/414574/how-to-burn-an-iso-file-to-a-usb-drive-in-linux/))
+1. Boot from USB
+1. [Follow Clonezilla guide](https://clonezilla.org/show-live-doc-content.php?topic=clonezilla-live/doc/03_Disk_to_disk_clone)
