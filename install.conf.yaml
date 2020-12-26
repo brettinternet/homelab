@@ -5,74 +5,75 @@
       create: true
       relink: true
 
-- clean: ["~", "~/.config"]
+- clean: ["~", "~/.config", "~/.bin"]
 
 - link:
+    ###### User Dotfiles ######
     ~/.env:
-      path: src/.env
+      path: user/.env
     ~/.aliases:
-      path: src/.aliases
+      path: user/.aliases
     ~/.bash_profile:
-      path: src/.bash_profile
+      path: user/.bash_profile
       force: true
     ~/.bashrc:
-      path: src/.bashrc
+      path: user/.bashrc
       force: true
     ~/.zshrc:
-      path: src/.zshrc
+      path: user/.zshrc
       if: '[ -x "$(command -v zsh)" ]'
     ~/.zprofile:
-      path: src/.zprofile
+      path: user/.zprofile
       if: '[ -x "$(command -v zsh)" ]'
     ~/.editorconfig:
-      path: src/.editorconfig
+      path: user/.editorconfig
     ~/.profile:
-      path: src/.profile
+      path: user/.profile
     ~/.vimrc:
-      path: src/.vimrc
+      path: user/.vimrc
       force: true
     ~/.vimrc.bundles:
-      path: src/.vimrc.bundles
+      path: user/.vimrc.bundles
     ~/.tmux.conf:
-      path: src/.tmux.conf
+      path: user/.tmux.conf
     ~/.xbindkeysrc:
-      path: src/.xbindkeysrc
+      path: user/.xbindkeysrc
       if: "xset q &>/dev/null"
     ~/.xbindkeysrc-mouse:
-      path: src/.xbindkeysrc-mouse
+      path: user/.xbindkeysrc-mouse
       if: 'xinput | grep -q "Logitech MX Master"'
     ~/.xinitrc:
-      path: src/.xinitrc
+      path: user/.xinitrc
       if: "xset q &>/dev/null"
     ~/.Xmodmap:
-      path: src/.Xmodmap
+      path: user/.Xmodmap
       if: "xset q &>/dev/null"
     ~/.xprofile:
-      path: src/.xprofile
+      path: user/.xprofile
       if: "xset q &>/dev/null"
     ~/.Xresources:
-      path: src/.Xresources
+      path: user/.Xresources
       if: "xset q &>/dev/null"
     ~/.xsession:
-      path: src/.xsession
+      path: user/.xsession
       if: "xset q &>/dev/null"
     ~/.screenlayout:
-      path: src/.screenlayout
+      path: user/.screenlayout
       force: true
       if: "xset q &>/dev/null"
     ~/.config/:
       glob: true
-      path: src/.config/*
+      path: user/.config/*
       if: "xset q &>/dev/null"
     ~/.config/chrome-flags.conf:
-      path: src/.config/chromium-flags.conf
+      path: user/.config/chromium-flags.conf
       if: "xset q &>/dev/null"
-    ###### laptop ######
+    ###### Laptop ######
     ~/.config/fusuma:
-      path: src/.config/fusuma
+      path: user/.config/fusuma
       if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
     ~/.config/clight.conf:
-      path: src/.config/clight.conf
+      path: user/.config/clight.conf
       if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
 
 - create:
