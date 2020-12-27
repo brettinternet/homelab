@@ -1,7 +1,9 @@
 broot
 docker
 docker-compose
+etckeeper
 fd
+firejail
 fzy
 htop
 hwinfo
@@ -23,6 +25,8 @@ ttf-liberation
 ttf-ubuntu-font-family
 ufw
 unzip
+usbguard
+usbutils
 vifm
 zsh
 w3m
