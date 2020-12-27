@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# To allow for some customization across workspaces
+WORKSPACE_ONLY_ENV=$HOME/.env
+if [ -f $WORKSPACE_ONLY_ENV ]; then
+    . $WORKSPACE_ONLY_ENV
+fi
+
 # -- Display ----------------------------------------
 
 # nvidia
