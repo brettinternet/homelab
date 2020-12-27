@@ -61,6 +61,10 @@ if [[ "$IS_LAPTOP" = "true" ]]; then
     # xinput set-prop 12 268 1 # for touchpad tap
 fi
 
+# Source: https://wiki.archlinux.org/index.php/GNOME/Keyring#xinitrc_method
+eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+export SSH_AUTH_SOCK
+
 # -- Applets ----------------------------------------
 
 nm-applet &
