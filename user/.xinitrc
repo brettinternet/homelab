@@ -32,7 +32,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 
-[ -f ~/etc/profile ] && . ~/etc/profile
+[ -f /etc/profile ] && . /etc/profile
 [ -f ~/.profile ] && . ~/.profile
 
 # Load X-specific env vars
