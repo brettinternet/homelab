@@ -38,3 +38,11 @@ fi
 export GOPATH=~/.go
 CUSTOM_PATH=~/.npm-global/bin:~/.local/bin:$GOPATH/bin:~/.cargo/bin
 export PATH=$CUSTOM_PATH:$PATH
+
+# Automatically logout inactive consoles after 10 min: https://wiki.archlinux.org/index.php/Security#Automatic_logout
+# Should be added to /etc/profile.d/shell-timeout.sh (to apply to root also) but this is a good fallback otherwise
+TMOUT="$(( 60*10 ))";
+[ -z "$DISPLAY" ] && export TMOUT;
+case $( /usr/bin/tty ) in
+	/dev/tty[0-9]*) export TMOUT;;
+esac
