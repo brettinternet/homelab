@@ -25,6 +25,7 @@ Plug 'vim-syntastic/syntastic'                              " Automatic syntax c
 "Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-fugitive'                                   " Git wrapper so awesome, it should be illegal
 Plug 'tpope/vim-surround'                                   " Provides mappings to easily delete, change, and add paired surroundings
+Plug 'tpope/vim-eunuch'                                     " Helpers for UNIX
 
 " Language
 Plug 'leafgarland/typescript-vim'
