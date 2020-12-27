@@ -5,5 +5,5 @@ export TERMINAL=alacritty
 
 # Used to configure QT apps with qt5ct (especially set font family -
 # unless there's an easier way? Such as QT_QPA_FONT?)
-# Perhaps use the tool to create fontconfig
+# Can we set the QT font elsewhere without having to use qt5ct?
 export QT_QPA_PLATFORMTHEME=qt5ct
