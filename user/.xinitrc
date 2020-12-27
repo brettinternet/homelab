@@ -32,9 +32,6 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 
-[ -f /etc/profile ] && . /etc/profile
-[ -f ~/.profile ] && . ~/.profile
-
 # Load X-specific env vars
 # https://wiki.archlinux.org/index.php/Xprofile
 [ -f /etc/xprofile ] && . /etc/xprofile
