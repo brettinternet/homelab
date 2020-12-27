@@ -32,13 +32,9 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 
-# Load X-specific env vars
+# Load X-specific env vars & start applications
 # https://wiki.archlinux.org/index.php/Xprofile
 [ -f /etc/xprofile ] && . /etc/xprofile
 [ -f ~/.xprofile ] && . ~/.xprofile
-
-# Start X-specific applications
-# https://unix.stackexchange.com/a/47426/224048
-[ -f ~/.xsession ] && . ~/.xsession
 
 exec i3
