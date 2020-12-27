@@ -72,3 +72,61 @@ Since I don't use a display manager, it may be practical to implement power sett
 #### Laptops
 
 - [Backlight](https://wiki.archlinux.org/index.php/Backlight#xbacklight)
+
+## Security
+
+#### Xorg Rootless
+
+[When using proprietary display drivers (such as nvidia)](https://wiki.archlinux.org/index.php/Xorg#Rootless_Xorg), add to `/etc/X11/Xwrapper.config`
+
+```
+needs_root_rights = no
+```
+
+And then confirm Xorg is running under user
+
+```
+ps -o user $(pgrep Xorg)
+```
+
+See also [Gentoo: Non root Xorg](https://wiki.gentoo.org/wiki/Non_root_Xorg)
+
+#### Login
+
+Add to `/etc/pam.d/system-login` in order to [enforce a delay after failed login attempts](https://wiki.archlinux.org/index.php/Security#Enforce_a_delay_after_a_failed_login_attempt)
+
+```
+auth optional pam_faildelay.so delay=4000000
+```
+
+[Allow only local access to root](https://wiki.archlinux.org/index.php/Security#Specify_acceptable_login_combinations_with_access.conf) by appending `/etc/security/access.conf`
+
+```
++:root:LOCAL
+-:root:ALL
+```
+
+#### Hardware
+
+Run to [view hardware vulnerabilities](https://wiki.archlinux.org/index.php/Security#Hardware_vulnerabilities)
+
+```
+grep -r . /sys/devices/system/cpu/vulnerabilities/
+```
+
+[Setup usbguard rules](https://wiki.archlinux.org/index.php/USBGuard). Use [lsusb](https://wiki.debian.org/HowToIdentifyADevice/USB) to view USB devices and `usbguard generate-policy` to view a rule snapshot of current devices.
+
+#### Editing
+
+Add to `/etc/sudoers` (make sure to edit with `sudo visudo /etc/sudoers`)
+
+```
+Defaults      editor=/usr/bin/rvim
+Defaults      insults
+```
+
+[Insults](https://wiki.archlinux.org/index.php/Sudo#Enable_insults) is an optional easter egg.
+
+## Backup
+
+Set up [redundancy](./redundancy.md)
