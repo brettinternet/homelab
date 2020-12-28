@@ -104,3 +104,5 @@ scope() {
     alacritty --class "alacritty-scratchpad2" &
 
 }
+
+scope
