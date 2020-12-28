@@ -2,7 +2,7 @@
 
 scope() {
     # To allow for some customization across workspaces
-    WORKSPACE_ONLY_ENV=$HOME/.env
+    local WORKSPACE_ONLY_ENV=$HOME/.env
     if [ -f $WORKSPACE_ONLY_ENV ]; then
         source $WORKSPACE_ONLY_ENV
     fi
