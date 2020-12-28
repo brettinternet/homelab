@@ -127,6 +127,35 @@ Defaults      insults
 
 [Insults](https://wiki.archlinux.org/index.php/Sudo#Enable_insults) is an optional easter egg.
 
+#### Network
+
+If you're setting up a server, you might consider [disabling the wireless network](https://wiki.centos.org/HowTos/OS_Protection#Wireless_has_to_go).
+
+#### Additional security
+
+[Password protect the bios](https://wiki.archlinux.org/index.php/Security#Locking_down_BIOS).
+
+Ensure the CPU [microcode](https://wiki.archlinux.org/index.php/Microcode) is loaded
+
+```
+dmesg | grep microcode
+```
+
+Start/enable [ClamAV](https://wiki.archlinux.org/index.php/ClamAV)
+
+```
+sudo systemctl enable clamav-freshclam.service
+sudo systemctl start clamav-freshclam.service
+sudo systemctl enable clamav-daemon.service
+sudo systemctl start clamav-daemon.service
+```
+
+Then, test ClamAV with
+
+```
+curl https://secure.eicar.org/eicar.com.txt | clamscan -
+```
+
 ## Backup
 
 Set up [redundancy](./redundancy.md)
