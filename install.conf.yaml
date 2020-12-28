@@ -80,7 +80,7 @@
     - ~/.npm-global
 
 - shell:
-    - [git submodule update --init --recursive, Update submodules]
+    - [git submodule update --recursive, Update submodules]
     - command: "/bin/bash ./scripts/sync.sh"
       description: Sync package lists
       stdout: true
