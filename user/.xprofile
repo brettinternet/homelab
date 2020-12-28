@@ -1,12 +1,10 @@
 #!/bin/sh
 
-# Local workspace customization
-WORKSPACE_ONLY_ENV=$HOME/.env
-if [ -f $WORKSPACE_ONLY_ENV ]; then
-    . $WORKSPACE_ONLY_ENV
-fi
+source $HOME/.profile
 
 # -- Globals ----------------------------------------
+
+unset TMOUT
 
 # non-standard, used by https://build.i3wm.org/docs/i3-sensible-terminal.html
 export TERMINAL=alacritty
@@ -26,8 +24,8 @@ nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCom
 # nvidia-settings --assign CurrentMetaMode="DP-0: nvidia-auto-select +2560+0 {ForceCompositionPipeline=On}, DP-1: nvidia-auto-select +0+0 {ForceCompositionPipeline=On}"
 
 # xrandr
-WORKSTATION="${MY_SCREENLAYOUT:-default}"
-XRANDR_DIR="$HOME/.screenlayout"
+local WORKSTATION="${MY_SCREENLAYOUT:-default}"
+local XRANDR_DIR="$HOME/.screenlayout"
 /bin/bash -c $XRANDR_DIR/$WORKSTATION.sh
 
 # -- System ----------------------------------------
@@ -44,9 +42,9 @@ xset -b dpms 0 0 0 s off
 # https://wiki.archlinux.org/index.php/Power_management#Sleep_hooks
 xss-lock -- lock &
 
-THIRTY_MIN=1800
-LOCK_WARN_ID=6313
-CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
+local THIRTY_MIN=1800
+local LOCK_WARN_ID=6313
+local CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
 xidlehook --not-when-fullscreen --not-when-audio \
     --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
     --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" \
@@ -68,8 +66,8 @@ unclutter --timeout 3 &
 
 greenclip daemon &> /dev/null &
 
-LAT="40.8255921"
-LON="-111.8084499"
+local LAT="40.8255921"
+local LON="-111.8084499"
 redshift -l "$LAT:$LON" -m randr -t 6500:3000 &
 
 if [[ "$IS_LAPTOP" = "true" ]]; then
