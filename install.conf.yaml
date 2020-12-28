@@ -54,9 +54,6 @@
     ~/.Xresources:
       path: user/.Xresources
       if: "xset q &>/dev/null"
-    ~/.xsession:
-      path: user/.xsession
-      if: "xset q &>/dev/null"
     ~/.screenlayout:
       path: user/.screenlayout
       force: true
