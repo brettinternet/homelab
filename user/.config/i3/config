@@ -126,17 +126,15 @@ for_window [class="Baobab"] floating enable
 for_window [class="qt5ct"] floating enable
 
 # Quick launcher
-set $mode_launcher Launch: [a]lacritty [f]irefox [c]hromium [s]potify c[o]de [n]emo a[u]thy [t]hunderbird [p]eek
+set $mode_launcher Launch: [t]erminal [b]rowser [m]usic [e]ditor [f]iles
 bindsym $mod+Shift+d mode "$mode_launcher"
 
 mode "$mode_launcher" {
-    bindsym a exec --no-startup-id alacritty, mode "default"
-    bindsym f exec --no-startup-id firefox, mode "default"
-    bindsym c exec --no-startup-id chromium, mode "default"
-    bindsym s exec --no-startup-id spotify, mode "default"
-    bindsym o exec --no-startup-id code, mode "default"
-    bindsym n exec --no-startup-id nemo, mode "default"
-    bindsym u exec --no-startup-id authy, mode "default"
+    bindsym t exec --no-startup-id alacritty, mode "default"
+    bindsym b exec --no-startup-id chromium, mode "default"
+    bindsym m exec --no-startup-id spotify, mode "default"
+    bindsym e exec --no-startup-id code, mode "default"
+    bindsym f exec --no-startup-id nemo, mode "default"
 
     bindsym Escape mode "default"
     bindsym Return mode "default"
