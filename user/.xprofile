@@ -77,6 +77,9 @@ scope() {
         # xinput set-prop 12 268 1 # for touchpad tap
     fi
 
+    # https://wiki.archlinux.org/index.php/AppArmor#Get_desktop_notification_on_DENIED_actions
+    aa-notify -p -s 1 -w 60 -f /var/log/audit/audit.log || true
+
     # Source: https://wiki.archlinux.org/index.php/GNOME/Keyring#xinitrc_method
     eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
     export SSH_AUTH_SOCK

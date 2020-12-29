@@ -116,13 +116,21 @@ grep -r . /sys/devices/system/cpu/vulnerabilities/
 
 [Setup usbguard rules](https://wiki.archlinux.org/index.php/USBGuard). Use [lsusb](https://wiki.debian.org/HowToIdentifyADevice/USB) to view USB devices and `usbguard generate-policy` to view a rule snapshot of current devices.
 
-#### Editing
+#### Applications
 
 Add to `/etc/sudoers` (make sure to edit with `sudo visudo /etc/sudoers`)
 
 ```
 Defaults      editor=/usr/bin/rvim
 Defaults      insults
+```
+
+[Set apparmor kernel parameters and enable apparmor service](https://wiki.archlinux.org/index.php/AppArmor#Installation).
+
+Start/enable apparmor [audit](https://wiki.archlinux.org/index.php/Audit_framework) [aa-notify for denied actions](https://wiki.archlinux.org/index.php/AppArmor#Get_desktop_notification_on_DENIED_actions). Install `python-notify2` and `python-psutil` as implicit dependencies of apparmor with `makedep` to make aa-notify work
+
+```
+sudo makedep -a python-notify2 --add-as deps apparmor
 ```
 
 [Insults](https://wiki.archlinux.org/index.php/Sudo#Enable_insults) is an optional easter egg.
@@ -153,9 +161,7 @@ Start/enable [ClamAV](https://wiki.archlinux.org/index.php/ClamAV)
 
 ```
 sudo systemctl enable clamav-freshclam.service
-sudo systemctl start clamav-freshclam.service
 sudo systemctl enable clamav-daemon.service
-sudo systemctl start clamav-daemon.service
 ```
 
 Then, test ClamAV with
