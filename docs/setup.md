@@ -131,7 +131,15 @@ Defaults      insults
 
 If you're setting up a server, you might consider [disabling the wireless network](https://wiki.centos.org/HowTos/OS_Protection#Wireless_has_to_go).
 
+[Force public key authentication](https://wiki.archlinux.org/index.php/OpenSSH#Force_public_key_authentication) for SSH connections by changing `/etc/ssh/sshd_config`
+
+```
+PasswordAuthentication no
+```
+
 #### Additional security
+
+[Restrict access to kernel logs](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_logs), [restrict access to kernel pointers in proc](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_pointers_in_the_proc_filesystem), [setup hidepid](https://wiki.archlinux.org/index.php/Security#hidepid)
 
 [Password protect the bios](https://wiki.archlinux.org/index.php/Security#Locking_down_BIOS).
 
@@ -155,6 +163,14 @@ Then, test ClamAV with
 ```
 curl https://secure.eicar.org/eicar.com.txt | clamscan -
 ```
+
+#### Resources
+
+- [ArchWiki: Security](https://wiki.archlinux.org/index.php/Security)
+- [IBM Developer: Harden Desktop](https://developer.ibm.com/articles/l-harden-desktop/)
+- [CentOS Wiki: OS Protection](https://wiki.centos.org/HowTos/OS_Protection)
+- [Linux Foundation IT: Workstation security checklist](https://github.com/lfit/itpol/blob/master/linux-workstation-security.md)
+- [Securing Debian Manual](https://www.debian.org/doc/manuals/securing-debian-manual/index.en.html)
 
 ## Backup
 
