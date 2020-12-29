@@ -1,7 +1,5 @@
 broot
 clamav
-docker
-docker-compose
 etckeeper
 fd
 firejail

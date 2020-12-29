@@ -1,4 +1,6 @@
 dbeaver
+docker
+docker-compose
 dotnet-runtime
 dotnet-sdk
 go
