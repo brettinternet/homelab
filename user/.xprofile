@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Start X applications for user session: https://wiki.archlinux.org/index.php/Xprofile
+# More about autostarting: https://wiki.archlinux.org/index.php/Autostarting
+
 source $HOME/.profile
 
 scope() {
