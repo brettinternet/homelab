@@ -16,11 +16,11 @@ i3status
 imagemagick
 kgpg
 libnotify
+linux-hardened
 nemo
 nemo-preview
 network-manager-applet
 noto-fonts-emoji
-nvidia-settings
 pavucontrol
 playerctl
 pulseaudio

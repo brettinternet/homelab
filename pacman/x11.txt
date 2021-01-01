@@ -29,7 +29,6 @@ nemo
 nemo-preview
 network-manager-applet
 noto-fonts-emoji
-nvidia-settings
 pavucontrol
 peek
 playerctl
