@@ -22,7 +22,6 @@ trash-cli
 ttf-droid
 ttf-liberation
 ttf-ubuntu-font-family
-ufw
 unzip
 usbguard
 usbutils
