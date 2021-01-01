@@ -43,6 +43,7 @@ scrot
 seahorse
 solaar
 surfraw
+transmission-gtk
 ttf-fira-code
 ttf-fira-sans
 ttf-font-awesome
