@@ -1,5 +1,6 @@
 authy
 google-chrome
+hardinfo-git
 networkmanager-wireguard-git
 opensnitch-git
 paper-icon-theme-git
