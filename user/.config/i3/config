@@ -125,6 +125,7 @@ for_window [class="Seahorse"] floating enable
 for_window [class="Baobab"] floating enable
 for_window [class="qt5ct"] floating enable
 for_window [class="Transmission-gtk"] floating enable
+for_window [class="Gsmartcontrol"] floating enable
 
 # Quick launcher
 set $mode_launcher Launch: [t]erminal [b]rowser [m]usic [e]ditor [f]iles

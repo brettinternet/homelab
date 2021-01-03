@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-export SHELL=fish
+export SHELL=/bin/fish
 
 source $HOME/.aliases
 

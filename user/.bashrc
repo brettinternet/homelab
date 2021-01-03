@@ -2,7 +2,7 @@
 # https://unix.stackexchange.com/a/257613/224048
 [[ $- != *i* ]] && return
 
-export SHELL="bash"
+export SHELL="/bin/bash"
 
 PS1='[\u@\h \W]\$ '
 

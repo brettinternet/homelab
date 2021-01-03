@@ -1,4 +1,4 @@
-export SHELL="zsh"
+export SHELL="/bin/zsh"
 
 source $HOME/.profile
 
