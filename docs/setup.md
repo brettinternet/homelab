@@ -145,17 +145,7 @@ If you're setting up a server, you might consider [disabling the wireless networ
 PasswordAuthentication no
 ```
 
-#### Additional security
-
-[Restrict access to kernel logs](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_logs), [restrict access to kernel pointers in proc](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_pointers_in_the_proc_filesystem), [setup hidepid](https://wiki.archlinux.org/index.php/Security#hidepid)
-
-[Password protect the bios](https://wiki.archlinux.org/index.php/Security#Locking_down_BIOS).
-
-Ensure the CPU [microcode](https://wiki.archlinux.org/index.php/Microcode) is loaded
-
-```
-dmesg | grep microcode
-```
+#### Antivirus
 
 Start/enable [ClamAV](https://wiki.archlinux.org/index.php/ClamAV)
 
@@ -168,6 +158,20 @@ Then, test ClamAV with
 
 ```
 curl https://secure.eicar.org/eicar.com.txt | clamscan -
+```
+
+Finally, [setup Fangfrisch](https://wiki.archlinux.org/index.php/ClamAV#Option_#1:_Set_up_Fangfrisch) for additional ClamAV databases.
+
+#### Additional security
+
+[Restrict access to kernel logs](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_logs), [restrict access to kernel pointers in proc](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_pointers_in_the_proc_filesystem), [setup hidepid](https://wiki.archlinux.org/index.php/Security#hidepid)
+
+[Password protect the bios](https://wiki.archlinux.org/index.php/Security#Locking_down_BIOS).
+
+Ensure the CPU [microcode](https://wiki.archlinux.org/index.php/Microcode) is loaded
+
+```
+dmesg | grep microcode
 ```
 
 #### Resources
