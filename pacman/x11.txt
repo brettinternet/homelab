@@ -4,6 +4,7 @@ alsa-utils
 arandr
 bc
 chromium
+clamtk
 code
 dmenu
 dunst

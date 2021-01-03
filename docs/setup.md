@@ -75,7 +75,13 @@ Since I don't use a display manager, it may be practical to implement power sett
 
 ## Security
 
-#### Xorg Rootless
+- [ArchWiki: Security](https://wiki.archlinux.org/index.php/Security)
+- [IBM Developer: Harden Desktop](https://developer.ibm.com/articles/l-harden-desktop/)
+- [CentOS Wiki: OS Protection](https://wiki.centos.org/HowTos/OS_Protection)
+- [Linux Foundation IT: Workstation security checklist](https://github.com/lfit/itpol/blob/master/linux-workstation-security.md)
+- [Securing Debian Manual](https://www.debian.org/doc/manuals/securing-debian-manual/index.en.html)
+
+### Xorg Rootless
 
 [When using proprietary display drivers (such as nvidia)](https://wiki.archlinux.org/index.php/Xorg#Rootless_Xorg), add to `/etc/X11/Xwrapper.config`
 
@@ -91,7 +97,7 @@ ps -o user $(pgrep Xorg)
 
 See also [Gentoo: Non root Xorg](https://wiki.gentoo.org/wiki/Non_root_Xorg)
 
-#### Login
+### Login
 
 Add to `/etc/pam.d/system-login` in order to [enforce a delay after failed login attempts](https://wiki.archlinux.org/index.php/Security#Enforce_a_delay_after_a_failed_login_attempt)
 
@@ -106,7 +112,7 @@ auth optional pam_faildelay.so delay=4000000
 -:root:ALL
 ```
 
-#### Hardware
+### Hardware
 
 Run to [view hardware vulnerabilities](https://wiki.archlinux.org/index.php/Security#Hardware_vulnerabilities)
 
@@ -116,7 +122,11 @@ grep -r . /sys/devices/system/cpu/vulnerabilities/
 
 [Setup usbguard rules](https://wiki.archlinux.org/index.php/USBGuard). Use [lsusb](https://wiki.debian.org/HowToIdentifyADevice/USB) to view USB devices and `usbguard generate-policy` to view a rule snapshot of current devices.
 
-#### Applications
+### Applications
+
+See additional [security applications](https://wiki.archlinux.org/index.php/List_of_applications/Security).
+
+#### Sudo
 
 Add to `/etc/sudoers` (make sure to edit with `sudo visudo /etc/sudoers`)
 
@@ -124,6 +134,10 @@ Add to `/etc/sudoers` (make sure to edit with `sudo visudo /etc/sudoers`)
 Defaults      editor=/usr/bin/rvim
 Defaults      insults
 ```
+
+[Insults](https://wiki.archlinux.org/index.php/Sudo#Enable_insults) is an optional easter egg.
+
+#### Apparmor
 
 [Set apparmor kernel parameters and enable apparmor service](https://wiki.archlinux.org/index.php/AppArmor#Installation).
 
@@ -133,19 +147,7 @@ Start/enable apparmor [audit](https://wiki.archlinux.org/index.php/Audit_framewo
 sudo makedep -a python-notify2 --add-as deps apparmor
 ```
 
-[Insults](https://wiki.archlinux.org/index.php/Sudo#Enable_insults) is an optional easter egg.
-
-#### Network
-
-If you're setting up a server, you might consider [disabling the wireless network](https://wiki.centos.org/HowTos/OS_Protection#Wireless_has_to_go).
-
-[Force public key authentication](https://wiki.archlinux.org/index.php/OpenSSH#Force_public_key_authentication) for SSH connections by changing `/etc/ssh/sshd_config`
-
-```
-PasswordAuthentication no
-```
-
-#### Antivirus
+### ClamAV
 
 Start/enable [ClamAV](https://wiki.archlinux.org/index.php/ClamAV)
 
@@ -162,6 +164,20 @@ curl https://secure.eicar.org/eicar.com.txt | clamscan -
 
 Finally, [setup Fangfrisch](https://wiki.archlinux.org/index.php/ClamAV#Option_#1:_Set_up_Fangfrisch) for additional ClamAV databases.
 
+#### Firejail
+
+[Setup apparmor integration](https://wiki.archlinux.org/index.php/Firejail#Apparmor_integration) with Firejail.
+
+### Network
+
+If you're setting up a server, you might consider [disabling the wireless network](https://wiki.centos.org/HowTos/OS_Protection#Wireless_has_to_go).
+
+[Force public key authentication](https://wiki.archlinux.org/index.php/OpenSSH#Force_public_key_authentication) for SSH connections by changing `/etc/ssh/sshd_config`
+
+```
+PasswordAuthentication no
+```
+
 #### Additional security
 
 [Restrict access to kernel logs](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_logs), [restrict access to kernel pointers in proc](https://wiki.archlinux.org/index.php/Security#Restricting_access_to_kernel_pointers_in_the_proc_filesystem), [setup hidepid](https://wiki.archlinux.org/index.php/Security#hidepid)
@@ -173,14 +189,6 @@ Ensure the CPU [microcode](https://wiki.archlinux.org/index.php/Microcode) is lo
 ```
 dmesg | grep microcode
 ```
-
-#### Resources
-
-- [ArchWiki: Security](https://wiki.archlinux.org/index.php/Security)
-- [IBM Developer: Harden Desktop](https://developer.ibm.com/articles/l-harden-desktop/)
-- [CentOS Wiki: OS Protection](https://wiki.centos.org/HowTos/OS_Protection)
-- [Linux Foundation IT: Workstation security checklist](https://github.com/lfit/itpol/blob/master/linux-workstation-security.md)
-- [Securing Debian Manual](https://www.debian.org/doc/manuals/securing-debian-manual/index.en.html)
 
 ## Backup
 
