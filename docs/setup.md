@@ -192,4 +192,4 @@ dmesg | grep microcode
 
 ## Backup
 
-Set up [redundancy](./redundancy.md)
+Set up [backup](./backup.md)

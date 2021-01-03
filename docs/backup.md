@@ -1,4 +1,6 @@
-# Redundancy
+# Backup
+
+See [backup programs](https://wiki.archlinux.org/index.php/List_of_applications/Security#Backup_programs)
 
 ### Clone drive
 
@@ -9,6 +11,6 @@
 1. Boot from USB
 1. [Follow Clonezilla guide](https://clonezilla.org/show-live-doc-content.php?topic=clonezilla-live/doc/03_Disk_to_disk_clone)
 
-### etc
+### /etc
 
 Setup [etckeeper](https://wiki.archlinux.org/index.php/Etckeeper) and use HTTP remote with GitHub Personal Access Token for password.
