@@ -17,21 +17,29 @@ scope() {
     # Used to configure QT apps with qt5ct (especially set font family -
     # unless there's an easier way? Such as QT_QPA_FONT?)
     # Can we set the QT font elsewhere without having to use qt5ct?
-    export QT_QPA_PLATFORMTHEME=qt5ct
+    if command -v qt5ct &> /dev/null; then
+        export QT_QPA_PLATFORMTHEME=qt5ct
+    fi
 
     # -- Display ----------------------------------------
 
     # nvidia
-    export __GL_YIELD="USLEEP"
-    # Set for one monitor and once xrandr sets up other monitors, settings appear to propogate to other monitors
-    nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
-    # https://wiki.archlinux.org/index.php/NVIDIA/Troubleshooting#Multi-monitor
-    # nvidia-settings --assign CurrentMetaMode="DP-0: nvidia-auto-select +2560+0 {ForceCompositionPipeline=On}, DP-1: nvidia-auto-select +0+0 {ForceCompositionPipeline=On}"
+    if command -v nvidia-settings &> /dev/null; then
+        export __GL_YIELD="USLEEP"
+        # Set for one monitor and once xrandr sets up other monitors, settings appear to propogate to other monitors
+        nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
+        # See also: https://wiki.archlinux.org/index.php/NVIDIA/Troubleshooting#Multi-monitor
+    fi
 
     # xrandr
     local WORKSTATION="${MY_SCREENLAYOUT:-default}"
     local XRANDR_DIR="$HOME/.screenlayout"
-    /bin/bash -c $XRANDR_DIR/$WORKSTATION.sh
+    local XRANDR_SCRIPT="$XRANDR_DIR/$WORKSTATION.sh"
+    if [ -f $XRANDR_SCRIPT ]; then
+        /bin/bash -c $XRANDR_SCRIPT
+    else
+        echo "No xrandr script found in .screenlayout"
+    fi
 
     # -- System ----------------------------------------
 
@@ -50,10 +58,17 @@ scope() {
     local THIRTY_MIN=1800
     local LOCK_WARN_ID=6313
     local CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
-    xidlehook --not-when-fullscreen --not-when-audio \
-        --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
-        --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" \
-        --timer $THIRTY_MIN 'systemctl hibernate' "$CLEAR_LOCK_WARN" &
+    # Overly verbose, but I can't seem to use any of these methods with xidlehook: https://stackoverflow.com/a/28678964/6817437
+    if [ "$DISABLE_HIBERNATION" = true ]; then
+        xidlehook --not-when-fullscreen --not-when-audio \
+            --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
+            --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" &
+    else
+        xidlehook --not-when-fullscreen --not-when-audio \
+            --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
+            --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" \
+            --timer $THIRTY_MIN 'systemctl hibernate' "$CLEAR_LOCK_WARN" &
+    fi
 
     xbindkeys
     # Only use b:6 and b:7 with MX Master mouse, otherwise it conflicts with x-axis scroll on touchpads
@@ -67,33 +82,50 @@ scope() {
 
     feh --no-fehbg --randomize --bg-fill $MY_WALLPAPERS/* &
 
+    # https://wiki.archlinux.org/index.php/Polkit
+    /usr/lib/polkit-kde-authentication-agent-1 &> /dev/null &
+
     unclutter --timeout 3 &
 
-    greenclip daemon &> /dev/null &
+    if command -v greenclip &> /dev/null; then
+        greenclip daemon &> /dev/null &
+    fi
 
-    local LAT="40.8255921"
-    local LON="-111.8084499"
-    redshift -l "$LAT:$LON" -m randr -t 6500:3000 &
+    if command -v redshift &> /dev/null; then
+        local LAT="40.8255921"
+        local LON="-111.8084499"
+        redshift -l "$LAT:$LON" -m randr -t 6500:3000 &
+    fi
 
-    if [[ "$IS_LAPTOP" = "true" ]]; then
+    if [[ "$IS_LAPTOP" = "true" && -x "$(command -v fusuma)" ]]; then
         fusuma -d 2>&1
         # xinput set-prop 12 268 1 # for touchpad tap
     fi
 
     # https://wiki.archlinux.org/index.php/AppArmor#Get_desktop_notification_on_DENIED_actions
-    aa-notify -p -s 1 -w 60 -f /var/log/audit/audit.log || true
+    if command -v aa-notify &> /dev/null; then
+        aa-notify -p -s 1 -w 60 -f /var/log/audit/audit.log || true
+    fi
 
     # Source: https://wiki.archlinux.org/index.php/GNOME/Keyring#xinitrc_method
-    eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
-    export SSH_AUTH_SOCK
+    if command -v gnome-keyring-daemon &> /dev/null; then
+        eval $(gnome-keyring-daemon --start --daemonize --components=pkcs11,secrets,ssh)
+        export SSH_AUTH_SOCK
+    fi
 
     # -- Applets ----------------------------------------
 
     nm-applet &
-    blueman-applet &
-    opensnitch-ui &
 
-    if [[ "$(solaar show 2>&1)" != *"Logitech receiver not found" ]]; then
+    if command -v blueman-applet &> /dev/null; then
+        blueman-applet &
+    fi
+
+    if command -v opensnitch-ui &> /dev/null; then
+        opensnitch-ui &
+    fi
+
+    if [[ -x "$(command -v solaar)" && "$(solaar show 2>&1)" != *"Logitech receiver not found" ]]; then
         solaar -w hide &
     fi
 
