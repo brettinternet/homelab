@@ -1,0 +1,6 @@
+authy
+google-chrome
+networkmanager-wireguard-git
+polybar
+spotify
+zoom
