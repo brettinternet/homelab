@@ -74,6 +74,11 @@ bindsym $mod+Shift+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-
 # Wait 5 seconds before screenshot
 bindsym $mod+Ctrl+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-%d_%H-%M-%S_$wx$h.png' -d 5 -e 'mv $f ~/Downloads/ && gimp ~/Downloads/$f &' && notify-send -a 'system' 'Scrot' 'Screenshot captured of selected window'
 
+# -- Shortcuts ----------------------------------------
+
+# Zoom webcam in for dramatic effect
+bindsym $mod+Ctrl+z exec v4l2-ctl -d /dev/video0 --set-ctrl=zoom_absolute=255
+bindsym $mod+Shift+Ctrl+z exec v4l2-ctl -d /dev/video0 --set-ctrl=zoom_absolute=100
 
 # -- Applications ----------------------------------------
 
