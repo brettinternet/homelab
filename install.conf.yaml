@@ -80,22 +80,30 @@
     - ~/.npm-global
 
 - shell:
+    # Update dotbot
     - [git submodule update --recursive, Update submodules]
+    # Sync pacman package lists
     - command: "/bin/bash ./scripts/sync.sh"
       description: Sync package lists
       stdout: true
       stderr: true
       stdin: true
+    # Update vim plugins
     - [vim -c 'PlugUpgrade' -c 'PlugUpdate' -c 'qa!', Update vim-plug]
+    # Zinit rehash https://wiki.archlinux.org/index.php/Zsh#Persistent_rehash
     - command: '[[ "$SHELL" = *"zsh" ]] && (REHASH_FILE=$HOME/.cache/zsh/rehash; mkdir -p "${REHASH_FILE%/*}" && /usr/bin/touch -m "$REHASH_FILE") || echo "Skipping...current shell is $SHELL"'
       stdout: true
       stderr: true
       description: Rehash zsh $PATH
-    - [
-        sudo reflector --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist,
-        Organize the mirror list,
-      ]
+    # Some AUR libs may fail without latest rust
+    - [rustup update, Update rust]
+    # Occasional pacman hygiene commands, perhaps I should automate
     - command: |
         echo "Consider running pacman_clean occasionally from pacman.sh"
       stdout: true
       description: Hints
+    # Organize mirror list by rate for recently synchronized servers
+    - [
+        sudo reflector  --protocol http --protocol https --latest 50 --number 20 --sort rate --save /etc/pacman.d/mirrorlist,
+        Organize the mirror list,
+      ]
