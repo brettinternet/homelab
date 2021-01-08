@@ -17,6 +17,7 @@ imagemagick
 kgpg
 libnotify
 linux-hardened
+maim
 nemo
 nemo-preview
 network-manager-applet
@@ -29,7 +30,6 @@ pulseaudio-bluetooth
 qt5ct
 rofi
 seahorse
-scrot
 surfraw
 tor
 torbrowser-launcher

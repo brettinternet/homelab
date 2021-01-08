@@ -1,0 +1,84 @@
+#!/bin/bash
+
+NAME=$(basename "$0")
+
+DEFAULT_I3_BORDER_PIXEL="3"
+FILE="$HOME/Downloads/screenshot_$(date +%Y-%m-%d_%H-%M-%S_%N).png"
+
+i3-msg -q "border 0pixels"
+
+currentWindowId () {
+    xprop -root 2> /dev/null | awk '/NET_ACTIVE_WINDOW/{print $5;exit} END{exit !$5}' || echo "0" | xargs printf "%d\n"
+}
+
+# While docs say that `maim -i` accepts a hex value, that doesn't appear to be true
+hexToDecimal () { ## args: (hex)
+    printf "%d\n" "$@"
+}
+
+ARGS=( "-b 3" )
+OPEN_WITH_GIMP=false
+
+usage () {
+    cat <<- EOF
+Usage:  $NAME [options]
+        Screenshots entire desktop when no arguments are provided
+
+Options:
+    -w      Use the current active window
+    -s      Selection mode
+    -d      Specify a delay with an integer
+    -g      Open the image with gimp
+
+EOF
+}
+
+while getopts ":hwsd:g" opt; do
+    case $opt in
+        h)
+            usage
+            exit 0
+            ;;
+        # Window
+        w)
+            WINDOW_HEX=$(currentWindowId)
+            WINDOW_DEC=$(hexToDecimal $WINDOW_HEX)
+            ARGS+=( "-i $WINDOW_DEC" )
+            ;;
+        # Select
+        s)
+            ARGS+=( "-s" )
+            ;;
+        # Delay
+        d)
+            ARGS+=( "-d ${OPTARG}" )
+            ;;
+        # Open with Gimp
+        g)
+            OPEN_WITH_GIMP=true
+            ;;
+        # Fail
+        *)
+            echo "Invalid argument"
+            echo
+            usage
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+ARGS+=( "$FILE" )
+maim ${ARGS[@]}
+
+if [ $? -eq 0 ]; then
+    notify-send -a 'system' "$NAME" 'Screenshot captured' &>/dev/null
+else
+    notify-send -u critical -a 'system' "$NAME" 'Screenshot failed' &>/dev/null
+fi
+
+i3-msg -q border pixel "$DEFAULT_I3_BORDER_PIXEL"
+
+if [ "$OPEN_WITH_GIMP" = true ]; then
+    gimp $FILE &>/dev/null &
+fi

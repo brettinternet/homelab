@@ -16,6 +16,7 @@ i3lock
 i3status
 kgpg
 libnotify
+maim
 nemo
 nemo-preview
 network-manager-applet
@@ -27,7 +28,7 @@ pulseaudio
 pulseaudio-alsa
 pulseaudio-bluetooth
 rofi
-scrot
+
 seahorse
 surfraw
 ttf-fira-code

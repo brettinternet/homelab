@@ -5,6 +5,7 @@
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
+set $alt Mod1
 
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
@@ -34,6 +35,7 @@ for_window [class=".*"] title_format <span>%class - %title</span>
 
 # Enforce borders on all windows
 for_window [class=.*] border pixel 3
+
 
 # -- Applications ----------------------------------------
 
@@ -65,20 +67,28 @@ bindsym $mod+Ctrl+d --release exec --no-startup-id pkill dunst && dunst &
 bindsym $mod+t exec --no-startup-id pkill picom; exec notify-send -a 'system' 'Picom stopped' -r '2348'
 bindsym $mod+Ctrl+t exec --no-startup-id picom --experimental-backends -b; exec notify-send -a 'system' 'Picom started' -r '2348'
 
-# Take a screenshot
-bindsym Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-%d_%H-%M-%S_$wx$h.png' -e 'mv $f ~/Downloads/' && notify-send -a 'system' 'Scrot' 'Screenshot captured'
-# Take a screenshot and open it with gimp
-bindsym $mod+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-%d_%H-%M-%S_$wx$h.png' -e 'mv $f ~/Downloads/ && gimp ~/Downloads/$f &' && notify-send -a 'system' 'Scrot' 'Screenshot captured'
-# Select a window
-bindsym $mod+Shift+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-%d_%H-%M-%S_$wx$h.png' -s -e 'mv $f ~/Downloads/ && gimp ~/Downloads/$f &' && notify-send -a 'system' 'Scrot' 'Screenshot captured of selected window'
-# Wait 5 seconds before screenshot
-bindsym $mod+Ctrl+Print --release exec --no-startup-id scrot 'screenshot_%Y-%m-%d_%H-%M-%S_$wx$h.png' -d 5 -e 'mv $f ~/Downloads/ && gimp ~/Downloads/$f &' && notify-send -a 'system' 'Scrot' 'Screenshot captured of selected window'
+# Screenshot active window
+bindsym Print --release exec --no-startup-id screenshot -w
+# Screenshot selection mode
+bindsym $mod+Print --release exec --no-startup-id screenshot -s
+# Screenshot desktop
+bindsym $alt+Print --release exec --no-startup-id screenshot
+# Screenshot selection and open it with gimp
+bindsym $mod+Shift+Print --release exec --no-startup-id screenshot -sg
+# Screenshot desktop and open it with gimp
+bindsym $alt+Shift+Print --release exec --no-startup-id screenshot -g
+# Wait 5 seconds before screenshot window
+bindsym Ctrl+Print --release exec --no-startup-id screenshot -wd 5
+# Wait 5 seconds before screenshot desktop
+bindsym Ctrl+$alt+Print --release exec --no-startup-id screenshot -d 5
+
 
 # -- Shortcuts ----------------------------------------
 
 # Zoom webcam in for dramatic effect
 bindsym $mod+Ctrl+z exec v4l2-ctl -d /dev/video0 --set-ctrl=zoom_absolute=255
 bindsym $mod+Shift+Ctrl+z exec v4l2-ctl -d /dev/video0 --set-ctrl=zoom_absolute=100
+
 
 # -- Applications ----------------------------------------
 
@@ -148,6 +158,7 @@ mode "$mode_launcher" {
     bindsym Return mode "default"
     bindsym $mod+Shift+d mode "default"
 }
+
 
 # -- Navigation ----------------------------------------
 
@@ -349,6 +360,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3 and end the X sessio
 
 # System
 bindsym $mod+shift+x exec --no-startup-id lock
+
 
 # -- Gaps ----------------------------------------
 
