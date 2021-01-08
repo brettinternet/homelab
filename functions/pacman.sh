@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # https://wiki.archlinux.org/index.php/Reflector
-alias mirror='sudo reflector --protocol https --latest 50 --number 20 --sort rate --save /etc/pacman.d/mirrorlist --verbose'
+alias mirror='sudo reflector  --protocol http --protocol https --latest 50 --number 20 --sort rate --save /etc/pacman.d/mirrorlist --verbose'
 
 # Update pacman with yay
 # Source: https://unix.stackexchange.com/a/384102/224048
