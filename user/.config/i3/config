@@ -138,6 +138,9 @@ for_window [class="Clamtk"] floating enable
 for_window [class="qt5ct"] floating enable
 for_window [class="Transmission-gtk"] floating enable
 for_window [class="Gsmartcontrol"] floating enable
+for_window [class="firetools"] floating enable
+for_window [class="fstats"] floating enable
+for_window [class="firejail-ui"] floating enable
 
 # Quick launcher
 set $mode_launcher Launch: [t]erminal [b]rowser [m]usic [e]ditor [f]iles
