@@ -116,9 +116,9 @@ ARGS+=( "$FILE" )
 maim ${ARGS[@]}
 
 if [ $? -eq 0 ]; then
-    notify-send -a 'system' "$NAME" 'Screenshot captured' &>/dev/null
+    notify-send -a 'system' "$NAME" 'Captured' &>/dev/null
 else
-    notify-send -u critical -a 'system' "$NAME" 'Screenshot failed' &>/dev/null
+    notify-send -a 'system' "$NAME" 'Failed' &>/dev/null
 fi
 
 i3-msg -q border pixel "$DEFAULT_I3_BORDER_PIXEL"
