@@ -18,3 +18,8 @@ npm config set prefix '~/.npm-global'
 
 # Use with Gnome-Keyring with Git credentials: https://wiki.archlinux.org/index.php/GNOME/Keyring#Git_integration
 git config --global credential.helper /usr/lib/git-core/git-credential-libsecret
+
+# Source: https://aur.archlinux.org/packages/zoom-firejail/
+for scheme in zoommtg zoomus tel callto zoomphonecall; do
+    xdg-mime default zoom-firejail.desktop x-scheme-handler/$scheme
+done
