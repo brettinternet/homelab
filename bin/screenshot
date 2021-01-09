@@ -5,7 +5,7 @@ NAME=$(basename "$0")
 DEFAULT_I3_BORDER_PIXEL="3"
 FILE="$HOME/Downloads/screenshot_$(date +%Y-%m-%d_%H-%M-%S_%N).png"
 
-i3-msg -q "border 0pixels"
+i3-msg -q border none
 
 currentWindowId () {
     xprop -root 2> /dev/null | awk '/NET_ACTIVE_WINDOW/{print $5;exit} END{exit !$5}' || echo "0" | xargs printf "%d\n"
@@ -79,6 +79,6 @@ fi
 
 i3-msg -q border pixel "$DEFAULT_I3_BORDER_PIXEL"
 
-if [ "$OPEN_WITH_GIMP" = true ]; then
+if [ -f "$FILE" ] && [ "$OPEN_WITH_GIMP" = true ]; then
     gimp $FILE &>/dev/null &
 fi
