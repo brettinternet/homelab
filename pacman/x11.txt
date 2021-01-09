@@ -28,7 +28,6 @@ pulseaudio
 pulseaudio-alsa
 pulseaudio-bluetooth
 rofi
-
 seahorse
 surfraw
 ttf-fira-code
@@ -40,6 +39,7 @@ unclutter
 xautomation
 xbindkeys
 xclip
+xdotool
 xorg-server
 xorg-xdpyinfo
 xorg-xfd

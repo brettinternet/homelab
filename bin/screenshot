@@ -19,6 +19,33 @@ hexToDecimal () { ## args: (hex)
     printf "%d\n" "$@"
 }
 
+# Source: https://gist.github.com/naelstrof/f9b74b5221cdc324c0911c89a47b8d97
+getMonitorGeometry () {
+    MONITORS=$(xrandr | grep -o '[0-9]*x[0-9]*[+-][0-9]*[+-][0-9]*')
+    # Get the location of the mouse
+    XMOUSE=$(xdotool getmouselocation | awk -F "[: ]" '{print $2}')
+    YMOUSE=$(xdotool getmouselocation | awk -F "[: ]" '{print $4}')
+
+    for mon in ${MONITORS}; do
+    # Parse the geometry of the monitor
+    MONW=$(echo ${mon} | awk -F "[x+]" '{print $1}')
+    MONH=$(echo ${mon} | awk -F "[x+]" '{print $2}')
+    MONX=$(echo ${mon} | awk -F "[x+]" '{print $3}')
+    MONY=$(echo ${mon} | awk -F "[x+]" '{print $4}')
+    # Use a simple collision check
+    if (( ${XMOUSE} >= ${MONX} )); then
+        if (( ${XMOUSE} <= ${MONX}+${MONW} )); then
+            if (( ${YMOUSE} >= ${MONY} )); then
+                if (( ${YMOUSE} <= ${MONY}+${MONH} )); then
+                    # We have found our monitor!
+                    echo "${MONW}x${MONH}+${MONX}+${MONY}"
+                fi
+            fi
+        fi
+    fi
+    done
+}
+
 ARGS=( "-b 3" "-u" )
 OPEN_FILE=false
 
@@ -28,6 +55,7 @@ Usage:  $NAME [options]
         Screenshots entire desktop when no arguments are provided
 
 Options:
+    -m      Use the current active monitor
     -w      Use the current active window
     -s      Selection mode
     -d      Specify a delay with an integer
@@ -39,11 +67,18 @@ EOF
 # By default, all screens are included in screenshot
 # May want to limit this to the monitor that the has the mouse only
 # https://gist.github.com/naelstrof/f9b74b5221cdc324c0911c89a47b8d97
-while getopts ":hwsd:g" opt; do
+while getopts ":hmwsd:g" opt; do
     case $opt in
         h)
             usage
             exit 0
+            ;;
+        # Monitor
+        m)
+            GEOMETRY=$(getMonitorGeometry)
+            if [ -n "$GEOMETRY" ]; then
+                ARGS+=( "-g $GEOMETRY" )
+            fi
             ;;
         # Window
         w)

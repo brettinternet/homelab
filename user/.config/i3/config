@@ -71,12 +71,10 @@ bindsym $mod+Ctrl+t exec --no-startup-id picom --experimental-backends -b; exec 
 bindsym Print --release exec --no-startup-id screenshot -w
 # Screenshot selection mode
 bindsym $mod+Print --release exec --no-startup-id screenshot -s
-# Screenshot desktop
-bindsym Ctrl+Print --release exec --no-startup-id screenshot
-# Screenshot desktop and open it with gimp
-bindsym Ctrl+Shift+Print --release exec --no-startup-id screenshot -g
-# Wait 5 seconds before screenshot desktop
-bindsym Ctrl+$alt+Print --release exec --no-startup-id screenshot -d 5
+# Screenshot monitor
+bindsym Ctrl+Print --release exec --no-startup-id screenshot -m
+# Screenshot monitor and open it with gimp
+bindsym Ctrl+Shift+Print --release exec --no-startup-id screenshot -mg
 
 
 # -- Shortcuts ----------------------------------------
