@@ -166,7 +166,7 @@ Finally, [setup Fangfrisch](https://wiki.archlinux.org/index.php/ClamAV#Option_#
 
 #### Firejail
 
-[Setup apparmor integration](https://wiki.archlinux.org/index.php/Firejail#Apparmor_integration) with Firejail.
+[Setup apparmor integration](https://wiki.archlinux.org/index.php/Firejail#Apparmor_integration) with Firejail. Also, add Firejail profiles: [1](https://github.com/chiraag-nataraj/firejail-profiles), [2](https://github.com/nyancat18/fe).
 
 ### Network
 
