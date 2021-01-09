@@ -19,7 +19,7 @@ hexToDecimal () { ## args: (hex)
     printf "%d\n" "$@"
 }
 
-ARGS=( "-b 3" )
+ARGS=( "-b 3" "-u" )
 OPEN_FILE=false
 
 usage () {
@@ -36,6 +36,9 @@ Options:
 EOF
 }
 
+# By default, all screens are included in screenshot
+# May want to limit this to the monitor that the has the mouse only
+# https://gist.github.com/naelstrof/f9b74b5221cdc324c0911c89a47b8d97
 while getopts ":hwsd:g" opt; do
     case $opt in
         h)
