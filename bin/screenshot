@@ -3,12 +3,15 @@
 NAME=$(basename "$0")
 
 DEFAULT_I3_BORDER_PIXEL="3"
-FILE="$HOME/Downloads/screenshot_$(date +%Y-%m-%d_%H-%M-%S_%N).png"
 
 i3-msg -q border none
 
 currentWindowId () {
     xprop -root 2> /dev/null | awk '/NET_ACTIVE_WINDOW/{print $5;exit} END{exit !$5}' || echo "0" | xargs printf "%d\n"
+}
+
+currentWindowClass () { ## args: (window ID)
+    xprop -id "$1" WM_CLASS | awk '/WM_CLASS/{print $4;exit}' | sed -e 's/^"//' -e 's/"$//'
 }
 
 # While docs say that `maim -i` accepts a hex value, that doesn't appear to be true
@@ -42,7 +45,8 @@ while getopts ":hwsd:g" opt; do
         # Window
         w)
             WINDOW_HEX=$(currentWindowId)
-            WINDOW_DEC=$(hexToDecimal $WINDOW_HEX)
+            WINDOW_DEC=$(hexToDecimal "$WINDOW_HEX")
+            OPTIONAL_DETAILS="_$(currentWindowClass "$WINDOW_HEX")"
             ARGS+=( "-i $WINDOW_DEC" )
             ;;
         # Select
@@ -67,6 +71,8 @@ while getopts ":hwsd:g" opt; do
     esac
 done
 shift $((OPTIND - 1))
+
+FILE="$HOME/Downloads/screenshot_$(date +%Y-%m-%d_%H-%M-%S_%N)$OPTIONAL_DETAILS.png"
 
 ARGS+=( "$FILE" )
 maim ${ARGS[@]}
