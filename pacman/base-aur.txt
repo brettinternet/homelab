@@ -2,5 +2,6 @@ downgrade
 makedep
 nvm
 powerpill
+python-fangfrisch
 tzupdate
 vim-plug

@@ -6,6 +6,7 @@ dnsmasq
 ebtables
 evince
 firefox
+firetools
 gimp
 imagemagick
 peek

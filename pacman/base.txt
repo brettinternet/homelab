@@ -14,6 +14,7 @@ networkmanager
 openssh
 pacmatic
 reflector
+rsync
 smartmontools
 speedtest-cli
 terminus-font
