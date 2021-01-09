@@ -74,9 +74,9 @@ bindsym $mod+Print --release exec --no-startup-id screenshot -s
 # Screenshot desktop
 bindsym Ctrl+Print --release exec --no-startup-id screenshot
 # Screenshot desktop and open it with gimp
-bindsym $mod+Ctrl+Shift+Print --release exec --no-startup-id screenshot -g
+bindsym Ctrl+Shift+Print --release exec --no-startup-id screenshot -g
 # Wait 5 seconds before screenshot desktop
-bindsym $mod+Ctrl+$alt+Print --release exec --no-startup-id screenshot -d 5
+bindsym Ctrl+$alt+Print --release exec --no-startup-id screenshot -d 5
 
 
 # -- Shortcuts ----------------------------------------
