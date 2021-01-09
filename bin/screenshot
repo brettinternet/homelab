@@ -20,7 +20,7 @@ hexToDecimal () { ## args: (hex)
 }
 
 ARGS=( "-b 3" )
-OPEN_WITH_GIMP=false
+OPEN_FILE=false
 
 usage () {
     cat <<- EOF
@@ -59,7 +59,7 @@ while getopts ":hwsd:g" opt; do
             ;;
         # Open with Gimp
         g)
-            OPEN_WITH_GIMP=true
+            OPEN_FILE=true
             ;;
         # Fail
         *)
@@ -85,6 +85,6 @@ fi
 
 i3-msg -q border pixel "$DEFAULT_I3_BORDER_PIXEL"
 
-if [ -f "$FILE" ] && [ "$OPEN_WITH_GIMP" = true ]; then
+if [ -f "$FILE" ] && [ "$OPEN_FILE" = true ]; then
     gimp $FILE &>/dev/null &
 fi
