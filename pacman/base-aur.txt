@@ -1,6 +1,5 @@
 downgrade
 makedep
-nvm
 powerpill
 python-fangfrisch
 tzupdate
