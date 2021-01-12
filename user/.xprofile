@@ -80,7 +80,9 @@ scope() {
     # `no-fading-openclose`: https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
     picom -b --experimental-backends --no-fading-openclose
 
-    feh --no-fehbg --randomize --bg-fill $MY_WALLPAPERS/* &
+    if [ -d "$MY_WALLPAPERS" ]; then
+        feh --no-fehbg --randomize --bg-fill $MY_WALLPAPERS/* &
+    fi
 
     # https://wiki.archlinux.org/index.php/Polkit
     /usr/lib/polkit-kde-authentication-agent-1 &> /dev/null &
