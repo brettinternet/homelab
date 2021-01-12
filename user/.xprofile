@@ -59,7 +59,7 @@ scope() {
     local LOCK_WARN_ID=6313
     local CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
     # Overly verbose, but I can't seem to use any of these methods with xidlehook: https://stackoverflow.com/a/28678964/6817437
-    if [ "$DISABLE_HIBERNATION" = true ]; then
+    if [ "$IS_VIRTUAL_GUEST" = true ]; then
         xidlehook --not-when-fullscreen --not-when-audio \
             --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
             --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" &
@@ -76,9 +76,12 @@ scope() {
         xbindkeys -f "$HOME/.xbindkeysrc-mouse"
     fi
 
-    # Note: `experimental-backends` allows for dual kawase
-    # `no-fading-openclose`: https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
-    picom -b --experimental-backends --no-fading-openclose
+    # Compositors appear incompatible with VMs
+    if ! [ "$IS_VIRTUAL_GUEST" = true ]; then
+        # Note: `experimental-backends` allows for dual kawase
+        # `no-fading-openclose`: https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
+        picom -b --experimental-backends --no-fading-openclose
+    fi
 
     if [ -d "$MY_WALLPAPERS" ]; then
         feh --no-fehbg --randomize --bg-fill $MY_WALLPAPERS/* &
@@ -136,6 +139,11 @@ scope() {
             -x notify-battery \
             -c "/usr/bin/systemctl hibernate" &
     fi
+
+    if [ "$IS_VIRTUAL_GUEST" = true ]; then
+        spice-vdagent &
+    fi
+
 
     # -- Workspace ----------------------------------------
 
