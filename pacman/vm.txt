@@ -4,7 +4,6 @@ alsa-utils
 arandr
 baobab
 bc
-chromium
 code
 dmenu
 dunst
