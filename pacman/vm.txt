@@ -30,6 +30,7 @@ pulseaudio-bluetooth
 qt5ct
 rofi
 seahorse
+spice-vdagent
 surfraw
 tor
 torbrowser-launcher
