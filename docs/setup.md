@@ -39,7 +39,7 @@ yay -S - < packages/aur.txt
 
 ### Workspaces
 
-Since I use the same dotfiles across multiple workspaces, local environment variables specific to a workspace and not added to source control are add to `$HOME/.env` and imported into the environment. See [.env.example](../configs/.env.example) for details.
+Since I use the same dotfiles across multiple workspaces, local environment variables specific to a workspace and not added to source control are add to `$HOME/.env` and imported into the environment. See [example.env](../user/example.env) for details.
 
 ### Power Management
 

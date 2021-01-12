@@ -23,8 +23,8 @@ elif [[ -f "$PRIVATE_ENV_FILE_SOURCE" ]]; then
     source "$PRIVATE_ENV_FILE_SOURCE"
 else
     export DOTBOT_ACTION="setup"
-    echo "Creating '.env' from '.env.example' to source local-only environment variables "
-    cp $CONFIGS_PATH/.env.example $PRIVATE_ENV_FILE_SOURCE
+    echo "Creating '.env' from 'example.env' to source local-only environment variables "
+    cp $CONFIGS_PATH/example.env $PRIVATE_ENV_FILE_SOURCE
 fi
 
 # setup | sync
