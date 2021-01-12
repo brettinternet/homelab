@@ -47,3 +47,4 @@ xorg-xinit
 xorg-xinput
 xorg-xprop
 xss-lock
+xterm
