@@ -38,33 +38,33 @@
       path: user/.tmux.conf
     ~/.xbindkeysrc:
       path: user/.xbindkeysrc
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ~/.xbindkeysrc-mouse:
       path: user/.xbindkeysrc-mouse
       if: 'xinput | grep -q "Logitech MX Master"'
     ~/.xinitrc:
       path: user/.xinitrc
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ~/.Xmodmap:
       path: user/.Xmodmap
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ~/.xprofile:
       path: user/.xprofile
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ~/.Xresources:
       path: user/.Xresources
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ~/.screenlayout:
       path: user/.screenlayout
       force: true
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ~/.config/:
       glob: true
       path: user/.config/*
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ~/.config/chrome-flags.conf:
       path: user/.config/chromium-flags.conf
-      if: "[ "$ENABLE_X11" = true ]"
+      if: '[ "$ENABLE_X11" = true ]'
     ###### Laptop ######
     ~/.config/fusuma:
       path: user/.config/fusuma
