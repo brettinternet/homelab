@@ -38,40 +38,40 @@
       path: user/.tmux.conf
     ~/.xbindkeysrc:
       path: user/.xbindkeysrc
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ~/.xbindkeysrc-mouse:
       path: user/.xbindkeysrc-mouse
       if: 'xinput | grep -q "Logitech MX Master"'
     ~/.xinitrc:
       path: user/.xinitrc
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ~/.Xmodmap:
       path: user/.Xmodmap
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ~/.xprofile:
       path: user/.xprofile
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ~/.Xresources:
       path: user/.Xresources
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ~/.screenlayout:
       path: user/.screenlayout
       force: true
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ~/.config/:
       glob: true
       path: user/.config/*
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ~/.config/chrome-flags.conf:
       path: user/.config/chromium-flags.conf
-      if: "xset q &>/dev/null"
+      if: "[ "$ENABLE_X11" = true ]"
     ###### Laptop ######
     ~/.config/fusuma:
       path: user/.config/fusuma
-      if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
+      if: '[ "$IS_LAPTOP" = "true" ] && [ "$ENABLE_X11" = true ]'
     ~/.config/clight.conf:
       path: user/.config/clight.conf
-      if: '[ "$IS_LAPTOP" = "true" ] && xset q &>/dev/null'
+      if: '[ "$IS_LAPTOP" = "true" ] && [ "$ENABLE_X11" = true ]'
 
 - create:
     - ~/dev
