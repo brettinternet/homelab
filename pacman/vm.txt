@@ -44,6 +44,7 @@ xbindkeys
 xclip
 xorg-server
 xorg-xdpyinfo
+xorg-xev
 xorg-xfd
 xorg-xinit
 xorg-xinput
