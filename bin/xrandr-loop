@@ -19,7 +19,7 @@ if [ -x /usr/bin/spice-vdagent ]; then
 
     xev -root -event randr | \
     grep --line-buffered 'subtype XRROutputChangeNotifyEvent' | \
-    while read; do \
+    while read piped; do \
         xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
     done
 fi
