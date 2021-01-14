@@ -11,7 +11,9 @@
 #     'spice-guest-tools' on windows
 
 if [ -x /usr/bin/spice-vdagent ]; then
-    sleep 2
+    # Xfce recommends delaying the startup of applications
+    # https://wiki.archlinux.org/index.php/Xfce#Autostart
+    sleep 3
 
     xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
 
