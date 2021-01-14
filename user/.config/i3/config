@@ -100,7 +100,7 @@ for_window [class="$PLAYER"] move scratchpad, move position center
 bindsym $mod+semicolon [instance="^$TERMINAL-scratchpad1$"] scratchpad show, move position center
 bindsym $mod+apostrophe [instance="^$TERMINAL-scratchpad2$"] scratchpad show
 bindsym $mod+a [class="$BROWSER"] scratchpad show, resize set 60 ppt 70 ppt, move position center
-bindsym $mod+z [class="$EDITOR"] scratchpad show, resize set 60 ppt 70 ppt, move position center
+bindsym $mod+z [class="$EDITOR"] scratchpad show, resize set 50 ppt 80 ppt, move position center
 bindsym $mod+w [class="$PLAYER"] scratchpad show
 
 # Floating
