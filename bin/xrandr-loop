@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# `xrandr --auto` only works within a VM once the follow criteria is met:
+# 1. Make sure guest resizing is enabled in virt-manager:
+#     Menu <kbd>View</kbd> -> <kbd>Scale Display</kbd> ->
+#     <kbd>Auto resize VM with window</kbd> (Checked)
+# ---
+# 2. Make sure your have a spice agent on your host
+#     https://www.spice-space.org/download.html#guest
+#     'spice-vdagent' on linux
+#     'spice-guest-tools' on windows
+
+if [ -x /usr/bin/spice-vdagent ]; then
+    sleep 2
+
+    xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
+
+    xev -root -event randr | \
+    grep --line-buffered 'subtype XRROutputChangeNotifyEvent' | \
+    while read; do \
+        xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
+    done
+fi
