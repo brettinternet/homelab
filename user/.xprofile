@@ -141,7 +141,9 @@ scope() {
     fi
 
     if [ "$IS_VIRTUAL_GUEST" = true ]; then
-        spice-vdagent &
+        spice-vdagent
+
+        $MY_BIN/xrandr-loop &
     fi
 
 
