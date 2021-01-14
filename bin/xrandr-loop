@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# For resizing VM guests in host Spice viewer
+#
 # `xrandr --auto` only works within a VM once the follow criteria is met:
 # 1. Make sure guest resizing is enabled in virt-manager:
 #     Menu <kbd>View</kbd> -> <kbd>Scale Display</kbd> ->
