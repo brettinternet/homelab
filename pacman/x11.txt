@@ -30,11 +30,15 @@ pulseaudio-bluetooth
 rofi
 seahorse
 surfraw
+terminus-font
+ttf-droid
 ttf-fira-code
 ttf-fira-sans
 ttf-font-awesome
+ttf-hack
 ttf-inconsolata
 ttf-roboto
+ttf-ubuntu-font-family
 unclutter
 xautomation
 xbindkeys

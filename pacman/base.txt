@@ -17,13 +17,10 @@ reflector
 rsync
 smartmontools
 speedtest-cli
-terminus-font
 the_silver_searcher
 tmux
 trash-cli
-ttf-droid
 ttf-liberation
-ttf-ubuntu-font-family
 unzip
 usbguard
 usbutils
