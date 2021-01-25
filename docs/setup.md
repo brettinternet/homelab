@@ -25,17 +25,18 @@ git clone https://aur.archlinux.org/yay.git
 cd yay && makepkg -si
 ```
 
-Build and install AUR packages with yay
-
-```sh
-yay -S - < packages/aur.txt
-```
-
 ### Other
 
 - [zinit](https://github.com/zdharma/zinit); afterwards, run `zsh` once to setup plugins before logging out/in
 
 ## Configuration
+
+### Services
+
+- Setup [OpenSSH](https://wiki.archlinux.org/index.php/OpenSSH)
+- Install packages
+- Setup [etckeeper](https://wiki.archlinux.org/index.php/Etckeeper)
+- Mount drives/modify fstab
 
 ### Workspaces
 
@@ -45,7 +46,7 @@ Since I use the same dotfiles across multiple workspaces, local environment vari
 
 #### Console
 
-Since I don't use a display manager, it may be practical to implement power settings for the console login screen. `cat /sys/module/kernel/parameters/consoleblank` with an output of `0` suggests no `consoleblank`ing is occurring and the login screen will not timeout. Add a kernel parameter of `consoleblank=600` to timeout after 10 minutes with a console screensaver.
+Since I don't use a display manager, it may be practical to implement power settings for the console login screen. `cat /sys/module/kernel/parameters/consoleblank` with an output of `0` suggests no `consoleblank`ing is occurring and the login screen will not timeout. Add a [kernel parameter](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) of `consoleblank=600` to timeout after 10 minutes with a console screensaver.
 
 #### Laptops
 
