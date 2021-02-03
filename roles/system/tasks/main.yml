@@ -1,0 +1,21 @@
+---
+### Desktop entries ###
+# https://wiki.archlinux.org/index.php/Desktop_entries
+
+- name: Install /usr/bin/zoom-firejail
+  become: yes
+  ansible.builtin.copy:
+    src: zoom-firejail
+    dest: /usr/bin/zoom-firejail
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install /usr/share/applications/zoom-firejail.desktop
+  become: yes
+  ansible.builtin.copy:
+    src: zoom-firejail.desktop
+    dest: /usr/share/applications/zoom-firejail.desktop
+    owner: root
+    group: root
+    mode: "0644"

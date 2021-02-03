@@ -1,0 +1,21 @@
+---
+- name: "Change user shell to {{ shell }}"
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    shell: "{{ user_shell }}"
+  when: ansible_facts['user_shell'] != shell
+
+# - name: Set user settings
+#   include_task: settings.yml
+
+# - name: Create local exports file
+#   ansible.builtin.template:
+#     src: env.j2
+#     dest: "{{ ansible_facts['user_dir'] }}/.env"
+
+- name: Link dotfiles
+  ansible.builtin.file:
+    src: "{{ ansible_facts['user_dir'] }}/test"
+    path: "{{ item }}"
+    state: link
+  with_fileglob: "{{ role_path }}/files/*"

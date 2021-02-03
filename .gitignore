@@ -1,1 +1,6 @@
-user/.env
+.env
+*.log
+secret.yml
+inventory.yml
+host_vars/*
+!host_vars/example.yml

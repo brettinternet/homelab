@@ -1,0 +1,5 @@
+---
+- name: Sync dotfiles
+  hosts: all
+  roles:
+    - user

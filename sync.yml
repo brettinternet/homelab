@@ -1,0 +1,21 @@
+---
+- name: Sync dotfiles
+  hosts: all
+  roles:
+    - role: yay
+      vars:
+        name:
+          - downgrade
+        state: present
+    - user
+    - system
+    - role: upgrade
+      vars:
+        allow_reboot: no
+  pre_tasks:
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          # TODO: move package lists to separate file?
+          - git
+        state: present
