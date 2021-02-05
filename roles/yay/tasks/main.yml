@@ -18,6 +18,7 @@
   ansible.builtin.shell: '! [ -x "$(command -v yay)" ]'
   register: yay_command_result
   failed_when: yay_command_result.stderr != ""
+  changed_when: yay_command_result.rc != 1
 
 - block:
     - name: Clone yay PKGBUILD
