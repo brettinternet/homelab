@@ -3,6 +3,7 @@
   ansible.builtin.git:
     repo: "{{ dotfiles_repo }}"
     dest: "{{ dotfiles_dir }}"
+    accept_hostkey: true
 
 - name: Setup dotfiles
   ansible.builtin.shell:
