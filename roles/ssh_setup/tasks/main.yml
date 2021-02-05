@@ -7,8 +7,8 @@
         return_content: true
       register: keys_result
       failed_when:
-          - keys_result['content'] == ""
-          - 'ssh-rsa' not in keys_result['content']
+        - keys_result['content'] == ""
+        - "'ssh-rsa' not in keys_result['content']"
 
     - name: Filter key
       ansible.builtin.shell: "echo '{{ keys_result['content'] }}' | sed '{{ ssh_keys_line_number }}!d'"
