@@ -16,10 +16,6 @@
       when: ssh_keys_line_number is defined and ssh_keys_line_number | int > 0
       changed_when: false
 
-    # - name: Set keys fact
-    #   ansible.builtin.set_fact:
-    #     ssh_keys: "{{ if (keys_sed_result is defined and keys_sed_result['stdout']) else keys_result['content'] }}"
-
     - name: Set filtered key fact
       ansible.builtin.set_fact:
         ssh_keys: "{{ keys_sed_result['stdout'] }}"
