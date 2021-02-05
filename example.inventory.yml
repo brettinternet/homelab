@@ -8,12 +8,18 @@ all:
           ansible_host: # use `ansible_connection: local` for local
           ansible_user:
           # Local definitions
-          dotfiles_dir: "$HOME/dotfiles"
-          wallpapers_dir: "$HOME/walls"
-          screenlayout: desktop
-          enable_x11: yes
-          is_laptop: no
-          is_virtual_guest: no
           shell: /usr/bin/zsh
-          packages:
+          dotfiles_dir: "$HOME/dotfiles"
+          dotfiles_repo: "git@github.com:brettinternet/dotfiles.git"
+          wallpapers_dir: "$HOME/walls"
+          wallpapers_repo: "git@github.com:brettinternet/walls.git"
+          enable_x11: true
+          dotfile_groups: [x11, desktop, archlinux] # see roles/user/files
           exports: {}
+          dotbot:
+            # https://github.com/anishathalye/dotbot/tree/master#directives
+            clean:
+            create:
+              - ~/dev
+            shell:
+          packages:

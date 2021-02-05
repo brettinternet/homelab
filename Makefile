@@ -1,4 +1,4 @@
-.PHONY: setup requirements add_host
+.PHONY: setup requirements
 
 inventory.yml:
 	@cp example.inventory.yml inventory.yml

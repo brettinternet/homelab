@@ -11,7 +11,7 @@
     - system
     - role: upgrade
       vars:
-        allow_reboot: no
+        allow_reboot: false
   pre_tasks:
     - name: Install packages
       ansible.builtin.package:
