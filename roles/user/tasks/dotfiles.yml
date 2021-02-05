@@ -4,18 +4,22 @@
     repo: "{{ dotfiles_repo }}"
     dest: "{{ dotfiles_dir }}"
     accept_hostkey: true
+  tags: dotfiles
 
 - name: Setup dotfiles
   ansible.builtin.shell:
     chdir: "{{ dotfiles_dir }}"
     cmd: "{{ dotfiles_install_cmd }}"
+  tags: dotfiles
   register: dotbot_setup_result
 
 - name: Debug dotfile setup log
   ansible.builtin.debug:
     msg: "{{ dotbot_setup_result.stdout.split('\n') }}"
+  tags: dotfiles
 
 - name: Debug dotfile setup errors
   ansible.builtin.debug:
     msg: "{{ dotbot_setup_result.stderr.split('\n') }}"
+  tags: dotfiles
   when: dotbot_setup_result.stderr != ""

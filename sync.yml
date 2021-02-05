@@ -4,6 +4,7 @@
   roles:
     - ssh_setup
     - role: yay
+      tags: update
       vars:
         packages:
           - downgrade
@@ -11,8 +12,7 @@
     - user
     - system
     - role: upgrade
-      vars:
-        allow_reboot: false
+      tags: update
   pre_tasks:
     - name: Install packages
       ansible.builtin.package:
@@ -20,3 +20,4 @@
           # TODO: move package lists to separate file?
           - git
         state: present
+      tags: update

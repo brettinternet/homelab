@@ -1,6 +1,7 @@
 ---
 - name: Set user dotfiles
   include_tasks: dotfiles.yml
+  tags: dotfiles
   when: dotfiles_repo is defined
 
 - name: "Change user shell to {{ shell }}"
