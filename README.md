@@ -6,7 +6,7 @@
 make setup
 ```
 
-Configure hosts in `host_vars/`. Then, sync hosts:
+Configure hosts and vars in `inventory.yml`. Then, sync hosts:
 
 ```sh
 ansible-playbook sync.yml
