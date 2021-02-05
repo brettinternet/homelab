@@ -1,0 +1,25 @@
+#!/bin/sh
+
+local THIRTY_MIN=1800
+local LOCK_WARN_ID=6313
+local CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
+xidlehook --not-when-fullscreen --not-when-audio \
+    --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
+    --timer 30 $HOME/.bin/lock "$CLEAR_LOCK_WARN" \
+    --timer $THIRTY_MIN 'systemctl hibernate' "$CLEAR_LOCK_WARN" &
+
+# Note: `experimental-backends` allows for dual kawase
+# `no-fading-openclose`: https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
+# Compositors appear to be incompatible with VM guests
+picom -b --experimental-backends --no-fading-openclose
+
+if [[ -x "$(command -v fusuma)" ]]; then
+    fusuma -d 2>&1
+    # xinput set-prop 12 268 1 # for touchpad tap
+fi
+
+if [[ -x "$(command -v cbatticon)" ]]; then
+    cbatticon -u 20 -r 3 \
+        -x notify-battery \
+        -c "/usr/bin/systemctl hibernate" &
+fi

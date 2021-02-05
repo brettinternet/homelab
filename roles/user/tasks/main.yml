@@ -1,21 +1,21 @@
 ---
+# - name: Set fact enable_x11
+#   ansible.builtin.set_fact:
+#     enable_x11: "{{ 'x11' in supported_workstations }}"
+
+- name: Set user dotfiles
+  include_tasks: dotfiles.yml
+  when: dotfiles_repo is defined
+
 - name: "Change user shell to {{ shell }}"
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     shell: "{{ user_shell }}"
   when: ansible_facts['user_shell'] != shell
 
-# - name: Set user settings
-#   include_task: settings.yml
+- name: Set user X11 settings
+  include_tasks: x11_settings.yml
+  when: enable_x11
 
-# - name: Create local exports file
-#   ansible.builtin.template:
-#     src: env.j2
-#     dest: "{{ ansible_facts['user_dir'] }}/.env"
-
-- name: Link dotfiles
-  ansible.builtin.file:
-    src: "{{ ansible_facts['user_dir'] }}/test"
-    path: "{{ item }}"
-    state: link
-  with_fileglob: "{{ role_path }}/files/*"
+- name: Run helpers
+  include_tasks: helpers.yml

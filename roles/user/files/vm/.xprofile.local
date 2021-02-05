@@ -1,0 +1,5 @@
+#!/bin/sh
+
+spice-vdagent
+
+$HOME/.bin/xrandr-loop &

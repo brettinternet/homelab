@@ -32,9 +32,8 @@ scope() {
     fi
 
     # xrandr
-    local WORKSTATION="${MY_SCREENLAYOUT:-default}"
-    local XRANDR_DIR="$HOME/.screenlayout"
-    local XRANDR_SCRIPT="$XRANDR_DIR/$WORKSTATION.sh"
+    # https://wiki.archlinux.org/index.php/Xrandr#Configuration_using_arandr
+    local XRANDR_SCRIPT="$HOME/.screenlayout/default.sh"
     if [ -f $XRANDR_SCRIPT ]; then
         /bin/bash -c $XRANDR_SCRIPT
     else
@@ -55,36 +54,15 @@ scope() {
     # https://wiki.archlinux.org/index.php/Power_management#Sleep_hooks
     xss-lock -- lock &
 
-    local THIRTY_MIN=1800
-    local LOCK_WARN_ID=6313
-    local CLEAR_LOCK_WARN="dunstify -C $LOCK_WARN_ID"
-    # Overly verbose, but I can't seem to use any of these methods with xidlehook: https://stackoverflow.com/a/28678964/6817437
-    if [ "$IS_VIRTUAL_GUEST" = true ]; then
-        xidlehook --not-when-fullscreen --not-when-audio \
-            --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
-            --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" &
-    else
-        xidlehook --not-when-fullscreen --not-when-audio \
-            --timer $(($THIRTY_MIN - 30)) "dunstify -a 'system' -r $LOCK_WARN_ID -u critical -t 29000 'Locking soon...'" "$CLEAR_LOCK_WARN" \
-            --timer 30 $MY_BIN/lock "$CLEAR_LOCK_WARN" \
-            --timer $THIRTY_MIN 'systemctl hibernate' "$CLEAR_LOCK_WARN" &
-    fi
-
     xbindkeys
     # Only use b:6 and b:7 with MX Master mouse, otherwise it conflicts with x-axis scroll on touchpads
     if xinput | grep -q "Logitech MX Master"; then
         xbindkeys -f "$HOME/.xbindkeysrc-mouse"
     fi
 
-    # Compositors appear incompatible with VMs
-    if ! [ "$IS_VIRTUAL_GUEST" = true ]; then
-        # Note: `experimental-backends` allows for dual kawase
-        # `no-fading-openclose`: https://wiki.archlinux.org/index.php/Picom#Slock_after_suspend
-        picom -b --experimental-backends --no-fading-openclose
-    fi
-
-    if [ -d "$MY_WALLPAPERS" ]; then
-        feh --no-fehbg --randomize --bg-fill $MY_WALLPAPERS/* &
+    local WALLPAPERS_DIR="${MY_WALLPAPERS:-$HOME/walls}"
+    if [ -d "$WALLPAPERS_DIR" ]; then
+        feh --no-fehbg --randomize --bg-fill $WALLPAPERS_DIR/* &
     fi
 
     # https://wiki.archlinux.org/index.php/Polkit
@@ -100,11 +78,6 @@ scope() {
         local LAT="40.8255921"
         local LON="-111.8084499"
         redshift -l "$LAT:$LON" -m randr -t 6500:3000 &
-    fi
-
-    if [[ "$IS_LAPTOP" = "true" && -x "$(command -v fusuma)" ]]; then
-        fusuma -d 2>&1
-        # xinput set-prop 12 268 1 # for touchpad tap
     fi
 
     # https://wiki.archlinux.org/index.php/AppArmor#Get_desktop_notification_on_DENIED_actions
@@ -134,25 +107,23 @@ scope() {
         solaar -w hide &
     fi
 
-    if [[ "$IS_LAPTOP" = "true" && -x "$(command -v cbatticon)" ]]; then
-        cbatticon -u 20 -r 3 \
-            -x notify-battery \
-            -c "/usr/bin/systemctl hibernate" &
+    local LOCAL_XORG_CUSTOMIZATIONS=$HOME/.xprofile.local
+    if [ -f "LOCAL_XORG_CUSTOMIZATIONS" ]; then
+      source "$LOCAL_XORG_CUSTOMIZATIONS"
     fi
 
-    if [ "$IS_VIRTUAL_GUEST" = true ]; then
-        spice-vdagent
-
-        $MY_BIN/xrandr-loop &
+    local LOCAL_ENV=$HOME/.env
+    if [ -f "LOCAL_ENV" ]; then
+      source "$LOCAL_ENV"
     fi
 
+    if [[ $(pidof i3) ]]; then
+      # -- i3 ----------------------------------------
 
-    # -- Workspace ----------------------------------------
-
-    # Initialize labeled alacritty window as i3 scratchpad
-    alacritty --class "alacritty-scratchpad1" &
-    alacritty --class "alacritty-scratchpad2" &
-
+      # Initialize labeled alacritty window as i3 scratchpad
+      alacritty --class "alacritty-scratchpad1" &
+      alacritty --class "alacritty-scratchpad2" &
+    fi
 }
 
 scope

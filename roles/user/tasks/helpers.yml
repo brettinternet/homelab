@@ -1,0 +1,12 @@
+---
+- block:
+    # List, but don't delete all indiscriminately
+    # https://unix.stackexchange.com/a/151769/224048
+    - name: Find broken symlinks
+      ansible.builtin.command: "find {{ ansible_facts['user_dir'] }} -xtype l"
+      register: find_broken_link_result
+
+    - name: User's broken links
+      debug:
+        var: find_broken_link_result['stdout_lines']
+  when: list_broken_links

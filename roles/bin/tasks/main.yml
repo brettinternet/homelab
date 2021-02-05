@@ -1,3 +1,0 @@
----
-- name: Link usr binaries
-  ansible.builtin.file:

@@ -3,7 +3,7 @@
 # https://wiki.archlinux.org/index.php/Desktop_entries
 
 - name: Install /usr/bin/zoom-firejail
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: zoom-firejail
     dest: /usr/bin/zoom-firejail
@@ -12,7 +12,7 @@
     mode: "0755"
 
 - name: Install /usr/share/applications/zoom-firejail.desktop
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: zoom-firejail.desktop
     dest: /usr/share/applications/zoom-firejail.desktop
