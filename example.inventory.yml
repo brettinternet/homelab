@@ -10,8 +10,11 @@ all:
           # Local definitions
           shell: /usr/bin/zsh
           dotfiles_dir: "$HOME/dotfiles"
+          # make sure to `ForwardAgent yes` if you use a git URL or private repo
           dotfiles_repo: "git@github.com:brettinternet/dotfiles.git"
           dotfiles_install_cmd: ./install
           wallpapers_dir: "$HOME/walls"
           wallpapers_repo: "git@github.com:brettinternet/walls.git"
           x11_enabled: true
+          ssh_keys_url: https://github.com/brettinternet.keys
+          ssh_keys_line_number:

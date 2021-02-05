@@ -2,6 +2,7 @@
 - name: Sync dotfiles
   hosts: all
   roles:
+    - ssh_setup
     - role: yay
       vars:
         packages:
