@@ -39,6 +39,8 @@
     ~/.screenlayout:
       path: desktop/.screenlayout
       force: true
+    ~/.xprofile.local:
+      path: desktop/.xprofile.local
 {% endif %}
 {% if 'laptop' in dotfiles_groups %}
     # Laptop
@@ -54,20 +56,24 @@
     ~/.screenlayout:
       path: laptop/.screenlayout
       force: true
+    ~/.xprofile.local:
+      path: laptop/.xprofile.local
 {% endif %}
 {% if 'vm' in dotfiles_groups %}
     # VM guest
     ~/.bin/:
-      path: laptop/.bin/*
+      path: vm/.bin/*
       glob: true
     ~/.screenlayout:
-      path: laptop/.screenlayout
+      path: vm/.screenlayout
       force: true
+    ~/.xprofile.local:
+      path: desktop/.xprofile.local
 {% endif %}
 {% if 'archlinux' in dotfiles_groups %}
     # Laptop
     ~/.functions/:
-      path: laptop/.functions/*
+      path: archlinux/.functions/*
       glob: true
 {% endif %}
 
