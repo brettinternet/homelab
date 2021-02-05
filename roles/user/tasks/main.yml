@@ -15,8 +15,8 @@
     dest: "{{ wallpapers_dir }}"
   when: wallpapers_repo is defined
 
-- name: Upgrade vim plugins
-  ansible.builtin.shell: vim -c 'PlugUpgrade' -c 'PlugUpdate' -c 'qa!', Update vim-plug
+- name: Update vim-plug
+  ansible.builtin.shell: vim -c 'PlugUpgrade' -c 'PlugUpdate' -c 'qa!'
 
 # https://wiki.archlinux.org/index.php/Zsh#Persistent_rehash
 - name: Rehash zsh $PATH
@@ -31,4 +31,4 @@
 
 - name: Set user X11 settings
   include_tasks: x11_settings.yml
-  when: enable_x11
+  when: x11_enabled

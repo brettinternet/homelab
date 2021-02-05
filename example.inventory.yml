@@ -11,15 +11,7 @@ all:
           shell: /usr/bin/zsh
           dotfiles_dir: "$HOME/dotfiles"
           dotfiles_repo: "git@github.com:brettinternet/dotfiles.git"
+          dotfiles_install_cmd: ./install
           wallpapers_dir: "$HOME/walls"
           wallpapers_repo: "git@github.com:brettinternet/walls.git"
-          enable_x11: true
-          dotfile_groups: [x11, desktop, archlinux] # see roles/user/files
-          exports: {}
-          dotbot:
-            # https://github.com/anishathalye/dotbot/tree/master#directives
-            clean:
-            create:
-              - ~/dev
-            shell:
-          packages:
+          x11_enabled: true

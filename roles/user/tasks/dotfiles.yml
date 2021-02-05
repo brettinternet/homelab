@@ -12,9 +12,9 @@
 
 - name: Debug dotfile setup log
   ansible.builtin.debug:
-    var: dotbot_setup_result.stdout
+    msg: "{{ dotbot_setup_result.stdout.split('\n') }}"
 
 - name: Debug dotfile setup errors
   ansible.builtin.debug:
-    var: dotbot_setup_result.
+    msg: "{{ dotbot_setup_result.stderr.split('\n') }}"
   when: dotbot_setup_result.stderr != ""
