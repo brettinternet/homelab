@@ -42,5 +42,5 @@
   aur:
     use: yay
     aur_only: true
-    name: "{{ name }}"
+    name: "{{ packages }}"
     state: "{{ state }}"
