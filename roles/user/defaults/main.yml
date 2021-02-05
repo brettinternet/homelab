@@ -3,6 +3,4 @@ shell: /usr/bin/zsh
 dotfiles_dir: "$HOME/dotfiles"
 wallpapers_dir: "$HOME/wallpapers"
 enable_x11: false
-dotfile_groups: []
-exports: {}
-dotbot: {}
+dotfiles_install_cmd: ./install

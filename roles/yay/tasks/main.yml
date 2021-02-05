@@ -15,11 +15,12 @@
     validate: "visudo -cf %s"
 
 - name: Check yay installation
-  ansible.builtin.shell: '! [-x "$(command -v yay)"]'
+  ansible.builtin.shell: '! [ -x "$(command -v yay)" ]'
   register: yay_command_result
+  failed_when: yay_command_result.stderr != ""
 
 - block:
-    - name: Clone yay PKBUILD
+    - name: Clone yay PKGBUILD
       ansible.builtin.git:
         repo: https://aur.archlinux.org/yay.git
         dest: "{{ ansible_facts['user_dir'] }}/yay"
@@ -30,6 +31,11 @@
       aur:
         use: makepkg
         local_pkgbuild: "{{ ansible_facts['user_dir'] }}/yay"
+
+    - name: Remove PKGBUILD directory
+      ansible.builtin.file:
+        path: "{{ ansible_facts['user_dir'] }}/yay"
+        state: absent
   when: yay_command_result.rc == 0
 
 - name: Install AUR packages (yay)

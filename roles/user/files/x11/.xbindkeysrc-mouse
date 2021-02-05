@@ -1,9 +1,0 @@
-# thumb wheel down => lower volume
-#"change-volume -2%"
-"xte 'key XF86AudioLowerVolume'"
-   b:6
-
-# thumb wheel up => increase volume
-#"change-volume +2%"
-"xte 'key XF86AudioRaiseVolume'"
-   b:7

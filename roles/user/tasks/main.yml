@@ -1,8 +1,4 @@
 ---
-# - name: Set fact enable_x11
-#   ansible.builtin.set_fact:
-#     enable_x11: "{{ 'x11' in supported_workstations }}"
-
 - name: Set user dotfiles
   include_tasks: dotfiles.yml
   when: dotfiles_repo is defined
@@ -13,9 +9,26 @@
     shell: "{{ user_shell }}"
   when: ansible_facts['user_shell'] != shell
 
+- name: Clone wallpapers repo
+  ansible.builtin.git:
+    repo: "{{ wallpapers_repo }}"
+    dest: "{{ wallpapers_dir }}"
+  when: wallpapers_repo is defined
+
+- name: Upgrade vim plugins
+  ansible.builtin.shell: vim -c 'PlugUpgrade' -c 'PlugUpdate' -c 'qa!', Update vim-plug
+
+# https://wiki.archlinux.org/index.php/Zsh#Persistent_rehash
+- name: Rehash zsh $PATH
+  ansible.builtin.shell: |
+    if [[ "$SHELL" = *"zsh" ]]; then
+      REHASH_FILE=$HOME/.cache/zsh/rehash
+      mkdir -p "${REHASH_FILE%/*}"
+      /usr/bin/touch -m "$REHASH_FILE"
+    else
+      echo "Skipping...current shell is $SHELL"
+    fi
+
 - name: Set user X11 settings
   include_tasks: x11_settings.yml
   when: enable_x11
-
-- name: Run helpers
-  include_tasks: helpers.yml

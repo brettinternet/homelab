@@ -1,37 +1,20 @@
+---
 - name: Clone dotfiles repo
   ansible.builtin.git:
     repo: "{{ dotfiles_repo }}"
     dest: "{{ dotfiles_dir }}"
 
-- name: Create custom dotbot config
-  ansible.builtin.template:
-    src: install.conf.yml.j2
-    dest: "{{ dotfiles_dir }}/local/install.conf.yml"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-  when: exports is defined and exports.items() | length > 0
+- name: Setup dotfiles
+  ansible.builtin.shell:
+    chdir: "{{ dotfiles_dir }}"
+    cmd: "{{ dotfiles_install_cmd }}"
+  register: dotbot_setup_result
 
-- block:
-    - name: Clone wallpapers repo
-      ansible.builtin.git:
-        repo: "{{ wallpapers_repo }}"
-        dest: "{{ wallpapers_dir }}"
-      when: wallpapers_repo is defined
+- name: Debug dotfile setup log
+  ansible.builtin.debug:
+    var: dotbot_setup_result.stdout
 
-    # <dotfiles-repo>/local is gitignored in my dotfiles
-    - name: Create custom dotbot config
-      ansible.builtin.template:
-        src: install.conf.yml.j2
-        dest: "{{ dotfiles_dir }}/local/install.conf.yml"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-      when: dotfile_groups is defined and dotfile_groups | length > 0
-
-    - name: "Copy dotfile group directories to {{ dotfiles_dir }}/local/"
-      ansible.builtin.copy:
-        src: "{{ item }}"
-        dest: "{{ dotfiles_dir }}/local/"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-      loop: "{{ dotfile_groups }}"
-  when: enable_x11
+- name: Debug dotfile setup errors
+  ansible.builtin.debug:
+    var: dotbot_setup_result.
+  when: dotbot_setup_result.stderr != ""
