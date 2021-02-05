@@ -1,0 +1,20 @@
+---
+- name: Clone dotfiles repo
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_dir }}"
+
+- name: Setup dotfiles
+  ansible.builtin.shell:
+    chdir: "{{ dotfiles_dir }}"
+    cmd: "{{ dotfiles_install_cmd }}"
+  register: dotbot_setup_result
+
+- name: Debug dotfile setup log
+  ansible.builtin.debug:
+    msg: "{{ dotbot_setup_result.stdout.split('\n') }}"
+
+- name: Debug dotfile setup errors
+  ansible.builtin.debug:
+    msg: "{{ dotbot_setup_result.stderr.split('\n') }}"
+  when: dotbot_setup_result.stderr != ""

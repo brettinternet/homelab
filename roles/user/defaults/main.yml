@@ -1,0 +1,6 @@
+---
+shell: /usr/bin/zsh
+dotfiles_dir: "$HOME/dotfiles"
+wallpapers_dir: "$HOME/wallpapers"
+x11_enabled: false
+dotfiles_install_cmd: ./install

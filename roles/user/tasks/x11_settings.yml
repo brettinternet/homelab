@@ -1,0 +1,30 @@
+---
+# https://wiki.archlinux.org/index.php/Xdg-utils#xdg-settings
+- name: Set default browser
+  ansible.builtin.shell: xdg-settings set default-web-browser chromium.desktop
+
+# https://wiki.archlinux.org/index.php/Nemo#Set_Nemo_as_default_file_browser
+- name: Set default file browser
+  ansible.builtin.shell: xdg-mime default nemo.desktop inode/directory application/x-gnome-saved-search
+
+# https://wiki.archlinux.org/index.php/Nemo#Show_/_hide_desktop_icons
+- name: Hide desktop icons
+  ansible.builtin.shell: |
+    gsettings set org.nemo.desktop show-desktop-icons false
+    gsettings set org.nemo.preferences desktop-is-home-dir false
+
+# https://wiki.archlinux.org/index.php/Nemo#Change_the_default_terminal_emulator_for_Nemo
+- name: Set default terminal
+  ansible.builtin.shell: gsettings set org.cinnamon.desktop.default-applications.terminal exec i3-sensible-terminal
+
+# Use with Gnome-Keyring with Git credentials
+# https://wiki.archlinux.org/index.php/GNOME/Keyring#Git_integration
+- name: Set git credential helper
+  ansible.builtin.shell: git config --global credential.helper /usr/lib/git-core/git-credential-libsecret
+
+# https://aur.archlinux.org/packages/zoom-firejail/
+- name: Set zoom defaults
+  ansible.builtin.shell: |
+    for scheme in zoommtg zoomus tel callto zoomphonecall; do
+        xdg-mime default zoom-firejail.desktop x-scheme-handler/$scheme
+    done

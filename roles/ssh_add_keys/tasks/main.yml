@@ -1,0 +1,21 @@
+---
+- name:
+  ansible.builtin.uri:
+    url: "https://github.com/{{ github_username }}.keys"
+    method: GET
+  register: keys_result
+
+- name: Filter key
+  ansible.builtin.shell: 'echo "{{ keys_result['content'] }}" | sed ''{{ line_number }}!d'''
+  register: keys_sed_result
+  when: line_number | int > 0
+
+- name: Set keys fact
+  ansible.builtin.set_fact:
+    keys: "{{ keys_sed_result['stdout'] or keys_result['content'] }}"
+
+- name: Add
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ keys_sed_result['stdout'] }}"

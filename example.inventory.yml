@@ -1,0 +1,17 @@
+---
+all:
+  children:
+    server:
+      hosts:
+        # https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#connecting-to-hosts-behavioral-inventory-parameters
+        myhost:
+          ansible_host: # use `ansible_connection: local` for local
+          ansible_user:
+          # Local definitions
+          shell: /usr/bin/zsh
+          dotfiles_dir: "$HOME/dotfiles"
+          dotfiles_repo: "git@github.com:brettinternet/dotfiles.git"
+          dotfiles_install_cmd: ./install
+          wallpapers_dir: "$HOME/walls"
+          wallpapers_repo: "git@github.com:brettinternet/walls.git"
+          x11_enabled: true
