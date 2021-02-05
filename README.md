@@ -1,6 +1,4 @@
-![desktop screenshot](./docs/screenshot.png)
-
-### Setup
+# Linux
 
 ```sh
 make setup
