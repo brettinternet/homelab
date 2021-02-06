@@ -23,3 +23,10 @@
     msg: "{{ dotbot_setup_result.stderr.split('\n') }}"
   tags: dotfiles
   when: dotbot_setup_result.stderr != ""
+
+- name: Add private environment values
+  ansible.builtin.blockinfile:
+    path: "{{ private_env_file }}"
+    block: "{{ private_env_block }}"
+  tags: dotfiles
+  when: private_env_block is defined
