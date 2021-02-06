@@ -1,4 +1,10 @@
 ---
+- name: Set git config options
+  ansible.builtin.shell:
+    cmd: |
+      git config --global pull.rebase true
+      git config --global user.name {{ ansible_user }}
+
 - name: Set user dotfiles
   include_tasks: dotfiles.yml
   tags: dotfiles
