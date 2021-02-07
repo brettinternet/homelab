@@ -24,9 +24,12 @@
   tags: dotfiles
   when: dotbot_setup_result.stderr != ""
 
-- name: Add private environment values
-  ansible.builtin.blockinfile:
-    path: "{{ private_env_file }}"
-    block: "{{ private_env_block }}"
-  tags: dotfiles
-  when: private_env_block is defined
+- block:
+    - name: Add private environment values
+      ansible.builtin.lineinfile:
+        path: "{{ private_env_file }}"
+        line: "{{ item }}"
+        state: present
+      tags: dotfiles
+      loop: "{{ private_env_lines }}"
+  when: private_env_lines is defined

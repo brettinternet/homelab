@@ -18,3 +18,4 @@ all:
           x11_enabled: true
           ssh_keys_url: https://github.com/brettinternet.keys
           ssh_keys_line_number:
+          private_env_lines:
