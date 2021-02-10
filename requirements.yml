@@ -1,2 +1,4 @@
 ---
-- src: kewlfft.aur
+roles:
+  # https://github.com/kewlfft/ansible-aur
+  - kewlfft.aur

@@ -1,6 +1,15 @@
 ---
 - name: Sync dotfiles
   hosts: all
+  pre_tasks:
+    - name: Install packages
+      become: true
+      ansible.builtin.package:
+        name:
+          # TODO: move package lists to separate file?
+          - git
+        state: present
+      tags: update
   roles:
     - ssh_setup
     - role: yay
@@ -12,12 +21,4 @@
     - user
     - system
     - role: upgrade
-      tags: update
-  pre_tasks:
-    - name: Install packages
-      ansible.builtin.package:
-        name:
-          # TODO: move package lists to separate file?
-          - git
-        state: present
       tags: update
