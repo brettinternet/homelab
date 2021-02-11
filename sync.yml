@@ -8,17 +8,21 @@
         name:
           # TODO: move package lists to separate file?
           - git
+          - python-virtualenvwrapper
         state: present
       tags: update
   roles:
     - ssh_setup
+    # separate by host
     - role: yay
       tags: update
       vars:
-        packages:
+        yay_packages:
           - downgrade
-        state: present
+        yay_state: present
     - user
     - system
     - role: upgrade
       tags: update
+    - role: syncthing
+      when: syncthing_install

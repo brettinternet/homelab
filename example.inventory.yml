@@ -26,3 +26,6 @@ all:
 
           # Desktop environment
           x11_enabled: true
+
+          # Apps
+          syncthing_install: false
