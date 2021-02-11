@@ -9,8 +9,10 @@ all:
           ansible_user:
 
           # Remote access
-          ssh_keys_url: https://github.com/brettinternet.keys
-          ssh_keys_line_number:
+          ssh_keys_url: https://github.com/brettinternet.keys # gitlab works, too
+          # include or exclude in same order as https://github.com/settings/keys
+          # e.g. exclude all but the first line (1!d) or delete specific lines
+          ssh_keys_sed_arg: 1d;3d;5d
 
           # Dotfiles
           shell: /usr/bin/zsh

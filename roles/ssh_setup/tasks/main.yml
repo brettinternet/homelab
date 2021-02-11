@@ -1,4 +1,6 @@
 ---
+# TODO: secure `authorized_keys` https://wiki.archlinux.org/index.php/OpenSSH#Securing_the_authorized_keys_file
+
 - block:
     - name: Get keys from URL
       ansible.builtin.uri:
@@ -11,10 +13,12 @@
         - "'ssh-rsa' not in keys_result['content']"
 
     - name: Filter key
-      ansible.builtin.shell: "echo '{{ keys_result['content'] }}' | sed '{{ ssh_keys_line_number }}!d'"
+      ansible.builtin.shell: "echo '{{ keys_result['content'] }}' | sed '{{ ssh_keys_sed_arg }}'"
       register: keys_sed_result
-      when: ssh_keys_line_number is defined and ssh_keys_line_number | int > 0
-      changed_when: false
+      when:
+        - ssh_keys_sed_arg is defined
+        - ssh_keys_sed_arg != ""
+      changed_when: keys_result['content'] != keys_sed_result['stdout']
 
     - name: Set filtered key fact
       ansible.builtin.set_fact:
@@ -32,3 +36,15 @@
         state: present
         key: "{{ ssh_keys }}"
   when: ssh_keys_url is defined
+
+- name: Disable password tunneling
+  become: true
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: PasswordAuthentication no
+
+- name: Only allow current user
+  become: true
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "AllowUsers {{ ansible_user }}"
