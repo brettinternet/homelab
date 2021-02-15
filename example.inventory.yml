@@ -5,6 +5,7 @@ all:
       hosts:
         # https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#connecting-to-hosts-behavioral-inventory-parameters
         myhost:
+          ansible_python_interpreter: /usr/bin/python3
           ansible_host: # use `ansible_connection: local` for local
           ansible_user:
 
@@ -16,12 +17,12 @@ all:
 
           # Dotfiles
           shell: /usr/bin/zsh
-          dotfiles_dir: "$HOME/dotfiles"
+          dotfiles_dir: "$HOME/.dotfiles"
           # make sure to `ForwardAgent yes` if you use a git URL or private repo
           dotfiles_repo: "git@github.com:brettinternet/dotfiles.git"
           dotfiles_install_cmd: ./install
           private_env_lines:
-          wallpapers_dir: "$HOME/walls"
+          wallpapers_dir: "$HOME/.walls"
           wallpapers_repo: "git@github.com:brettinternet/walls.git"
 
           # Desktop environment

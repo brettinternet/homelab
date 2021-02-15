@@ -10,13 +10,6 @@
   tags: dotfiles
   when: dotfiles_repo is defined
 
-- name: "Change user shell to {{ shell }}"
-  become: true
-  ansible.builtin.user:
-    name: "{{ ansible_user }}"
-    shell: "{{ shell }}"
-  when: ansible_facts['user_shell'] != shell
-
 - name: Clone wallpapers repo
   ansible.builtin.git:
     repo: "{{ wallpapers_repo }}"
@@ -26,6 +19,13 @@
 
 # - name: Update vim-plug
 #   ansible.builtin.shell: vim -c 'PlugUpgrade' -c 'PlugUpdate' -c 'qa!'
+
+- name: "Change user shell to {{ shell }}"
+  become: true
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    shell: "{{ shell }}"
+  when: ansible_facts['user_shell'] != shell
 
 # https://wiki.archlinux.org/index.php/Zsh#Persistent_rehash
 - name: Rehash zsh $PATH
@@ -37,6 +37,7 @@
     else
       echo "Skipping...current shell is $SHELL"
     fi
+  when: ansible_facts['user_shell'] == '/usr/bin/zsh'
 
 - name: Set user X11 settings
   include_tasks: x11_settings.yml
