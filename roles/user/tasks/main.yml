@@ -11,7 +11,7 @@
   when: dotfiles_repo is defined
 
 - name: Hush login
-  ansible.bultin.file:
+  ansible.builtin.file:
     path: "{{ ansible_facts['user_dir'] }}/.hushlogin"
     state: touch
   when: ansible_facts['distribution'] | lower == 'ubuntu'
