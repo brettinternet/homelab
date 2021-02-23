@@ -7,11 +7,8 @@ go
 kubectl
 minikube
 mkcert
-nodejs
-npm
 python
 python-pip
 ruby
 rustup
 terraform
-yarn
