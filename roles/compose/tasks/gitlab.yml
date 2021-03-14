@@ -1,0 +1,22 @@
+---
+# https://docs.gitlab.com/omnibus/docker/
+- name: gitlab
+  containers.podman.podman_container:
+    name: gitlab
+    # https://hub.docker.com/r/gitlab/gitlab-ce/
+    image: docker.io/gitlab/gitlab-ce
+    state: "{{ container_state }}"
+    recreate: "{{ container_recreate }}"
+    env:
+      TZ: "{{ tz }}"
+      GITLAB_OMNIBUS_CONFIG: "external_url 'http://gitlab.{{ root_domain }}/'; gitlab_rails['lfs_enabled'] = true;"
+    volumes:
+      - "{{ appdata_dir }}/gitlab/config:/etc/gitlab"
+      - "{{ storage_dir }}/logs/gitlab:/var/log/gitlab"
+      - "{{ storage_dir }}/gitlab:/var/opt/gitlab"
+    ports:
+      # https://docs.gitlab.com/omnibus/package-information/defaults.html
+      - 3007:443
+      - "3009:22"
+    label:
+      io.containers.autoupdate: image
