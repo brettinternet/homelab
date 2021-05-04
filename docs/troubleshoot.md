@@ -2,23 +2,23 @@
 
 ## Outstanding issues
 
--   [ ] poor terminal resolution with `nvidia` driver - (but doesn't occur with work computer that has GTX 1080ti)
--   [x] [Alacritty emojis](https://github.com/jwilm/alacritty/issues/153) - working with `noto-fonts-emoji`
--   [ ] [vscode titlebar](https://github.com/microsoft/vscode/issues/43154)
--   [ ] [xmodmap bindings not respected in vscode](https://github.com/microsoft/vscode/issues/23991)
--   [ ] [Unable to select all in Rofi](https://github.com/davatorium/rofi/issues/666)
--   [ ] [Kawase blur](https://github.com/yshui/picom/issues/32)
--   [ ] [`broot`/`br` uses `rm`](https://github.com/Canop/broot/issues/136) (but I've crippled `rm` with an alias)
+- [ ] poor terminal resolution with `nvidia` driver - (but doesn't occur with work computer that has GTX 1080ti)
+- [x] [Alacritty emojis](https://github.com/jwilm/alacritty/issues/153) - working with `noto-fonts-emoji`
+- [ ] [vscode titlebar](https://github.com/microsoft/vscode/issues/43154)
+- [ ] [xmodmap bindings not respected in vscode](https://github.com/microsoft/vscode/issues/23991)
+- [ ] [Unable to select all in Rofi](https://github.com/davatorium/rofi/issues/666)
+- [ ] [Kawase blur](https://github.com/yshui/picom/issues/32)
+- [ ] [`broot`/`br` uses `rm`](https://github.com/Canop/broot/issues/136) (but I've crippled `rm` with an alias)
 
 ## General
 
 ### System Time
 
-Especially with dual booting, I've had to [configure Windows to use UTC](https://wiki.archlinux.org/index.php/System_time#UTC_in_Windows) or [force my clock to the correct time](https://wiki.archlinux.org/index.php/System_time#Clock_shows_a_value_that_is_neither_UTC_nor_local_time).
+Especially with dual booting, I've had to [configure Windows to use UTC](https://wiki.archlinux.org/title/System_time#UTC_in_Microsoft_Windows) or [force my clock to the correct time](https://wiki.archlinux.org/index.php/System_time#Clock_shows_a_value_that_is_neither_UTC_nor_local_time).
 
 ### Graphics
 
--   With my GTX 1070, I can't eliminate tearing with nouveau via `mesa`. So I use the proprietary `nvidia` instead. 😞
+- With my GTX 1070, I can't eliminate tearing with nouveau via `mesa`. So I use the proprietary `nvidia` instead. 😞
 
 #### Firefox
 
