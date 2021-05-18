@@ -1,0 +1,16 @@
+---
+# https://www.home-assistant.io/installation/linux#install-home-assistant-container
+
+- name: homeassistant
+  containers.podman.podman_container:
+    name: homeassistant
+    # https://hub.docker.com/r/homeassistant/home-assistant
+    image: docker.io/homeassistant/home-assistant
+    state: "{{ container_state }}"
+    recreate: "{{ container_recreate }}"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - "{{ appdata_dir }}/homeassistant/config:/config"
+    # ports:
+    label:
+      io.containers.autoupdate: image
