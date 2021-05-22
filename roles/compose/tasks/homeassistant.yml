@@ -1,5 +1,6 @@
 ---
 # https://www.home-assistant.io/installation/linux#install-home-assistant-container
+# Find compatible hardware: https://www.hadevices.com/
 
 - name: homeassistant
   containers.podman.podman_container:
