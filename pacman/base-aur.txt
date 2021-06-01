@@ -1,6 +1,5 @@
 downgrade
 makedep
-powerpill
 python-fangfrisch
 tzupdate
 vim-plug

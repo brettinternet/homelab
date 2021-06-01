@@ -1,6 +1,5 @@
 downgrade
 nvm
-powerpill
 tzupdate
 vim-plug
 downgrade

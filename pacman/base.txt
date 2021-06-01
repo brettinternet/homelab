@@ -12,7 +12,6 @@ mesa
 neofetch
 networkmanager
 openssh
-pacmatic
 reflector
 rsync
 smartmontools
