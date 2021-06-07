@@ -24,18 +24,19 @@
     - name: Clone yay PKGBUILD
       ansible.builtin.git:
         repo: https://aur.archlinux.org/yay.git
-        dest: "{{ ansible_facts['user_dir'] }}/yay"
+        dest: "/tmp/yay"
 
     - name: Install yay
       become: true
       become_user: aur_builder
       aur:
         use: makepkg
-        local_pkgbuild: "{{ ansible_facts['user_dir'] }}/yay"
+        local_pkgbuild: "/tmp/yay"
+        name: yay
 
     - name: Remove PKGBUILD directory
       ansible.builtin.file:
-        path: "{{ ansible_facts['user_dir'] }}/yay"
+        path: "/tmp/yay"
         state: absent
   when: yay_command_result.rc == 0
 

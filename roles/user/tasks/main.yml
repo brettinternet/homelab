@@ -26,12 +26,20 @@
 # - name: Update vim-plug
 #   ansible.builtin.shell: vim -c 'PlugUpgrade' -c 'PlugUpdate' -c 'qa!'
 
-- name: "Change user shell to {{ shell }}"
+- name: Ensure group "sudo" exists
+  ansible.builtin.group:
+    name: sudo
+    state: present
+
+- name: "Setup user groups, set user shell to {{ shell }}"
   become: true
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     shell: "{{ shell }}"
-  when: ansible_facts['user_shell'] != shell
+    groups:
+      - wheel
+      - sudo
+      - ssh
 
 # https://wiki.archlinux.org/index.php/Zsh#Persistent_rehash
 - name: Rehash zsh $PATH

@@ -41,6 +41,12 @@
     path: /etc/ssh/sshd_config
     line: PasswordAuthentication no
 
+- name: Ensure group "ssh" exists
+  become: true
+  ansible.builtin.group:
+    name: ssh
+    state: present
+
 - name: Only allow current user
   become: true
   ansible.builtin.lineinfile:
