@@ -28,3 +28,7 @@
     for scheme in zoommtg zoomus tel callto zoomphonecall; do
         xdg-mime default zoom-firejail.desktop x-scheme-handler/$scheme
     done
+
+# https://wiki.archlinux.org/title/Blueman#Disable_auto_power-on
+- name: Disable bluetooth's auto power-on
+  ansible.builtin.shell: gsettings set org.blueman.plugins.powermanager auto-power-on false
