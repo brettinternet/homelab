@@ -40,7 +40,7 @@ For enhanced graphics, explore something like [this](https://www.reddit.com/r/li
 
 For a simple solution, just install [Bumblebee](https://wiki.archlinux.org/index.php/Bumblebee#Installation).
 
-#### Discrete Graphics
+#### Graphics
 
 The `Tearfree` option may be required.
 
