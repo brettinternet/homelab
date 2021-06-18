@@ -51,6 +51,7 @@ Since I don't use a display manager, it may be practical to implement power sett
 #### Laptops
 
 - [TLP](https://wiki.archlinux.org/index.php/TLP)
+- [NVIDIA Optimus](https://wiki.archlinux.org/title/NVIDIA_Optimus#Use_NVIDIA_graphics_only)
 
 #### Hibernation
 
