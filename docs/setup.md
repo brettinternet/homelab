@@ -28,6 +28,7 @@ cd yay && makepkg -si
 ### Other
 
 - [zinit](https://github.com/zdharma/zinit); afterwards, run `zsh` once to setup plugins before logging out/in
+- [Modern unix tools](https://github.com/ibraheemdev/modern-unix)
 
 ## Configuration
 
