@@ -4,7 +4,6 @@ bluez
 bluez-utils
 dnsmasq
 ebtables
-evince
 firefox
 firetools
 gimp
@@ -17,3 +16,4 @@ solaar
 transmission-gtk
 virt-manager
 vlc
+xreader

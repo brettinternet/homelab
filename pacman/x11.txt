@@ -18,6 +18,7 @@ kgpg
 libnotify
 maim
 nemo
+nemo-fileroller
 nemo-preview
 network-manager-applet
 noto-fonts-emoji

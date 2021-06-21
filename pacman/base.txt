@@ -17,6 +17,7 @@ rsync
 smartmontools
 speedtest-cli
 the_silver_searcher
+tldr
 tmux
 trash-cli
 ttf-liberation
