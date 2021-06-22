@@ -13,6 +13,12 @@
     gsettings set org.nemo.desktop show-desktop-icons false
     gsettings set org.nemo.preferences desktop-is-home-dir false
 
+# https://github.com/snwh/paper-icon-theme#installing--using
+- name: Set icon themes
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.interface icon-theme "Paper"
+    gsettings set org.gnome.desktop.interface cursor-theme "Paper"
+
 # https://wiki.archlinux.org/index.php/Nemo#Change_the_default_terminal_emulator_for_Nemo
 - name: Set default terminal
   ansible.builtin.shell: gsettings set org.cinnamon.desktop.default-applications.terminal exec i3-sensible-terminal
