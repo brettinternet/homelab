@@ -16,3 +16,12 @@ requirements: install_podman
 
 setup: inventory.yml requirements
 	@printf "\x1B[01;93m✔ Setup complete\n\x1B[0m"
+
+.PHONY: python_install lint
+
+python_install:
+	@[[ "$VIRTUAL_ENV" != "" ]] && poetry install
+
+lint: python_install
+	@yamllint --no-warnings .
+	@ansible-lint

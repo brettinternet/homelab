@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "homelab"
+version = "0.1.0"
+description = ""
+authors = ["brett"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+ansible-lint = {extras = ["community", "yamllint"], version = "^5.0.12"}
+yamllint = "^1.26.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
