@@ -8,7 +8,7 @@
   ansible.builtin.file:
     path: "{{ ansible_facts['user_dir'] }}/.config/systemd/user"
     state: directory
-    recurse: yes
+    recurse: true
 
 - name: Create syncthing unit file
   ansible.builtin.template:
