@@ -10,3 +10,6 @@ requirements:
 
 setup: inventory.yml requirements
 	@printf "\x1B[01;93m✔ Setup complete\n\x1B[0m"
+
+lint:
+	@ansible-lint --offline

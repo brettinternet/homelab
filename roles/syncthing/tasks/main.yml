@@ -14,6 +14,7 @@
   ansible.builtin.template:
     src: syncthing.service.j2
     dest: "{{ ansible_facts['user_dir'] }}/.config/systemd/user/syncthing.service"
+    mode: 0644
 
 - name: Start/enable user syncthing.service
   ansible.builtin.systemd:
@@ -43,4 +44,5 @@
   ansible.builtin.file:
     path: "{{ ansible_facts['user_dir'] }}/sync"
     state: directory
+    mode: 0600
   notify: Restart syncthing

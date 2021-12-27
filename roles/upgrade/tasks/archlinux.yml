@@ -12,12 +12,14 @@
     aur_only: true
     upgrade: true
 
-- name: Check if kernel needs upgrade (Archlinux)
+- name: Check if kernel needs upgrade (Archlinux) # noqa no-changed-when
   # Source: https://bbs.archlinux.org/viewtopic.php?pid=1354255#p1354255
   # Need to modify to accommodate linux-lts and linux-hardened
   # Determines if installed kernel version is higher than runtime
   # Still searching for a more comprehensive way: https://unix.stackexchange.com/q/630626/224048
-  ansible.builtin.shell: '[[ $(pacman -Q linux | cut -d " " -f 2) > $(uname -r) ]]'
+  ansible.builtin.shell: |
+    set -o pipefail
+    [[ $(pacman -Q linux | cut -d " " -f 2) > $(uname -r) ]]
   args:
     executable: /bin/bash
   register: upgrade__should_restart_result

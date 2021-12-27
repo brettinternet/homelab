@@ -12,6 +12,6 @@
     enabled: true
     state: started
 
-- name: Set timedatectl to use ntp
+- name: Set timedatectl to use ntp # noqa no-changed-when
   become: true
-  command: timedatectl set-ntp true
+  ansible.builtin.command: timedatectl set-ntp true

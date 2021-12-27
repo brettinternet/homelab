@@ -18,9 +18,8 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: pip3 install yamllint ansible-lint
+        run: pip3 install ansible yamllint ansible-lint
 
       - name: Lint
         run: |
-          yamllint .
-          ansible-lint
+          ansible-lint --offline

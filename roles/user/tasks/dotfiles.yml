@@ -1,13 +1,13 @@
 ---
-- name: Clone dotfiles repo
+- name: Clone dotfiles repo # noqa git-latest
   ansible.builtin.git:
     repo: "{{ dotfiles_repo }}"
     dest: "{{ dotfiles_dir }}"
     accept_hostkey: true
   tags: dotfiles
 
-- name: Setup dotfiles
-  ansible.builtin.shell:
+- name: Setup dotfiles # noqa no-changed-when
+  ansible.builtin.command:
     chdir: "{{ dotfiles_dir }}"
     cmd: "{{ dotfiles_install_cmd }}"
   tags: dotfiles
@@ -22,7 +22,7 @@
   ansible.builtin.debug:
     msg: "{{ dotbot_setup_result.stderr.split('\n') }}"
   tags: dotfiles
-  when: dotbot_setup_result.stderr != ""
+  when: dotbot_setup_result.stderr | length > 0
 
 - block:
     - name: Add private environment values
