@@ -1,0 +1,17 @@
+---
+- name: Install ntp
+  ansible.builtin.package:
+    name: ntp
+    state: present
+
+- name: Start/enable ntpd.service
+  become: true
+  ansible.builtin.systemd:
+    name: ntpd.service
+    scope: system
+    enabled: true
+    state: started
+
+- name: Set timedatectl to use ntp
+  become: true
+  command: timedatectl set-ntp true
