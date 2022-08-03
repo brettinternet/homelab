@@ -196,3 +196,7 @@ dmesg | grep microcode
 ## Backup
 
 Set up [backup](./backup.md)
+
+## Maintenance
+
+[System maintenance](https://wiki.archlinux.org/title/System_maintenance)
