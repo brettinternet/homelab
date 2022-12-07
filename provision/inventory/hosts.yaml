@@ -1,146 +1,5 @@
 ---
 all:
-  vars:
-    pkgs:
-      base:
-        # Setup
-        - base
-        - base-devel
-        - linux
-        - linux-headers
-        - linux-firmware
-        # Vendor setup
-        - intel-ucode
-        - mesa
-        # Net
-        - dhcpcd
-        - networkmanager
-        - openssh
-        - speedtest-cli
-        - net-tools
-        # Utility
-        - git
-        - vim
-        - btop
-        - curl
-        - reflector
-        - rsync
-        - smartmontools
-        - tmux
-        - trash-cli
-        - unzip
-        - usbutils
-        - usbguard
-        - zsh
-        - wget
-        - less
-        - broot
-        - fd
-        - clamav
-        - etckeeper
-        - hwinfo
-        - man-db
-        - tldr
-        # Fonts
-        - ttf-liberation
-      base_aur:
-        - downgrade
-        - makedep
-        - python-fangfrisch
-        - tzupdate
-        - vim-plug
-      desktop: # Not laptop
-      desktop_aur:
-        - authy
-        - networkmanager-wireguard-git
-        - polybar
-        - spotify
-        - zoom
-      dev:
-        - dbeaver
-        - docker
-        - docker-compose
-        - elixir
-        - go
-        - kubectl
-        - minikube
-        - python
-        - python-pip
-        - ruby
-        - rustup
-        - terraform
-      dev_aur:
-        - nvm
-      laptop: # Not desktop
-        - cbatticon
-        - guvcview
-        - tlp
-      laptop_aur:
-        - brillo
-        - ruby-fusuma
-        - tlpui-git
-      x11: # Either chassis type with X11
-        - alacritty
-        - alsa-plugins
-        - alsa-utils
-        - arandr
-        - bc
-        - chromium
-        - clamtk
-        - code
-        - dmenu
-        - dunst
-        - feh
-        - gnome-keyring
-        - gsmartcontrol
-        - i3-gaps
-        - i3lock
-        - i3status
-        - kgpg
-        - libnotify
-        - maim
-        - network-manager-applet
-        - noto-fonts-emoji
-        - pavucontrol
-        - playerctl
-        - polkit-kde-agent
-        - pulseaudio
-        - pulseaudio-alsa
-        - pulseaudio-bluetooth
-        - rofi
-        - rofi-emoji
-        - seahorse
-        - surfraw
-        - terminus-font
-        - thunar
-        - ttf-droid
-        - ttf-fira-code
-        - ttf-fira-sans
-        - ttf-font-awesome
-        - ttf-hack
-        - ttf-inconsolata
-        - ttf-roboto
-        - ttf-ubuntu-font-family
-        - unclutter
-        - xautomation
-        - xbindkeys
-        - xclip
-        - xdotool
-        - xorg-server
-        - xorg-xdpyinfo
-        - xorg-xfd
-        - xorg-xinit
-        - xorg-xinput
-        - xorg-xprop
-        - xss-lock
-        - xterm
-      x11_aur:
-        - hardinfo-git
-        - opensnitch-git
-        - paper-icon-theme-git
-        - picom-git
-        - rofi-greenclip
-        - xidlehook
   children:
     home:
       children:
@@ -148,8 +7,24 @@ all:
           hosts:
             case:
               ansible_host: 10.1.1.14
-              packages: "{{ pkgs.base + pkgs.laptop + pkgs.dev + pkgs.x11 }}"
-              aur_packages: "{{ pkgs.base_aur + pkgs.laptop_aur + pkgs.dev_aur + pkgs.x11_aur }}"
+              packages: >-
+                {{
+                  pkgs.base +
+                  pkgs.i3 +
+                  pkgs.laptop +
+                  pkgs.i3_laptop +
+                  pkgs.dev +
+                  pkgs.x11
+                }}
+              aur_packages: >-
+                {{
+                  pkgs.base_aur +
+                  pkgs.laptop_aur +
+                  pkgs.i3_aur +
+                  pkgs.i3_laptop_aur +
+                  pkgs.dev_aur +
+                  pkgs.x11_aur
+                }}"
 
         windows:
           hosts:

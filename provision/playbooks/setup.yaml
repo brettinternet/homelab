@@ -29,6 +29,7 @@
 
   roles:
     # TODO: setup powertop auto tune service https://wiki.archlinux.org/index.php/Powertop
+    # TODO: https://wiki.archlinux.org/title/NetworkManager#Encrypted_Wi-Fi_passwords
     - os
     - user
     - role: dotfiles
