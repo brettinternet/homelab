@@ -1,0 +1,28 @@
+---
+version: "3"
+
+tasks:
+  init:
+    desc: Install homebrew dependencies
+    cmds:
+      - brew install -q {{.DEPS}} {{.CLI_ARGS}}
+    preconditions:
+      - sh: command -v brew
+        msg: Homebrew is not installed
+    vars:
+      DEPS: >-
+        age
+        ansible
+        go-task/tap/go-task
+        pre-commit
+        prettier
+        sops
+        yamllint
+
+# age: SOP dependency
+# ansible: homelab provisioning
+# go-task/tap/go-task: Task runner
+# pre-commit: Repo helper
+# prettier: Repo helper
+# sops: Secrets encryption
+# yamllint: Yaml linting

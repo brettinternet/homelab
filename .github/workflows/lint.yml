@@ -2,24 +2,57 @@
 name: Lint
 
 on: # yamllint disable-line rule:truthy
-  pull_request:
   push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  # Currently no way to detect automatically
+  DEFAULT_BRANCH: main
 
 jobs:
-  lint:
+  build:
+    name: MegaLinter
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skipci')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up Python3
-        uses: actions/setup-python@v2
+        uses: actions/checkout@v3
         with:
-          python-version: 3.x
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: pip3 install ansible yamllint ansible-lint
-
-      - name: Lint ansible yaml
-        run: |
-          ansible-lint --offline
+      - name: MegaLinter
+        uses: oxsecurity/megalinter@v6.12.0
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'workflow_dispatch' }}
+          ENABLE_LINTERS: |-
+            ${{
+              join(
+                fromJSON('
+                  [
+                    "ACTION_ACTIONLINT",
+                    "ANSIBLE_ANSIBLE_LINT",
+                    "COPYPASTE_JSCPD",
+                    "MARKDOWN_MARKDOWNLINT",
+                    "REPOSITORY_GIT_DIFF",
+                    "REPOSITORY_SECRETLINT",
+                    "TERRAFORM_TERRAFORM_FMT",
+                    "YAML_PRETTIER",
+                    "YAML_YAMLLINT"
+                  ]
+                '),
+                ','
+              )
+            }}
+          ANSIBLE_DIRECTORY: provision
+          ANSIBLE_ANSIBLE_LINT_CONFIG_FILE: .github/linters/.ansible-lint
+          MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .github/linters/.markdownlint.yaml
+          MARKDOWN_MARKDOWNLINT_RULES_PATH: .github/
+          YAML_YAMLLINT_CONFIG_FILE: .github/linters/.yamllint.yaml
+          YAML_PRETTIER_CONFIG_FILE: .github/linters/.prettierrc.yaml
+          YAML_PRETTIER_FILTER_REGEX_EXCLUDE: "(.*\\.sops\\.ya?ml)"

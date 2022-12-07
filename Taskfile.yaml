@@ -1,0 +1,51 @@
+---
+version: "3"
+
+vars:
+  PROJECT_DIR:
+    sh: git rev-parse --show-toplevel
+  ANSIBLE_DIR: "{{.PROJECT_DIR}}/provision"
+
+env:
+  ROOT_DIR: "{{.PROJECT_DIR}}"
+
+includes:
+  ansible: .taskfiles/ansible.yaml
+  lint: .taskfiles/lint.yaml
+  precommit: .taskfiles/precommit.yaml
+  setup: .taskfiles/setup_{{OS}}.yaml
+  sops: .taskfiles/sops.yaml
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task -l
+
+  init:
+    desc: Install dependencies and setup environment
+    cmds:
+      - task: setup:init
+      - task: precommit:init
+      - task: precommit:update
+      - task: setup-age
+      - echo "Next, install python dependencies with 'task python'"
+
+  python:
+    desc: Install python dependencies
+    cmds:
+      - |
+        ([ "{{.CLI_ARGS}}" == "force" ] || pip -V 2>/dev/null | grep -q .virtualenv) && \
+            pip install -r requirements.txt || \
+            echo "You may want to activate a python virtual environment before installing the python dependencies.
+        Pass 'force' as argument to continue anyway (e.g. task python -- force)."
+    silent: true
+
+  setup-age:
+    cmds:
+      - age-keygen -o age.agekey
+      - mkdir -p $HOME/.config/sops/age
+      - mv age.agekey $HOME/.config/sops/age/keys.txt
+      - "echo 'Source from .profile: \n\nexport SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt'"
+    status:
+      - test -f $HOME/.config/sops/age/keys.txt

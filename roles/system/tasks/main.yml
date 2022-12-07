@@ -1,7 +1,0 @@
----
-- name: Setup system desktop entries
-  include_tasks: desktop_entries.yml
-  when: x11_enabled
-
-- name: Setup network time protocol daemon
-  include_tasks: ntp.yml

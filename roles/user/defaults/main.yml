@@ -1,7 +1,0 @@
----
-shell: /usr/bin/zsh
-dotfiles_dir: "$HOME/dotfiles"
-wallpapers_dir: "$HOME/wallpapers"
-x11_enabled: false
-dotfiles_install_cmd: ./install
-private_env_file: "{{ ansible_facts['user_dir'] }}/.env"

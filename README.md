@@ -2,12 +2,14 @@
 
 [![Lint](https://github.com/brettinternet/linux/actions/workflows/lint.yml/badge.svg)](https://github.com/brettinternet/linux/actions/workflows/lint.yml)
 
+[Install go-task](https://taskfile.dev/installation/). Then, setup age, precommit hooks and install repo dependencies:
+
 ```sh
-make setup
+task init
 ```
 
-Configure hosts and vars in `inventory.yml`. Then, sync hosts:
+Run playbooks and commands:
 
 ```sh
-ansible-playbook sync.yml
+task ansible:{list,setup,upgrade,status,ping,uptime,reboot,poweroff}
 ```

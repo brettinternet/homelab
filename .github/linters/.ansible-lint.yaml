@@ -1,0 +1,7 @@
+---
+skip_list:
+  - package-latest
+  - git-latest
+
+warn_list:
+  - unnamed-task

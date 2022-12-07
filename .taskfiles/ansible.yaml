@@ -1,0 +1,64 @@
+---
+version: "3"
+
+env:
+  ANSIBLE_CONFIG: "{{.PROJECT_DIR}}/ansible.cfg"
+
+vars:
+  ANSIBLE_PLAYBOOK_DIR: "{{.ANSIBLE_DIR}}/playbooks"
+  ANSIBLE_INVENTORY_DIR: "{{.ANSIBLE_DIR}}/inventory"
+
+tasks:
+  init:
+    desc: Install / Upgrade Ansible galaxy deps
+    dir: provision
+    cmds:
+      - ansible-galaxy install -r requirements.yaml -f
+
+  list:
+    desc: List all the hosts
+    dir: provision
+    cmds:
+      - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --list-hosts
+
+  setup:
+    desc: Setup all the k8s nodes for running k3s
+    dir: provision
+    cmds:
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/setup.yaml
+
+  upgrade:
+    desc: Update dependencies
+    dir: provision
+    cmds:
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/upgrade.yaml
+
+  status:
+    desc: Show k3s service status
+    dir: provision
+    cmds:
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/status.yaml
+
+  ping:
+    desc: Ping all the hosts
+    dir: provision
+    cmds:
+      - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --one-line -m 'ping'
+
+  uptime:
+    desc: Uptime of all the hosts
+    dir: provision
+    cmds:
+      - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --one-line -a 'uptime'
+
+  reboot:
+    desc: Reboot all the k8s nodes
+    dir: provision
+    cmds:
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/reboot.yaml
+
+  poweroff:
+    desc: Shutdown all the k8s nodes
+    dir: provision
+    cmds:
+      - ansible kubernetes -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml -a '/usr/bin/systemctl poweroff' --become
