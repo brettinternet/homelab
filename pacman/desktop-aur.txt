@@ -1,5 +1,0 @@
-authy
-networkmanager-wireguard-git
-polybar
-spotify
-zoom

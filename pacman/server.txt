@@ -1,4 +1,0 @@
-docker
-docker-compose
-terraform
-transmission-cli

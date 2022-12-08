@@ -1,7 +1,0 @@
-hardinfo-git
-opensnitch-git
-paper-icon-theme-git
-picom-git
-rofi-emoji
-rofi-greenclip
-xidlehook

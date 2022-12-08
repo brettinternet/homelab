@@ -1,9 +1,0 @@
-dictd
-dict-wikt-en-all
-dict-wn
-networkmanager-fortisslvpn
-oomox
-openfortivpn
-qmk
-teensy-loader-cli
-yay

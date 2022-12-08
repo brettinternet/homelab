@@ -1,5 +1,0 @@
-downgrade
-makedep
-python-fangfrisch
-tzupdate
-vim-plug
