@@ -58,6 +58,7 @@ pkgs:
     - xfce4-pulseaudio-plugin
   xfce_aur:
     - xfce4-panel-profiles
+    # Manually install https://github.com/grassmunk/Chicago95
   i3:
     - arandr
     - dmenu
@@ -150,3 +151,10 @@ pkgs:
   x11_aur:
     - hardinfo-git
     # - opensnitch-git
+  nvidia:
+    - nvidia
+    - nvidia-settings
+  latex:
+    - texlive-core
+    - texlive-fontsextra
+    - texlive-latexextra
