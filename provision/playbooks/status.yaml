@@ -1,9 +1,16 @@
 ---
 - name: Log host vars
   hosts:
-    # - all
-    - gameboy
+    - all
   become: true
+  pre_tasks:
+    - name: Install AUR dependencies
+      ansible.builtin.include_role:
+        name: aur
+      vars:
+        state: latest
+        packages: needrestart
+
   tasks:
     - name: Find reboot-required file
       ansible.builtin.stat:
@@ -27,8 +34,6 @@
       ansible.builtin.debug:
         msg:
           - "Distribution: {{ ansible_facts['distribution'] }}, version: {{ ansible_distribution_version }}"
-          - "Host network CIDR: {{ (ansible_default_ipv4.network + '/' + ansible_default_ipv4.netmask) | ansible.utils.ipaddr('network/prefix') }}"
-          - "Distribution: {{ ansible_facts['distribution'] }}"
           - "Processor: {{ ansible_processor | select('match', '.*CPU.*') | list | unique | first }}"
           - "Reboot required: {{ reboot_required }}"
 

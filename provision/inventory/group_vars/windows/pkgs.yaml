@@ -1,0 +1,36 @@
+pkgs:
+  base:
+    - name: git
+      params: /NoGuiHereIntegration /NoShellIntegration /NoShellHereIntegration /WindowsTerminal /Editor:VisualStudioCode /NoAutoCrlf
+    - name: spotify
+    - name: discord
+    - name: firefox
+      params: /NoTaskbarShortcut /NoDesktopShortcut
+    - name: chromium
+    - name: 7zip
+    - name: plexmediaplayer
+    - name: coretemp
+    - name: cpu-z
+    - name: spacesniffer
+    - name: lightshot
+    - name: powertoys
+    - name: vscode
+      params: /NoDesktopIcon /NoQuicklaunchIcon
+    - name: powershell-core
+    - name: microsoft-windows-terminal
+    - name: autohotkey
+    - name: procmon
+    - name: rufus
+    - name: authy-desktop
+    - name: voicemeeter-banana
+  gaming:
+    # Gaming
+    - name: nvidia-display-driver
+    - name: steam
+    - name: epicgameslauncher
+    - name: origin
+    - name: goggalaxy
+    - name: nvidia-geforce-now
+    - name: uplay
+    - name: vortex
+    - name: logitech-options

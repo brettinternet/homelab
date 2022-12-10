@@ -25,7 +25,8 @@ tasks:
     desc: Setup all the k8s nodes for running k3s
     dir: provision
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/setup.yaml
+      # https://github.com/ansible/ansible/issues/32554#issuecomment-572985680
+      - env no_proxy='*' ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/setup.yaml
 
   upgrade:
     desc: Update dependencies

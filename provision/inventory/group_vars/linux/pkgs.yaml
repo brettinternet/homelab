@@ -14,7 +14,6 @@ pkgs:
     - networkmanager
     - openssh
     - speedtest-cli
-    - net-tools
     # Utility
     - git
     - vim
@@ -23,6 +22,7 @@ pkgs:
     - reflector
     - rsync
     - smartmontools
+    - ncdu
     - tmux
     - trash-cli
     - unzip
@@ -43,14 +43,16 @@ pkgs:
   base_aur:
     - downgrade
     - makedep
+    - needrestart
     - vim-plug
   desktop: # Not laptop
   desktop_aur:
     - networkmanager-wireguard-git
     - spotify
   xfce:
-    - xfce4
     - xorg
+    - xfce4
+    - xfce4-goodies
     - network-manager-applet
     - python-gobject
     - pulseaudio
@@ -58,6 +60,7 @@ pkgs:
     - xfce4-pulseaudio-plugin
   xfce_aur:
     - xfce4-panel-profiles
+    - plymouth-git
     # Manually install https://github.com/grassmunk/Chicago95
   i3:
     - arandr
@@ -93,14 +96,15 @@ pkgs:
   i3_laptop: # Not desktop
     - cbatticon
     - guvcview
-    - tlp
   i3_laptop_aur:
     - brillo
-  laptop: []
+  laptop:
+    - tlp
   laptop_aur:
     - ruby-fusuma
     - tlpui-git
     - tzupdate
+    - libinput-three-finger-drag
   dev:
     - dbeaver
     - docker
@@ -119,7 +123,6 @@ pkgs:
   x11: # Either chassis type with X11
     - alsa-plugins
     - alsa-utils
-    - authy
     - bc
     - chromium
     - clamtk
@@ -149,6 +152,7 @@ pkgs:
     - ttf-ubuntu-font-family
     - xclip
   x11_aur:
+    - authy
     - hardinfo-git
     # - opensnitch-git
   nvidia:

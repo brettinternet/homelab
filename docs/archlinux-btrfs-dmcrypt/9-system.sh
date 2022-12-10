@@ -13,7 +13,7 @@ fi
 TIMEZONE=${TZ:-America/Denver}
 
 echo "en_US.UTF-8 UTF-8" > $BASE_DIR/etc/locale.gen
-./run-chrooteded.sh locale-gen
+./run-chrooted.sh locale-gen
 echo LANG=en_US.UTF-8 > $BASE_DIR/etc/locale.conf
 ln -nsf $BASE_DIR/usr/share/zoneinfo/$TIMEZONE $BASE_DIR/etc/localtime
 ./run-chrooted.sh hwclock --systohc --utc
