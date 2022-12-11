@@ -5,39 +5,40 @@ all:
       children:
         linux:
           hosts:
-            # case:
-            #   ansible_host: 10.1.1.14
-            #   dotfiles_install_cmd: DOTFILE_GROUPS=base,archlinux,dev,x11,xfce ./install
-            #   packages: >-
-            #     {{
-            #       pkgs.base +
-            #       pkgs.laptop +
-            #       pkgs.xfce +
-            #       pkgs.dev +
-            #       pkgs.x11
-            #     }}
-            #   aur_packages: >-
-            #     {{
-            #       pkgs.base_aur +
-            #       pkgs.laptop_aur +
-            #       pkgs.xfce_aur +
-            #       pkgs.dev_aur +
-            #       pkgs.x11_aur
-            #     }}
+            case:
+              ansible_host: 10.1.1.14
+              dotfiles_install_cmd: DOTFILE_GROUPS=base,archlinux,dev,x11,xfce ./install
+              packages: >-
+                {{
+                  pkgs.base +
+                  pkgs.laptop +
+                  pkgs.xfce +
+                  pkgs.dev +
+                  pkgs.x11
+                }}
+              aur_packages: >-
+                {{
+                  pkgs.base_aur +
+                  pkgs.laptop_aur +
+                  pkgs.xfce_aur +
+                  pkgs.dev_aur +
+                  pkgs.x11_aur
+                }}
 
         windows:
           hosts:
             # https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html
-            # gameboy:
-            #   ansible_host: 10.1.1.12
-            #   packages: >-
-            #     {{
-            #       pkgs.base +
-            #       pkgs.gaming
-            #     }}
-            thinkpc:
+            sega:
+              ansible_host: 10.1.1.12
+              packages: >-
+                {{
+                  pkgs.base +
+                  pkgs.gaming
+                }}
+            gameboy:
               ansible_host: 10.1.1.26
               packages: >-
                 {{
-                  pkgs.base
+                  pkgs.base +
+                  pkgs.gaming
                 }}
