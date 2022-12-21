@@ -1,27 +1,26 @@
 pkgs:
   base:
-    - name: git
-      params: /NoGuiHereIntegration /NoShellIntegration /NoShellHereIntegration /WindowsTerminal /Editor:VisualStudioCode /NoAutoCrlf
-    - name: spotify
-    - name: discord
-    - name: firefox
-      params: /NoTaskbarShortcut /NoDesktopShortcut
-    - name: chromium
-    - name: 7zip
-    - name: spacesniffer
-    - name: lightshot
     - name: vscode
       params: /NoDesktopIcon /NoQuicklaunchIcon
-    - name: powershell-core
+    - name: git
+      params: /NoGuiHereIntegration /NoShellIntegration /NoShellHereIntegration /WindowsTerminal /Editor:VisualStudioCode /NoAutoCrlf
     - name: autohotkey
+    - name: 7zip
+    - name: spotify
+    - name: discord
+    - name: chromium
+    - name: firefox
+      params: /NoTaskbarShortcut /NoDesktopShortcut
+    - name: spacesniffer
+    - name: lightshot
+    - name: powershell-core
     - name: coretemp
     - name: cpu-z
     - name: procmon
     - name: powertoys
     - name: rufus
     - name: voicemeeter-banana
-    - name: malwarebytes
-    - name: plexmediaplayer
+    - name: plex
     - name: vlc
   dev:
     - name: nvm
@@ -45,5 +44,7 @@ pkgs:
     - name: goggalaxy
     - name: uplay
     - name: vortex
-  logitech:
     - name: logitech-options
+  tv:
+    - name: plexmediaplayer
+    - name: jellyfin-media-player

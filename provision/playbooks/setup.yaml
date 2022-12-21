@@ -65,12 +65,16 @@
   become_method: runas
   become_user: "{{ ansible_user }}"
   vars:
+    # ansible_password: "{{ ansible_become_pass }}"
+    # ansible_connection: winrm
+    # ansible_winrm_server_cert_validation: ignore
     dotfiles_repo: https://github.com/brettinternet/windows
     # Path shortcuts: https://superuser.com/a/217506
     dotfiles_path: '%UserProfile%\dotfiles'
   roles:
     - chocolatey
   post_tasks:
+    # Will probably take a few tries...it's slow and times out
     - name: Install packages
       chocolatey.chocolatey.win_chocolatey:
         name: "{{ item.name }}"
@@ -104,11 +108,12 @@
       when:
         - dotfiles_result.stat.isdir | default(false)
 
+    # Windows 11 comes with PowerShell Core already
     # https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3#msi
     # https://github.com/PowerShell/PowerShell/releases/
-    - name: Install PowerShell Core
-      ansible.windows.win_package:
-        path: https://github.com/PowerShell/PowerShell/releases/download/v7.3.0/PowerShell-7.3.0-win-x64.msi
+    # - name: Install PowerShell Core
+    #   ansible.windows.win_package:
+    #     path: https://github.com/PowerShell/PowerShell/releases/download/v7.3.0/PowerShell-7.3.0-win-x64.msi
 
     - name: Create PowerShell directory
       ansible.windows.win_file:

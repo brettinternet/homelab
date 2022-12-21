@@ -28,7 +28,7 @@ all:
         windows:
           hosts:
             # https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html
-            sega:
+            spaceghost:
               ansible_host: 10.1.1.12
               packages: >-
                 {{
