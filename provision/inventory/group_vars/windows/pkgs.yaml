@@ -19,9 +19,9 @@ pkgs:
     - name: procmon
     - name: powertoys
     - name: rufus
-    - name: voicemeeter-banana
     - name: plex
     - name: vlc
+    - name: altsnap
   dev:
     - name: nvm
     - name: yarn
@@ -45,6 +45,8 @@ pkgs:
     - name: uplay
     - name: vortex
     - name: logitech-options
+    - name: voicemeeter-banana
   tv:
     - name: plexmediaplayer
     - name: jellyfin-media-player
+    - name: vlc
