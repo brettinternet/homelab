@@ -46,8 +46,10 @@ pkgs:
     - name: uplay
     - name: vortex
     - name: logitech-options
+  mic:
     - name: voicemeeter-banana
   tv:
     - name: plexmediaplayer
     - name: jellyfin-media-player
     - name: vlc
+    - name: autologon

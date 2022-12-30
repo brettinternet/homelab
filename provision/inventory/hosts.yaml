@@ -33,6 +33,7 @@ all:
               packages: >-
                 {{
                   pkgs.base +
+                  pkgs.mic +
                   pkgs.gaming
                 }}
             gameboy:
@@ -41,4 +42,12 @@ all:
                 {{
                   pkgs.base +
                   pkgs.gaming
+                }}
+            sega:
+              ansible_host: 10.1.1.15
+              packages: >-
+                {{
+                  pkgs.base +
+                  pkgs.gaming +
+                  pkgs.tv
                 }}
