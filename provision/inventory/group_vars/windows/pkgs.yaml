@@ -52,4 +52,5 @@ pkgs:
     - name: plexmediaplayer
     - name: jellyfin-media-player
     - name: vlc
+    - name: unifiedremote
     - name: autologon
