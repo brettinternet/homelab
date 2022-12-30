@@ -22,6 +22,7 @@ pkgs:
     - name: plex
     - name: vlc
     - name: altsnap
+    - name: speedfan
   dev:
     - name: nvm
     - name: yarn
