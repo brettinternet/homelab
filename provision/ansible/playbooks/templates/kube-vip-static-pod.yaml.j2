@@ -12,10 +12,10 @@ spec:
     - name: kube-vip
       image: ghcr.io/kube-vip/kube-vip:v0.6.0
       imagePullPolicy: IfNotPresent
-      args: ["manager"]
+      args: [manager]
       env:
         - name: address
-          value: "{{ k3s_registration_address }}"
+          value: "{{ kubevip_addr }}"
         - name: vip_arp
           value: "true"
         - name: port
@@ -42,7 +42,7 @@ spec:
           value: :2112
       securityContext:
         capabilities:
-          add: ["NET_ADMIN", "NET_RAW"]
+          add: [NET_ADMIN, NET_RAW]
       volumeMounts:
         - mountPath: /etc/kubernetes/admin.conf
           name: kubeconfig

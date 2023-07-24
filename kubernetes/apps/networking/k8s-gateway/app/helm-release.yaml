@@ -29,9 +29,14 @@ spec:
   # https://github.com/ori-edge/k8s_gateway/blob/master/charts/k8s-gateway/values.yaml
   values:
     fullnameOverride: k8s-gateway
-    domain: ${PUBLIC_DOMAIN}
+    domain: "${PUBLIC_DOMAIN}"
     ttl: 1
     priorityClassName: system-cluster-critical
+    watchedResources:
+      - Ingress
+      - Service
+    fallthrough:
+      enabled: true
     service:
       type: LoadBalancer
       port: 53

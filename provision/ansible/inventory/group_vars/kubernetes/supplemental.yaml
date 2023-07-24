@@ -1,0 +1,4 @@
+---
+# (string) The ARP address kube-vip broadcasts
+kubevip_addr: "10.1.2.121"
+coredns_svc_addr: "10.43.0.10"
