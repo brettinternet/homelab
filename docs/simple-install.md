@@ -16,7 +16,7 @@
 1. Rearrange mirrorlist `vim /etc/pacman.d/mirrorlist` (use [reflector](https://wiki.archlinux.org/index.php/Reflector) later to rearrange this list) and `vim /etc/pacman.conf` (enabled `#Color`)
 1. Confirm internet connection
    1. If not connected via Ethernet cable, use `wifi-menu`; don't use hyphens when creating a profile name
-1. `pacstrap /mnt base base-devel linux linux-firmware vim dhcpcd sudo`
+1. `pacstrap /mnt base base-devel linux linux-firmware vim dhcpcd sudo openssh`
 1. Generate fstab file `genfstab -U -p /mnt >> /mnt/etc/fstab`
 1. `arch-chroot /mnt`
 
@@ -29,7 +29,7 @@
 1. Use UTC for hwclock `hwclock --systohc --utc`
 1. `pacman -Syu`
 1. `passwd`
-1. `pacman -S grub efibootmgr dosfstools os-prober mtools` ([grub](https://wiki.archlinux.org/index.php/GRUB#Installation_2), [EFI](https://wiki.archlinux.org/index.php/EFI_system_partition))
+1. `pacman -S grub efibootmgr dosfstools mtools` ([grub](https://wiki.archlinux.org/index.php/GRUB#Installation_2), [EFI](https://wiki.archlinux.org/index.php/EFI_system_partition))
 1. `mkdir /efi` and `mount /dev/sda1 /efi` and `grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/efi`
 1. `grub-mkconfig -o /boot/grub/grub.cfg`
 1. `exit` and `umount -a` then `reboot`
