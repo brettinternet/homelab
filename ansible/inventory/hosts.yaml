@@ -28,11 +28,13 @@ linux:
     baja:
       ansible_host: 10.1.2.4
       proxmox__intel_gvt: true
+      proxmox__acpi_lax: true
     bogota:
       ansible_host: 10.1.2.10
       cockpit: true
       snapraid: true
       mergerfs: true
+      proxmox__acpi_lax: true
       nfs__exports:
         - /srv/nfs  *(rw,fsid=0,no_subtree_check,all_squash)
         - /srv/nfs/storage  *(rw,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)

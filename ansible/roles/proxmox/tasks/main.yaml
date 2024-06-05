@@ -11,3 +11,28 @@
 - name: Setup Intel GPU passthrough
   ansible.builtin.include_tasks: intel-gvt.yaml
   when: proxmox__intel_gvt is true
+
+- name: Set Intel CPU fact
+  ansible.builtin.set_fact:
+    proxmox__intel: "{{ ansible_processor | select('match', '.*CPU.*') | list | unique | first | search('Intel') is not none }}"
+
+- name: Enable IOMMU
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT="((?:(?!intel_iommu=on).)*?)"$'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="\1 intel_iommu=on"'
+    backup: true
+    backrefs: true
+  notify: update grub
+  when: proxmox__intel is true
+
+# https://bugzilla.kernel.org/show_bug.cgi?id=204807#c37
+- name: Enable ACPI lax mode
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT="((?:(?!acpi_enforce_resources=lax).)*?)"$'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="\1 acpi_enforce_resources=lax"'
+    backup: true
+    backrefs: true
+  notify: update grub
+  when: proxmox__acpi_lax is true
