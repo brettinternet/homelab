@@ -1,0 +1,13 @@
+---
+- name: Check supported distribution
+  ansible.builtin.fail:
+    msg:
+      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
+  when: ansible_facts['distribution'] | lower != "debian"
+
+- name: Setup PCI passthrough
+  ansible.builtin.include_tasks: pci-passthrough.yaml
+
+- name: Setup Intel GPU passthrough
+  ansible.builtin.include_tasks: intel-gvt.yaml
+  when: proxmox__intel_gvt is true

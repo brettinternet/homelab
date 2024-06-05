@@ -1,0 +1,10 @@
+---
+# https://wiki.archlinux.org/title/Intel_GVT-g
+- name: Add kernel modules for Intel GVT
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - kvmgt
+    - exngt
+    - vfio-mdev

@@ -27,6 +27,7 @@ linux:
       ansible_host: 10.1.2.3
     baja:
       ansible_host: 10.1.2.4
+      proxmox__intel_gvt: true
     bogota:
       ansible_host: 10.1.2.10
       cockpit: true

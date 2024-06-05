@@ -1,0 +1,3 @@
+---
+# Intel GPU passthrough for physical host
+proxmox__intel_gvt: false
