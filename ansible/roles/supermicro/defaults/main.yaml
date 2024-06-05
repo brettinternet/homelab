@@ -1,0 +1,7 @@
+---
+supermicro__supported_distributions:
+  - archlinux
+  - debian
+supermicro__smfc_src_dir: /usr/local/src/smfc
+supermicro__smfc_executable: /usr/local/bin/smfc
+supermicro__smfc_conf_file: /usr/local/etc/smfc.conf

@@ -10,7 +10,15 @@
     update: true
     depth: 1
 
-- name: Copy snapraid-runner executable to /usr/local/bin
+- name: Copy runner executable
+  ansible.builtin.copy:
+    src: "{{ snapraid__runner_src_executable }}"
+    dest: "{{ snapraid__runner_executable }}"
+    owner: root
+    group: root
+    mode: "0744"
+
+- name: Ensure runner has executable permissions
   ansible.builtin.file:
     path: "{{ snapraid__runner_executable }}"
     state: file
@@ -33,6 +41,7 @@
   with_dict: "{{ files }}"
   vars:
     files:
+      snapraid.conf.j2: "{{ snapraid__conf_file }}"
       snapraid-runner.conf.j2: "{{ snapraid__runner_conf_file }}"
 
 - name: Copy executable templates

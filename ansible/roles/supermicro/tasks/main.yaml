@@ -1,1 +1,10 @@
 ---
+- name: Check supported distribution
+  ansible.builtin.fail:
+    msg:
+      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
+      - "Supported role distributions are {{ supermicro__supported_distributions }}"
+  when: ansible_facts['distribution'] | lower not in supermicro__supported_distributions
+
+- name: Setup fan control
+  ansible.builtin.include_tasks: fans.yaml

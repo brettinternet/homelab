@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+
+[Ipmi]
+command=/usr/bin/ipmitool
+fan_mode_delay=10
+fan_level_delay=2
+
+[CPU zone]
+enabled=1
+count=1
+temp_calc=1
+steps=6
+sensitivity=5.0
+polling=2
+min_temp=30.0
+max_temp=80.0
+min_level=3
+max_level=15

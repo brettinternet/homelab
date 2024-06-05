@@ -1,0 +1,72 @@
+---
+# Better fan control for SuperMicro motherboards
+# https://github.com/petersulyok/smfc
+
+- name: Add the coretemp kernel module
+  community.general.modprobe:
+    name: coretemp
+    state: present
+
+- name: Add the drivetemp kernel module
+  community.general.modprobe:
+    name: drivetemp
+    state: present
+
+- name: Install dependencies
+  ansible.builtin.package:
+    name: ipmitool
+    state: present
+
+- name: "Clone Super Micro Fan Control to {{ supermicro__smfc_src_dir }}"
+  ansible.builtin.git:
+    repo: https://github.com/petersulyok/smfc.git
+    dest: "{{ supermicro__smfc_src_dir }}"
+    version: HEAD
+    update: true
+    depth: 1
+
+- name: "Ensure directory exists {{ supermicro__smfc_bin_dir }}"
+  ansible.builtin.file:
+    path: "{{ supermicro__smfc_bin_dir }}"
+    owner: root
+    group: root
+    mode: "0744"
+    state: directory
+
+- name: "Copy executable from {{ supermicro__smfc_bin_dir }}"
+  ansible.builtin.copy:
+    path: "{{ supermicro__smfc_src_dir }}/src/smfc.py"
+    dest: "{{ supermicro__smfc_executable }}"
+    owner: root
+    group: root
+    mode: "0744"
+
+- name: "Copy fan level helper {{ supermicro__smfc_bin_dir }}"
+  ansible.builtin.copy:
+    path: "{{ supermicro__smfc_src_dir }}/ipmi/set_ipmi_fan_level.sh"
+    dest: "/usr/local/bin/set_ipmi_fan_level"
+    owner: root
+    group: root
+    mode: "0744"
+
+- name: Copy config file
+  ansible.builtin.template:
+    src: smfc.conf.j2
+    dest: "{{ supermicro__smfc_conf_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy systemd unit templates
+  ansible.builtin.template:
+    src: smfc.service.j2
+    dest: /etc/systemd/system/smfc.service
+    owner: root
+    group: root
+    mode: "0744"
+
+- name: Start and enable smfc service
+  ansible.builtin.systemd:
+    name: smfc.service
+    state: started
+    enabled: true

@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Super Micro Fan Control
+After=syslog.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart={{ supermicro__smfc_executable }} -c {{ supermicro__smfc_conf_file }} -l 3
+SyslogIdentifier=smfc
+
+[Install]
+WantedBy=multi-user.target

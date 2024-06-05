@@ -1,3 +1,4 @@
+---
 pkgs:
   base:
     - name: vscode

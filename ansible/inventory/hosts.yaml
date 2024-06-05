@@ -1,7 +1,6 @@
 ---
 linux:
   vars:
-    become_method: sudo
     atuin__sync_address: https://sh.internal.brett.cloud
   hosts:
     case:
@@ -60,8 +59,6 @@ linux:
         qemu-guest-agent
 
 windows:
-  vars:
-    become_method: runas
   hosts:
     # https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html
     zorak:
