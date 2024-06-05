@@ -49,6 +49,7 @@
     - role: dotfiles
       vars:
         dotfiles_repo: https://github.com/brettinternet/dotfiles
+    - atuin
     - role: supermicro
       when: "'supermicro' in group_names"
 

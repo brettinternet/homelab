@@ -2,6 +2,7 @@
 linux:
   vars:
     become_method: sudo
+    atuin__sync_address: https://sh.internal.brett.cloud
   hosts:
     case:
       ansible_host: 10.1.1.14

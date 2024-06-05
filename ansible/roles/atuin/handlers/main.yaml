@@ -1,0 +1,9 @@
+---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Restart atuin service
+  ansible.builtin.service:
+    name: atuin
+    state: restarted
+  when: ansible_facts.services["atuin.service"] is defined

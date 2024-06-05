@@ -1,0 +1,5 @@
+---
+- name: Install dependencies
+  ansible.builtin.package:
+    name: atuin
+    state: present

@@ -1,0 +1,78 @@
+---
+- name: Check if atuin_version is set
+  ansible.builtin.assert:
+    that: atuin__client_version is defined
+    msg: The variable atuin__client_version must be set
+
+- name: Check if atuin is installed already
+  ansible.builtin.stat:
+    path: "{{ atuin__local_bin_dir }}/atuin"
+  register: atuin_stat
+
+- name: Check if atuin is already installed and get version if so
+  when: atuin_stat.stat.exists
+  tags:
+    - version
+  block:
+    - name: Get version of currently installed atuin
+      ansible.builtin.command:
+        argv:
+          - "{{ atuin__local_bin_dir }}/atuin"
+          - --version
+      register: version_output
+      changed_when: false
+
+    - name: Store detected version of later
+      ansible.builtin.set_fact:
+        atuin__detected_version: "{{ version_output.stdout | split | last }}"
+
+    - name: Show detected version if debugging
+      ansible.builtin.debug:
+        msg: "{{ atuin__detected_version }}"
+      when:
+        - debug is defined
+        - debug
+
+- name: Download and install new binary, if needed
+  when: (atuin__detected_version is not defined) or
+    (atuin__client_version != atuin__detected_version)
+  tags:
+    - version
+  block:
+    - name: Formulate artifact name
+      ansible.builtin.set_fact:
+        atuin__artifact: atuin-v{{ atuin__client_version }}-{{ ansible_architecture }}-unknown-linux-{{ atuin__libc_variant }}.tar.gz # noqa yaml[line-length]
+
+    - name: Show artifact name
+      ansible.builtin.debug:
+        msg: "{{ atuin__artifact }}"
+      when:
+        - debug is defined
+        - debug
+
+    - name: Download and untar requested release
+      ansible.builtin.unarchive:
+        src: https://github.com/atuinsh/atuin/releases/download/v{{ atuin__client_version }}/{{ atuin__artifact }} # noqa yaml[line-length].
+        remote_src: true
+        dest: "/tmp"
+        include: "atuin-v{{ atuin__client_version }}-{{ ansible_architecture }}-unknown-linux-{{ atuin__libc_variant }}/atuin" # noqa yaml[line-length]
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Copy atuin to final location
+      ansible.builtin.copy:
+        src: /tmp/atuin-v{{ atuin__client_version }}-{{ ansible_architecture }}-unknown-linux-{{ atuin__libc_variant }}/atuin # noqa yaml[line-length]
+        dest: "{{ atuin__local_bin_dir }}"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0755"
+      notify:
+        - Gather service facts
+        - Restart atuin service
+
+    - name: Remove download directory
+      ansible.builtin.file:
+        path: /tmp/atuin-v{{ atuin__client_version }}-{{ ansible_architecture }}-unknown-linux-{{ atuin__libc_variant }}
+        state: absent

@@ -1,0 +1,25 @@
+---
+- name: Check supported distribution
+  ansible.builtin.fail:
+    msg:
+      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
+      - "Supported role distributions are {{ atuin__supported_distributions }}"
+  when: ansible_facts['distribution'] | lower not in atuin__supported_distributions
+
+- name: Install atuin
+  ansible.builtin.include_tasks: "install_{{ ansible_facts['distribution'] | lower }}.yaml"
+
+- name: Ensure configuration directory exists
+  become_user: "{{ ansible_user }}"
+  ansible.builtin.file:
+    path: "$HOME/.config/atuin"
+    state: directory
+    mode: "0750"
+
+- name: Copy client configuration
+  become_user: "{{ ansible_user }}"
+  ansible.builtin.template:
+    dest: "$HOME/.config/atuin/config.toml"
+    src: config.toml.j2
+    mode: "0640"
+    force: false
