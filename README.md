@@ -15,5 +15,5 @@ task init
 Run playbooks and commands:
 
 ```sh
-task ansible:{list,setup,upgrade,status,ping,uptime,reboot,poweroff}
+task ansible:{init,list,setup,upgrade,status}
 ```
