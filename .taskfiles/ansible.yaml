@@ -7,59 +7,61 @@ env:
 vars:
   ANSIBLE_PLAYBOOK_DIR: "{{.ANSIBLE_DIR}}/playbooks"
   ANSIBLE_INVENTORY_DIR: "{{.ANSIBLE_DIR}}/inventory"
+  # https://github.com/ansible/ansible/issues/32554#issuecomment-572985680
+  ANSIBLE_COMMAND: "env no_proxy='*' ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml"
 
 tasks:
   init:
     desc: Install / Upgrade Ansible galaxy deps
-    dir: provision
     cmds:
       - ansible-galaxy install -r requirements.yaml -f
 
   list:
     desc: List all the hosts
-    dir: provision
     cmds:
       - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --list-hosts
-
-  setup:
-    desc: Setup all the k8s nodes for running k3s
-    dir: provision
-    cmds:
-      # https://github.com/ansible/ansible/issues/32554#issuecomment-572985680
-      - env no_proxy='*' ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/setup.yaml
-
-  upgrade:
-    desc: Update dependencies
-    dir: provision
-    cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/upgrade.yaml
-
-  status:
-    desc: Show k3s service status
-    dir: provision
-    cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/status.yaml
+      - echo "Groups:"
+      - ansible-inventory -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --list | jq -r "keys | .[]"
 
   ping:
     desc: Ping all the hosts
-    dir: provision
     cmds:
       - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --one-line -m 'ping'
 
   uptime:
     desc: Uptime of all the hosts
-    dir: provision
     cmds:
       - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --one-line -a 'uptime'
 
-  reboot:
-    desc: Reboot all the k8s nodes
-    dir: provision
+  playbook:
+    desc: Run a playbook by name (without the .yaml extension)
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml {{.ANSIBLE_PLAYBOOK_DIR}}/reboot.yaml
+      - "{{ .ANSIBLE_COMMAND }} {{ .ANSIBLE_PLAYBOOK_DIR }}/{{ .PLAYBOOK }}.yaml"
 
-  poweroff:
-    desc: Shutdown all the k8s nodes
-    dir: provision
+  setup:
+    desc: Setup all the k8s nodes for running k3s
     cmds:
-      - ansible kubernetes -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml -a '/usr/bin/systemctl poweroff' --become
+      - task: playbook
+        vars:
+          PLAYBOOK: setup
+
+  upgrade:
+    desc: Update dependencies
+    cmds:
+      - task: playbook
+        vars:
+          PLAYBOOK: upgrade
+
+  status:
+    desc: Output some status fields from hosts
+    cmds:
+      - task: playbook
+        vars:
+          PLAYBOOK: status
+
+  nfs:
+    desc: Configure NFS server
+    cmds:
+      - task: playbook
+        vars:
+          PLAYBOOK: nfs

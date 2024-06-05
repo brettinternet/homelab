@@ -1,0 +1,25 @@
+# https://wiki.archlinux.org/title/etckeeper
+---
+- name: Install etckeeper
+  ansible.builtin.package:
+    state: present
+    name: [etckeeper]
+
+- name: Check /etc/.git exists
+  ansible.builtin.stat:
+    path: /etc/.git
+  register: etckeeper__etc_git_result
+
+- block:
+    - name: Initialize etckeeper
+      ansible.builtin.command: etckeeper init
+
+    - name: Configure git email
+      ansible.builtin.command: etckeeper vcs config user.email $HOSTNAME@home.arpa
+
+    - name: Configure git name
+      ansible.builtin.command: etckeeper vcs config user.name $HOSTNAME
+
+    - name: Initialize etckeeper
+      ansible.builtin.command: etckeeper commit "initial commit"
+  when: not etckeeper__etc_git_result.stat.exists

@@ -1,0 +1,42 @@
+---
+- name: Check supported distribution
+  ansible.builtin.fail:
+    msg:
+      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
+      - "Supported role distributions are {{ nfs__supported_distributions }}"
+  when: ansible_facts['distribution'] | lower not in nfs__supported_distributions
+
+- name: Setup NFS
+  ansible.builtin.include_tasks: "setup_{{ ansible_facts['distribution'] | lower }}.yaml"
+
+- name: Ensure common nfs root directory exists
+  ansible.builtin.file:
+    path: "{{ nfs__root_dir}}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0751"
+
+- name: Configure NFS exports
+  when: nfs__exports | length
+  block:
+    - name: Ensure exported directories exist
+      ansible.builtin.file: # noqa 208
+        path: "{{ item.strip().split()[0] }}"
+        state: directory
+      with_items: "{{ nfs__exports }}"
+
+    - name: Copy exports file
+      ansible.builtin.template:
+        src: exports.j2
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload nfs
+
+    - name: Enable and start NFS server
+      ansible.builtin.service:
+        name: "{{ nfs__server_daemon }}"
+        state: started
+        enabled: true

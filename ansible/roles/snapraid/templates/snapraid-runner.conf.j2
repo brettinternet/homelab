@@ -1,0 +1,19 @@
+; {{ ansible_managed }}
+
+; Source: https://github.com/Chronial/snapraid-runner/blob/master/snapraid-runner.conf.example
+
+[snapraid]
+executable = {{ snapraid__executable }}
+config = {{ snapraid__conf_file }}
+# deletethreshold = 40
+deletethreshold = -1
+touch = True
+
+[logging]
+file = {{ snapraid__log_file }}
+maxsize = 5000
+
+[scrub]
+enabled = True
+plan = 6
+older-than = 15

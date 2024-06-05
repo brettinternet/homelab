@@ -1,0 +1,29 @@
+# Snapraid-runner runs via Kubernetes cron-job
+# https://github.com/IronicBadger/ansible-role-snapraid
+---
+- name: Check supported distribution
+  ansible.builtin.fail:
+    msg:
+      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
+      - "Supported role distributions are {{ snapraid__supported_distributions }}"
+  when: ansible_facts['distribution'] | lower not in snapraid__supported_distributions
+
+- name: Install Snapraid
+  ansible.builtin.include_tasks: "install_{{ ansible_facts['distribution'] | lower }}.yaml"
+
+- name: Create host snapraid content directory for 'snapraid.content'
+  ansible.builtin.file:
+    path: "{{ snapraid__content_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy snapraid.conf
+  ansible.builtin.copy:
+    src: snapraid.conf
+    dest: "{{ snapraid__conf_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Setup Snapraid runner
+  ansible.builtin.include_tasks: runner.yaml

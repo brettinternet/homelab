@@ -2,15 +2,30 @@
 version: "3"
 
 vars:
-  PROJECT_DIR:
-    sh: git rev-parse --show-toplevel
-  ANSIBLE_DIR: "{{.PROJECT_DIR}}/provision"
+  ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
+  DOCKER_DIR: "{{.ROOT_DIR}}/docker"
+  SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
+  AGE_DIR: ~/.config/sops/age
+  AGE_FILE: "{{.AGE_DIR}}/keys.txt"
+  SOPS_CONFIG_FILE: "{{.ROOT_DIR}}/.sops.yaml"
+  PIP_REQUIREMENTS_FILE: "{{.ROOT_DIR}}/requirements.txt"
+  PYTHON_BIN: python3
 
 env:
-  ROOT_DIR: "{{.PROJECT_DIR}}"
+  ROOT_DIR: "{{.ROOT_DIR}}"
+  PYTHONDONTWRITEBYTECODE: "1"
+  SOPS_AGE_KEY_FILE: "{{.AGE_FILE}}"
+  VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
 
 includes:
-  ansible: .taskfiles/ansible.yaml
+  ansible:
+    taskfile: .taskfiles/ansible.yaml
+    dir: ./ansible
+    aliases: [a]
+  docker:
+    taskfile: .taskfiles/docker.yaml
+    dir: ./docker
+    aliases: [d]
   lint: .taskfiles/lint.yaml
   precommit: .taskfiles/precommit.yaml
   setup: .taskfiles/setup_{{OS}}.yaml
@@ -29,7 +44,7 @@ tasks:
       - task: precommit:init
       - task: precommit:update
       - task: setup-age
-      - echo "Next, install python dependencies with 'task python'"
+      - task: direnv
 
   python:
     desc: Install python dependencies
@@ -44,8 +59,15 @@ tasks:
   setup-age:
     cmds:
       - age-keygen -o age.agekey
-      - mkdir -p $HOME/.config/sops/age
-      - mv age.agekey $HOME/.config/sops/age/keys.txt
+      - "mkdir -p {{.AGE_DIR}}"
+      - "mv age.agekey {{.AGE_FILE}}"
       - "echo 'Source from .profile: \n\nexport SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt'"
     status:
-      - test -f $HOME/.config/sops/age/keys.txt
+      - "test -f {{.AGE_FILE}}"
+
+  direnv:
+    desc: Run direnv hooks
+    cmd: direnv allow .
+    status:
+      - "[[ $(direnv status --json | jq '.state.foundRC.allowed') == 0 ]]"
+      - "[[ $(direnv status --json | jq '.state.loadedRC.allowed') == 0 ]]"

@@ -1,0 +1,164 @@
+pkgs:
+  base:
+    # Setup
+    - base
+    - base-devel
+    - linux
+    - linux-headers
+    - linux-firmware
+    # Vendor setup
+    - intel-ucode
+    - mesa
+    # Net
+    - dhcpcd
+    - networkmanager
+    - openssh
+    - speedtest-cli
+    # Utility
+    - git
+    - neovim
+    - btop
+    - curl
+    - reflector
+    - rsync
+    - smartmontools
+    - gdu
+    - tmux
+    - trash-cli
+    - unzip
+    - usbutils
+    - zsh
+    - wget
+    - less
+    - broot
+    - fd
+    # - clamav
+    - etckeeper
+    - hwinfo
+    - man-db
+    - tldr
+    - rustup
+    # Fonts
+    - ttf-liberation
+  base_aur:
+    - downgrade
+    - makedep
+    - needrestart
+    - vim-plug
+  desktop: # Not laptop
+  desktop_aur:
+    - networkmanager-wireguard-git
+    - spotify
+  xfce:
+    - xorg
+    - xfce4
+    - xfce4-goodies
+    - network-manager-applet
+    - python-gobject
+    - pulseaudio
+    - xfce4-screensaver
+    - xfce4-pulseaudio-plugin
+  xfce_aur:
+    - xfce4-panel-profiles
+    - plymouth-git
+    # Manually install https://github.com/grassmunk/Chicago95
+  i3:
+    - arandr
+    - dmenu
+    - dunst
+    - feh
+    - i3-gaps
+    - i3lock
+    - i3status
+    - libnotify
+    - polybar
+    - rofi
+    - rofi-emoji
+    - thunar
+    - unclutter
+    - xautomation
+    - xbindkeys
+    - xdotool
+    - xorg-server
+    - xorg-xdpyinfo
+    - xorg-xfd
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xprop
+    - xss-lock
+    - xterm
+  i3_aur:
+    - alacritty
+    - paper-icon-theme-git
+    - picom-git
+    - rofi-greenclip
+    - xidlehook
+  i3_laptop: # Not desktop
+    - cbatticon
+    - guvcview
+  i3_laptop_aur:
+    - brillo
+  laptop:
+    - tlp
+    - usbguard
+  laptop_aur:
+    - ruby-fusuma
+    - tlpui-git
+    - tzupdate
+    - libinput-three-finger-drag
+  dev:
+    - dbeaver
+    - docker
+    - docker-compose
+    - elixir
+    - go
+    - kubectl
+    - minikube
+    - python
+    - python-pip
+    - ruby
+    - terraform
+  dev_aur:
+    - nvm
+  x11: # Either chassis type with X11
+    - alsa-plugins
+    - alsa-utils
+    - bc
+    - chromium
+    - clamtk
+    - code
+    - gnome-keyring
+    - gsmartcontrol
+    - kgpg
+    - maim
+    - network-manager-applet
+    - noto-fonts-emoji
+    - pavucontrol
+    - playerctl
+    - polkit-kde-agent
+    - pulseaudio
+    - pulseaudio-alsa
+    - pulseaudio-bluetooth
+    - seahorse
+    - surfraw
+    - terminus-font
+    - ttf-droid
+    - ttf-fira-code
+    - ttf-fira-sans
+    - ttf-font-awesome
+    - ttf-hack
+    - ttf-inconsolata
+    - ttf-roboto
+    - ttf-ubuntu-font-family
+    - xclip
+  x11_aur:
+    - authy
+    - hardinfo-git
+    # - opensnitch-git
+  nvidia:
+    - nvidia
+    - nvidia-settings
+  latex:
+    - texlive-core
+    - texlive-fontsextra
+    - texlive-latexextra

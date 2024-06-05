@@ -1,0 +1,14 @@
+---
+- name: Setup NFS server
+  hosts: servers
+  become: true
+  roles:
+    - role: snapraid
+      when: snapraid is true
+    - role: mergerfs
+      when:
+        - mergerfs is true
+        - fstab_lines is defined
+        - fstab_lines | length > 0
+    - role: nfs
+      when: nfs__exports is defined

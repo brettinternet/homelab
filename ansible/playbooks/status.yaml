@@ -1,0 +1,44 @@
+---
+- name: Log host vars
+  hosts: [all]
+  become: true
+  roles:
+    - role: aur
+      vars:
+        state: present
+        packages: needrestart
+      when: ansible_facts['distribution'] | lower == 'archlinux'
+
+  post_tasks:
+    - name: Find reboot-required file
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: debian_reboot_required_result
+      when: ansible_facts['distribution'] | lower == 'debian'
+
+    - name: Find reboot-required file
+      ansible.builtin.command: needrestart -q
+      register: archlinux_reboot_required_result
+      when: ansible_facts['distribution'] | lower == 'archlinux'
+
+    - name: Set reboot requirement fact
+      ansible.builtin.set_fact:
+        reboot_required: >-
+          {{ archlinux_reboot_required_result.rc != 0
+          if ansible_facts['distribution'] | lower == 'archlinux'
+          else debian_reboot_required_result.stat.exists }}
+
+    - name: Host vars
+      ansible.builtin.debug:
+        msg:
+          - "Host network CIDR: {{ (ansible_default_ipv4.network + '/' + ansible_default_ipv4.netmask) | ansible.utils.ipaddr('network/prefix') }}"
+          - "Distribution: {{ ansible_facts['distribution'] }}, version: {{ ansible_distribution_version }}"
+          - "Processor: {{ ansible_processor | select('match', '.*CPU.*') | list | unique | first }}"
+          - "Reboot required: {{ reboot_required }}"
+          - "Groups: {{ group_names }}"
+
+    - name: Local vars
+      ansible.builtin.debug:
+        msg:
+          - "Project root directory: {{ lookup('ansible.builtin.env', 'ROOT_DIR') }}"
+      when: inventory_hostname == ansible_play_hosts_all[0] # preferred over run_once?

@@ -1,13 +1,22 @@
+# Trash
 .DS_Store
 Thumbs.db
 tmp
-.env
+*.log
+# vscode-sops
 .decrypted~*.yaml
 *.agekey
-*.log
-*.pem
 *.pub
 *.key
 github-deploy-key*
+# Output
 megalinter-reports
-inventory.yml
+# python
+.venv
+# private
+.decrypted~*.yaml
+*.agekey
+*.pem
+*.pub
+*.key
+.env

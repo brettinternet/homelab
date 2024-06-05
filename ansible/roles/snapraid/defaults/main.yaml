@@ -1,0 +1,21 @@
+---
+snapraid__supported_distributions:
+  - archlinux
+  - debian
+
+# Snapraid
+snapraid__executable: /usr/bin/snapraid
+snapraid__conf_file: /etc/snapraid.conf
+snapraid__log_file: /var/log/snapraid-runner.log
+snapraid__content_dir: /var/snapraid
+
+# Snapraid-runner
+snapraid__runner_dir: /opt/snapraid-runner
+snapraid__runner_executable: "{{ snapraid__runner_dir }}/snapraid-runner.py"
+snapraid__runner_conf_file: "{{ snapraid__runner_dir }}/snapraid-runner.conf"
+
+# Custom wrapper for notifications/handling
+snapraid__runner_notify_executable: /usr/local/bin/snapraid-runner-notify
+snapraid__runner_handler_executable: /usr/local/bin/snapraid-runner-handler
+snapraid__runner_handler_command: "{{ snapraid__runner_executable }} -c {{ snapraid__runner_conf_file }}"
+healthchecks_snapraid_runner_uuid:

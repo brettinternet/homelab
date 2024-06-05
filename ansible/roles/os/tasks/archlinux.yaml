@@ -1,0 +1,47 @@
+---
+# https://wiki.archlinux.org/title/systemd-timesyncd
+- name: Start/enable systemd-timesyncd.service
+  ansible.builtin.systemd:
+    name: systemd-timesyncd.service
+    scope: system
+    enabled: true
+    state: started
+
+- name: Install packages
+  ansible.builtin.package:
+    state: present
+    name:
+      - reflector
+
+# https://wiki.archlinux.org/title/reflector
+- name: Set custom reflector
+  ansible.builtin.copy:
+    src: reflector.conf
+    dest: /etc/xdg/reflector/reflector.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Start reflector timer
+  ansible.builtin.systemd:
+    name: reflector.timer
+    enabled: true
+    state: started
+
+- name: Enable pacman color
+  ansible.builtin.lineinfile:
+    dest: /etc/pacman.conf
+    regexp: "^#Color$"
+    line: "Color"
+
+- name: Enable pacman parallel downloads
+  ansible.builtin.lineinfile:
+    dest: /etc/pacman.conf
+    regexp: "^#ParallelDownloads"
+    line: "ParallelDownloads = 5"
+
+- name: Enable pacman candy
+  ansible.builtin.lineinfile:
+    dest: /etc/pacman.conf
+    insertafter: "^Color$"
+    line: "ILoveCandy"

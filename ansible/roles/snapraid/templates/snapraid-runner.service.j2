@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=SnapRAID runner
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart={{ snapraid__runner_notify_executable }}
+SyslogIdentifier=snapraid-runner

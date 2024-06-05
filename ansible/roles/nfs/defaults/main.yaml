@@ -1,0 +1,7 @@
+---
+nfs__supported_distributions:
+  - debian
+  - archlinux
+
+nfs__root_dir: /srv/nfs
+nfs__exports: []

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# {{ ansible_managed }}
+
+HEALTHCHECKS_PING_URL="{{ healthchecks__ping_url }}/{{ healthchecks__snapraid_runner_uuid }}"
+
+read -r -d '' PRE_COMMANDS << EOM
+curl -fsS -m 10 --retry 5 -o /dev/null "$HEALTHCHECKS_PING_URL/start"
+snapraid devices
+EOM
+
+read -r -d '' POST_COMMANDS_FAILURE << EOM
+curl -fsS -m 10 --retry 5 -o /dev/null "$HEALTHCHECKS_PING_URL/fail"
+snapraid -e fix
+snapraid -p bad scrub
+EOM
+
+read -r -d '' POST_COMMANDS_SUCCESS << EOM
+curl -fsS -m 10 --retry 5 -o /dev/null "$HEALTHCHECKS_PING_URL"
+EOM
+
+source {{ snapraid__runner_handler_executable}}

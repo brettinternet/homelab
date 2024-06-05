@@ -1,11 +1,11 @@
 {
   "files.associations": {
     "*.json5": "jsonc",
-    "**/provision/**/*.yaml": "ansible"
+    "**/ansible/**/*.yaml": "ansible",
+    "*.env": "properties"
   },
   "prettier.configPath": ".github/linters/.prettierrc.yaml",
   "prettier.ignorePath": ".github/linters/.prettierignore",
   "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": "active",
-  "ansible.ansibleLint.path": "$HOME/.virtualenvs/linux/bin/ansible-lint"
+  "editor.guides.bracketPairs": "active"
 }

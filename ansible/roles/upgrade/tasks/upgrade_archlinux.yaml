@@ -1,0 +1,29 @@
+---
+- name: Install 'needrestart'
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    state: latest
+    packages: needrestart
+
+- name: Upgrade official packages
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
+
+- name: Upgrade AUR packages
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    aur_upgrade: true
+
+- name: Evaluate reboot
+  when: allow_reboot is true
+  block:
+    - name: Check if restart required
+      ansible.builtin.command: needrestart -q
+      register: upgrade__needsrestart_result
+
+    - name: Reboot
+      ansible.builtin.reboot:
+      when: upgrade__needsrestart_result.rc != 0

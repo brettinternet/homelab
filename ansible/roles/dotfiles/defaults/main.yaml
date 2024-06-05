@@ -1,0 +1,10 @@
+---
+dotfiles__supported_distributions:
+  - archlinux
+  - debian
+dotfiles__shell: /usr/bin/zsh
+dotfiles__dir: "$HOME/.dotfiles"
+dotfiles__install_cmd: ./install
+dotfiles__repo: git@github.com:brettinternet/dotfiles.git
+dotfiles__direnv_file: "$HOME/.envrc"
+dotfiles__direnv_lines: []

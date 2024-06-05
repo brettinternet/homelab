@@ -1,0 +1,57 @@
+---
+# snapraid-runner (snapraid automation)
+# https://github.com/Chronial/snapraid-runner
+
+- name: Clone snapraid-runner # noqa git-latest
+  ansible.builtin.git:
+    repo: https://github.com/Chronial/snapraid-runner.git
+    dest: "{{ snapraid__runner_dir }}"
+    version: HEAD
+    update: true
+    depth: 1
+
+- name: Copy snapraid-runner executable to /usr/local/bin
+  ansible.builtin.file:
+    path: "{{ snapraid__runner_executable }}"
+    state: file
+    mode: "0744"
+
+- name: Verify required variable
+  ansible.builtin.fail:
+    msg: "'healthchecks__snapraid_runner_uuid' is not set"
+  when:
+    - healthchecks__snapraid_runner_uuid is undefined
+    - healthchecks__snapraid_runner_uuid != ""
+
+- name: Copy config templates
+  ansible.builtin.template:
+    src: "{{ item.key }}"
+    dest: "{{ item.value }}"
+    owner: root
+    group: root
+    mode: "0644"
+  with_dict: "{{ files }}"
+  vars:
+    files:
+      snapraid-runner.conf.j2: "{{ snapraid__runner_conf_file }}"
+
+- name: Copy executable templates
+  ansible.builtin.template:
+    src: "{{ item.key }}"
+    dest: "{{ item.value }}"
+    owner: root
+    group: root
+    mode: "0744"
+  with_dict: "{{ files }}"
+  vars:
+    files:
+      snapraid-runner-handler.sh.j2: "{{ snapraid__runner_handler_executable }}"
+      snapraid-runner-notify.sh.j2: "{{ snapraid__runner_notify_executable }}"
+      snapraid-runner.timer.j2: /etc/systemd/system/snapraid-runner.timer
+      snapraid-runner.service.j2: /etc/systemd/system/snapraid-runner.service
+
+- name: Enable snapraid-runner service timer
+  ansible.builtin.systemd:
+    name: snapraid-runner.timer
+    state: started
+    enabled: true

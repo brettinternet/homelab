@@ -1,0 +1,10 @@
+---
+- name: Install dependencies
+  ansible.builtin.package:
+    state: present
+    name:
+      - nfs-utils
+
+- name: Set NFS service
+  ansible.builtin.set_fact:
+    nfs__server_daemon: nfs-server.service

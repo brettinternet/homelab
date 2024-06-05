@@ -1,0 +1,121 @@
+---
+linux:
+  vars:
+    become_method: sudo
+  hosts:
+    case:
+      ansible_host: 10.1.1.14
+      dotfiles_install_cmd: DOTFILE_GROUPS=base,archlinux,dev,x11,xfce ./install
+      user__shell: /usr/bin/zsh
+      packages: >-
+        {{
+          pkgs.base +
+          pkgs.laptop +
+          pkgs.xfce +
+          pkgs.dev +
+          pkgs.x11
+        }}
+      aur_packages: >-
+        {{
+          pkgs.base_aur +
+          pkgs.laptop_aur +
+          pkgs.xfce_aur +
+          pkgs.dev_aur +
+          pkgs.x11_aur
+        }}
+    harambe:
+      ansible_host: 10.1.2.3
+    baja:
+      ansible_host: 10.1.2.4
+    bogota:
+      ansible_host: 10.1.2.10
+      cockpit: true
+      snapraid: true
+      mergerfs: true
+      nfs__exports:
+        - /srv/nfs  *(rw,fsid=0,no_subtree_check,all_squash)
+        - /srv/nfs/storage  *(rw,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)
+      mergerfs__mounts:
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1-part1: /mnt/parity1
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2-part1: /mnt/parity2
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi3-part1: /mnt/parity3
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi4-part1: /mnt/disk1
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi5-part1: /mnt/disk2
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi6-part1: /mnt/disk3
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi7-part1: /mnt/disk4
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi8-part1: /mnt/disk5
+        /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi9-part1: /mnt/disk6
+      packages: >-
+        {{ pkgs.base }}
+        cockpit-storaged
+        qemu-guest-agent
+    gertrude:
+      ansible_host: 10.1.2.11
+      zpool: pond
+      docker: true
+      packages: >-
+        {{ pkgs.base }}
+        docker
+        qemu-guest-agent
+
+windows:
+  vars:
+    become_method: runas
+  hosts:
+    # https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html
+    zorak:
+      ansible_host: 10.1.1.5
+      packages: >-
+        {{
+          pkgs.base +
+          pkgs.mic +
+          pkgs.gaming
+        }}
+    gameboy:
+      ansible_host: 10.1.1.26
+      packages: >-
+        {{
+          pkgs.base +
+          pkgs.gaming
+        }}
+    sega:
+      ansible_host: 10.1.1.13
+      packages: >-
+        {{
+          pkgs.base +
+          pkgs.gaming +
+          pkgs.tv
+        }}
+
+workstations:
+  hosts:
+    zorak:
+    gameboy:
+    sega:
+    case:
+
+servers:
+  hosts:
+    harambe:
+    baja:
+    bogota:
+    gertrude:
+
+proxmox:
+  hosts:
+    harambe:
+    baja:
+
+vms:
+  hosts:
+    bogota:
+    gertrude:
+
+archlinux:
+  hosts:
+    bogota:
+    gertrude:
+
+supermicro:
+  hosts:
+    harambe:

@@ -1,0 +1,7 @@
+---
+- name: Install dependencies
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    state: present
+    packages: snapraid

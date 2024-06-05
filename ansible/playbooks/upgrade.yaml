@@ -1,0 +1,25 @@
+---
+- name: Upgrade Linux
+  hosts: linux
+  become: true
+  vars:
+    allow_reboot: false
+  roles:
+    - upgrade
+
+- name: Upgrade Windows
+  hosts: windows
+  become: true
+  vars:
+    allow_reboot: false
+  tasks:
+    # TODO: switch to scoop https://docs.ansible.com/ansible/latest/collections/community/windows/win_scoop_module.html
+    - name: Upgrade installed packages
+      chocolatey.chocolatey.win_chocolatey:
+        name: all
+        state: latest
+
+    - name: Install system updates
+      ansible.windows.win_updates:
+        category_names: "*"
+        reboot: "{{ allow_reboot }}"

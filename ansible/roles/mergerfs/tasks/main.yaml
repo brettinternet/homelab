@@ -1,0 +1,60 @@
+# https://github.com/trapexit/mergerfs
+# https://aur.archlinux.org/packages/mergerfs
+
+# Maintenance: https://github.com/trapexit/backup-and-recovery-howtos/blob/master/docs/maintenance_(mergerfs).md
+# Recovery: https://github.com/trapexit/backup-and-recovery-howtos/blob/master/docs/recovery_(mergerfs,snapraid).md
+---
+- name: Check supported distribution
+  ansible.builtin.fail:
+    msg:
+      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
+      - "Supported role distributions are {{ mergerfs__supported_distributions }}"
+  when: ansible_facts['distribution'] | lower not in mergerfs__supported_distributions
+
+- name: Verify 'mergerfs__mounts' is defined
+  ansible.builtin.fail:
+    msg:
+      - "'mergerfs__mounts' must be defined as an fstab mounts dictionary with 'src': 'path' pairs"
+  when:
+    - mergerfs__mounts is not defined
+    - mergerfs__mounts.keys() | list | length == 0
+
+- name: Install mergerfs dependencies
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    state: present
+    packages:
+      - mergerfs
+
+- name: Install fuse2 for fstab support
+  ansible.builtin.package:
+    state: present
+    name:
+      - fuse2
+
+# https://github.com/trapexit/backup-and-recovery-howtos/blob/master/docs/setup_(fstab).md
+- name: Mount JBOD drives
+  ansible.posix.mount:
+    src: "{{ item.key }}"
+    path: "{{ item.value }}"
+    fstype: xfs
+    opts: defaults
+    state: mounted
+  with_dict: "{{ mergerfs__mounts }}"
+
+- name: Mount mergerfs fuse
+  ansible.posix.mount:
+    src: /mnt/disk*
+    path: "{{ mergerfs__storage_dir }}"
+    fstype: fuse.mergerfs
+    opts: allow_other,use_ino,cache.files=partial,dropcacheonclose=true,category.create=mfs,fsname=mergerfs,minfreespace=10G
+    state: mounted
+
+- name: Bind mount storage to nfs root
+  ansible.posix.mount:
+    src: "{{ mergerfs__storage_dir }}"
+    path: "{{ nfs__root_dir }}/storage"
+    fstype: none
+    opts: bind
+    state: mounted
