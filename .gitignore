@@ -1,4 +1,4 @@
-# Trash
+# trash
 .DS_Store
 Thumbs.db
 tmp
@@ -9,7 +9,8 @@ tmp
 *.pub
 *.key
 github-deploy-key*
-# Output
+# output
+.task
 megalinter-reports
 # python
 .venv
