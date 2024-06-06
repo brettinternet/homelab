@@ -3,17 +3,15 @@
 # - https://github.com/dev-sec/ansible-collection-hardening
 ---
 - name: Check supported distribution
-  fail:
+  ansible.builtin.fail:
     msg:
       - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
       - "Supported role distributions are {{ os__supported_distributions }}"
   when: ansible_facts['distribution'] | lower not in os__supported_distributions
 
-- name: Set timezone
+- name: "Set timezone {{ os__timezone }}"
   community.general.timezone:
-    name: "{{ timezone }}"
-  when:
-    - timezone is defined
+    name: "{{ os__timezone }}"
 
 - name: Set hostname to inventory hostname
   ansible.builtin.hostname:

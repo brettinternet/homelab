@@ -1,4 +1,12 @@
 ---
+- name: Install essential user packages
+  ansible.builtin.package:
+    state: present
+    name:
+      - git
+      - zsh
+      - sudo
+
 - name: Set git pull strategy to rebase
   community.general.git_config:
     name: pull.rebase
@@ -28,6 +36,5 @@
     shell: "{{ user__shell }}"
     append: true
     groups:
-      - wheel
       - sudo
       - ssh

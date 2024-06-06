@@ -18,8 +18,8 @@
     mode: "0755"
 
 - name: Copy snapraid.conf
-  ansible.builtin.copy:
-    src: snapraid.conf
+  ansible.builtin.template:
+    src: snapraid.conf.j2
     dest: "{{ snapraid__conf_file }}"
     owner: root
     group: root

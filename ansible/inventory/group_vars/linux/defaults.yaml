@@ -1,0 +1,7 @@
+---
+packages: []
+aur_packages: []
+remove_packages: []
+snapraid: false
+cockpit: false
+docker: false

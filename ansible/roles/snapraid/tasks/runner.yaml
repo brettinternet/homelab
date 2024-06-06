@@ -12,6 +12,7 @@
 
 - name: Copy runner executable
   ansible.builtin.copy:
+    remote_src: true
     src: "{{ snapraid__runner_src_executable }}"
     dest: "{{ snapraid__runner_executable }}"
     owner: root
@@ -41,7 +42,6 @@
   with_dict: "{{ files }}"
   vars:
     files:
-      snapraid.conf.j2: "{{ snapraid__conf_file }}"
       snapraid-runner.conf.j2: "{{ snapraid__runner_conf_file }}"
 
 - name: Copy executable templates
@@ -55,7 +55,7 @@
   vars:
     files:
       snapraid-runner-handler.sh.j2: "{{ snapraid__runner_handler_executable }}"
-      snapraid-runner-notify.sh.j2: "{{ snapraid__runner_notify_executable }}"
+      "snapraid-runner-notify.sh.j2": "{{ snapraid__runner_notify_executable }}"
       snapraid-runner.timer.j2: /etc/systemd/system/snapraid-runner.timer
       snapraid-runner.service.j2: /etc/systemd/system/snapraid-runner.service
 

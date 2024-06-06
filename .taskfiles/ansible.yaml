@@ -35,11 +35,13 @@ tasks:
 
   playbook:
     desc: Run a playbook by name (without the .yaml extension)
+    aliases: [run, play, p, r]
     cmds:
-      - "{{ .ANSIBLE_COMMAND }} {{ .ANSIBLE_PLAYBOOK_DIR }}/{{ .PLAYBOOK }}.yaml"
+      - "{{ .ANSIBLE_COMMAND }} {{ .ANSIBLE_PLAYBOOK_DIR }}/{{ default .PLAYBOOK .CLI_ARGS }}.yaml"
 
   setup:
     desc: Setup all the k8s nodes for running k3s
+    aliases: [setup, s]
     cmds:
       - task: playbook
         vars:
@@ -47,6 +49,7 @@ tasks:
 
   upgrade:
     desc: Update dependencies
+    aliases: [update, u]
     cmds:
       - task: playbook
         vars:

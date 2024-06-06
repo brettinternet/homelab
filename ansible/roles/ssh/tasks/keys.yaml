@@ -1,7 +1,7 @@
 ---
 - name: Get keys from URL
   ansible.builtin.uri:
-    url: "{{ ssh__keys_sed_arg }}"
+    url: "{{ ssh__keys_url }}"
     method: GET
     return_content: true
   register: keys_result

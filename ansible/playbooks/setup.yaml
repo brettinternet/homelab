@@ -1,6 +1,6 @@
 ---
 - name: Setup Linux
-  hosts: linux
+  hosts: servers
   become: true
   pre_tasks:
     - name: Check supported distribution
@@ -10,12 +10,28 @@
           - This role only supports Arch Linux
       when: ansible_distribution | lower not in ['archlinux', 'debian']
 
+    - name: Split packages
+      ansible.builtin.set_fact:
+        packages: "{{ packages.strip().split() if packages is string and packages is defined else packages }}"
+
+    - name: Split aur packages
+      ansible.builtin.set_fact:
+        aur_packages: "{{ aur_packages.strip().split() if aur_packages is string and aur_packages is defined else aur_packages }}"
+
+    - name: Split aur packages
+      ansible.builtin.set_fact:
+        remove_packages: "{{ remove_packages.strip().split() if remove_packages is string and remove_packages is defined else remove_packages }}"
+
+    - name: Host vars
+      ansible.builtin.debug:
+        msg:
+          - "Packages: {{ packages }}"
+
     - name: Install packages
       ansible.builtin.package:
         state: present
         name: "{{ packages }}"
       when:
-        - packages is defined
         - packages | length > 0
 
     - name: Install AUR packages
@@ -26,19 +42,18 @@
         packages: "{{ aur_packages }}"
       when:
         - ansible_distribution | lower == 'archlinux'
-        - aur_packages is defined
         - aur_packages | length > 0
 
     - name: Combine packages to remove
       ansible.builtin.set_fact:
-        sum_packages_remove: "{{ remove_packages | default([]) + remove_aur_packages | default([]) }}"
+        remove_packages: "{{ remove_packages | default([]) + remove_aur_packages | default([]) }}"
 
     - name: Remove packages
       ansible.builtin.package:
         state: absent
         name: "{{ sum_packages_remove }}"
       when:
-        - sum_packages_remove | length > 0
+        - remove_packages | length > 0
   roles:
     - os
     - user
