@@ -6,8 +6,6 @@
     state: present
   loop:
     - kvmgt
-    - exngt
-    - vfio-mdev
 
 - name: Enable GVT
   ansible.builtin.lineinfile:

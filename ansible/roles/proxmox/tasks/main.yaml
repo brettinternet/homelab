@@ -14,7 +14,7 @@
 
 - name: Set Intel CPU fact
   ansible.builtin.set_fact:
-    proxmox__intel: "{{ ansible_processor | select('match', '.*CPU.*') | list | unique | first | search('Intel') is not none }}"
+    proxmox__intel: "{{ 'Intel' in ansible_processor | select('match', '.*CPU.*') | list | unique | first }}"
 
 - name: Enable IOMMU
   ansible.builtin.lineinfile:
