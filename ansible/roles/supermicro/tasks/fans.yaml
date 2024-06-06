@@ -25,25 +25,19 @@
     update: true
     depth: 1
 
-- name: "Ensure directory exists {{ supermicro__smfc_bin_dir }}"
-  ansible.builtin.file:
-    path: "{{ supermicro__smfc_bin_dir }}"
-    owner: root
-    group: root
-    mode: "0744"
-    state: directory
-
-- name: "Copy executable from {{ supermicro__smfc_bin_dir }}"
+- name: "Copy executable from {{ supermicro__smfc_src_dir }}"
   ansible.builtin.copy:
-    path: "{{ supermicro__smfc_src_dir }}/src/smfc.py"
+    remote_src: true
+    src: "{{ supermicro__smfc_src_dir }}/src/smfc.py"
     dest: "{{ supermicro__smfc_executable }}"
     owner: root
     group: root
     mode: "0744"
 
-- name: "Copy fan level helper {{ supermicro__smfc_bin_dir }}"
+- name: "Copy fan level helper from {{ supermicro__smfc_src_dir }}"
   ansible.builtin.copy:
-    path: "{{ supermicro__smfc_src_dir }}/ipmi/set_ipmi_fan_level.sh"
+    remote_src: true
+    src: "{{ supermicro__smfc_src_dir }}/ipmi/set_ipmi_fan_level.sh"
     dest: "/usr/local/bin/set_ipmi_fan_level"
     owner: root
     group: root

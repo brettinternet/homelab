@@ -13,19 +13,8 @@
     - name: Split packages
       ansible.builtin.set_fact:
         packages: "{{ packages.strip().split() if packages is string and packages is defined else packages }}"
-
-    - name: Split aur packages
-      ansible.builtin.set_fact:
         aur_packages: "{{ aur_packages.strip().split() if aur_packages is string and aur_packages is defined else aur_packages }}"
-
-    - name: Split aur packages
-      ansible.builtin.set_fact:
         remove_packages: "{{ remove_packages.strip().split() if remove_packages is string and remove_packages is defined else remove_packages }}"
-
-    - name: Host vars
-      ansible.builtin.debug:
-        msg:
-          - "Packages: {{ packages }}"
 
     - name: Install packages
       ansible.builtin.package:
@@ -61,9 +50,7 @@
     - role: etckeeper
       # 🤔 https://forum.proxmox.com/threads/using-etckeeper-with-proxmox.93224/
       when: ansible_facts['distribution'] | lower == 'archlinux'
-    - role: dotfiles
-      vars:
-        dotfiles_repo: https://github.com/brettinternet/dotfiles
+    - dotfiles
     - atuin
     - role: supermicro
       when: "'supermicro' in group_names"
@@ -77,10 +64,7 @@
     - role: snapraid
       when: snapraid is true
     - role: mergerfs
-      when:
-        - mergerfs is true
-        - fstab_lines is defined
-        - fstab_lines | length > 0
+      when: mergerfs__mounts is defined
     - role: nfs
       when: nfs__exports is defined
     - role: cockpit

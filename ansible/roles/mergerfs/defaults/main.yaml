@@ -2,6 +2,5 @@
 mergerfs__supported_distributions:
   - archlinux
 mergerfs__storage_dir: /mnt/storage
-mergerfs__mounts:
-
 nfs__root_dir: /srv/nfs
+# mergerfs__mounts:

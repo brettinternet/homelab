@@ -29,7 +29,6 @@
     shell: "{{ dotfiles__shell }}"
     append: true
     groups:
-      - wheel
       - sudo
       - ssh
 

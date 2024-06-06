@@ -5,7 +5,7 @@ linux:
   hosts:
     case:
       ansible_host: 10.1.1.14
-      dotfiles_install_cmd: DOTFILE_GROUPS=base,archlinux,dev,x11,xfce ./install
+      dotfiles__install_cmd: DOTFILE_GROUPS=base,archlinux,dev,x11,xfce ./install
       user__shell: /usr/bin/zsh
       packages: >-
         {{

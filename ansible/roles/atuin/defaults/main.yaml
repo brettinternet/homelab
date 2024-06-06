@@ -3,6 +3,6 @@ atuin__supported_distributions:
   - archlinux
   - debian
 atuin__sync_address:
-atuin__client_version:
+atuin__client_version: 18.2.0
 atuin__local_bin_dir: /usr/local/bin
 atuin__libc_variant: gnu
