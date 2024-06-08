@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+# {{ ansible_managed }}
+
+ILO_IP="{{ ilo__ip }}"
+USERNAME="{{ ilo__user }}"
+PASSWORD="{{ ilo__password }}"
+
+{# -oStrictHostKeyChecking=no #}
+
+SSH_ARGS="ssh -oKexAlgorithms=+diffie-hellman-group14-sha1 -oHostKeyAlgorithms=+ssh-rsa"
+
+function set_fan_speed {
+  local fan=$1
+  local speed=$2
+  sshpass -p $PASSWORD ssh $SSH_ARGS $USERNAME@$ILO_IP "fan p $fan max $speed"
+}
+
+function set_fan_speeds {
+  local start=$1
+  local end=$2
+  local speed=$3
+  echo "Setting fan speed to $speed for fans $start to $end"
+  for i in $(seq $start $end); do
+    set_fan_speed $i $speed
+  done
+}
+
+function get_cpu_temp {
+  local cpu=$1
+  sensors -Aj coretemp-isa-000$cpu | jq '.[][] | to_entries[] | select(.key | endswith("input")) | .value' | sort -rn | head -n1
+}
+
+function case_temp {
+  local cpu_temp=$1
+  local start=$2
+  local end=$3
+
+  if (( cpu_temp > 90 )); then
+    set_fan_speeds $start $end 80
+  elif (( cpu_temp > 77 )); then
+    set_fan_speeds $start $end 50
+  elif (( cpu_temp > 67 )); then
+    set_fan_speeds $start $end 30
+  elif (( cpu_temp > 62 )); then
+    set_fan_speeds $start $end 25
+  elif (( cpu_temp > 58 )); then
+    set_fan_speeds $start $end 20
+  elif (( cpu_temp > 55 )); then
+    set_fan_speeds $start $end 18
+  elif (( cpu_temp > 50 )); then
+    set_fan_speeds $start $end 15
+  else
+    set_fan_speeds $start $end 10
+  fi
+}
+
+T1="$(get_cpu_temp 0)"
+T2="$(get_cpu_temp 1)"
+
+echo "CPU 1 Temp $T1 °C"
+case_temp $T1 4 6
+
+echo "CPU 2 Temp $T2 °C"
+case_temp $T2 1 3

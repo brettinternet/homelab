@@ -1,0 +1,59 @@
+# Silencing ProLiant gen8-9 fans using a custom ILO4 patch
+# https://github.com/kendallgoto/ilo4_unlock
+# https://www.reddit.com/r/homelab/comments/hix44v/silence_of_the_fans_pt_2_hp_ilo_4_273_now_with/
+---
+- name: Check supported distribution
+  ansible.builtin.fail:
+    msg:
+      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
+      - "Supported role distributions are {{ ilo__supported_distributions }}"
+  when: ansible_facts['distribution'] | lower not in ilo__supported_distributions
+
+- name: Verify required variables
+  ansible.builtin.fail:
+    msg:
+      - "Missing one of the required variables: 'ilo__ip', 'ilo__username', 'ilo__password'"
+  when:
+    - ilo__ip is not defined
+    - ilo__username is not defined
+    - ilo__password is not defined
+
+- name: Install dependencies
+  ansible.builtin.package:
+    state: present
+    name:
+      - jq
+      - sshpass
+      - lm-sensors
+
+- name: Add kernel module for core temperature
+  community.general.modprobe:
+    state: present
+    name: coretemp
+
+- name: Copy executable template
+  ansible.builtin.template:
+    src: fancontrol-ilo.sh.j2
+    dest: "{{ ilo__fancontrol_executable }}"
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Copy systemd unit file templates
+  ansible.builtin.template:
+    src: "{{ item.key }}"
+    dest: "{{ item.value }}"
+    owner: root
+    group: root
+    mode: "0744"
+  with_dict: "{{ files }}"
+  vars:
+    files:
+      fancontrol-ilo.timer.j2: /etc/systemd/system/fancontrol-ilo.timer
+      fancontrol-ilo.service.j2: /etc/systemd/system/fancontrol-ilo.service
+
+- name: Enable fancontrol-ilo service timer
+  ansible.builtin.systemd:
+    name: fancontrol-ilo.timer
+    state: started
+    enabled: true

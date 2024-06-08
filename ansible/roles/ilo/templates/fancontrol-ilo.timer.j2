@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=iLO Fan Speed Control
+
+[Timer]
+OnBootSec=15sec
+OnUnitActiveSec={{ ilo__run_interval }}
+
+[Install]
+WantedBy=timers.target

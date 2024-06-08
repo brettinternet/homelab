@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=iLO Fan Speed Control
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart={{ ilo__fancontrol_executable }}
+SyslogIdentifier=fancontrol-ilo

@@ -1,0 +1,8 @@
+---
+ilo__supported_distributions:
+  - debian
+ilo__fancontrol_executable: /usr/local/bin/fancontrol-ilo.sh
+ilo__run_interval: 1min
+ilo__ip:
+ilo__user:
+ilo__password:
