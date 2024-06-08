@@ -10,6 +10,10 @@ PASSWORD="{{ ilo__password }}"
 
 SSH_ARGS="ssh -oKexAlgorithms=+diffie-hellman-group14-sha1 -oHostKeyAlgorithms=+ssh-rsa"
 
+for i in {1..6}; do
+  sshpass -p $PASSWORD ssh $SSH_ARGS $USERNAME@$ILO_IP "fan p $i min 10"
+done
+
 function set_fan_speed {
   local fan=$1
   local speed=$2
