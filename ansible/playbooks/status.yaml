@@ -1,6 +1,6 @@
 ---
 - name: Log host vars
-  hosts: [all]
+  hosts: [servers]
   become: true
   roles:
     - role: aur

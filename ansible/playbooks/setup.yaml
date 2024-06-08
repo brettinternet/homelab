@@ -56,6 +56,10 @@
       when: "'supermicro' in group_names"
     - role: proxmox
       when: "'proxmox' in group_names"
+    - role: ilo
+      when:
+        - ilo__ip is defined
+        - ilo__ip | length > 0
 
 - name: Setup servers
   hosts: servers
@@ -64,9 +68,13 @@
     - role: snapraid
       when: snapraid is true
     - role: mergerfs
-      when: mergerfs__mounts is defined
+      when:
+        - mergerfs__mounts is defined
+        - mergerfs__mounts | length > 0
     - role: nfs
-      when: nfs__exports is defined
+      when:
+        - nfs__exports is defined
+        - nfs__exports | length > 0
     - role: cockpit
       when: cockpit is true
     - role: docker

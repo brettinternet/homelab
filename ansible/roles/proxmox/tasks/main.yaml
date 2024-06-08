@@ -7,6 +7,7 @@
 
 - name: Setup PCI passthrough
   ansible.builtin.include_tasks: pci-passthrough.yaml
+  when: proxmox__pci_passthrough is true
 
 - name: Setup Intel GPU passthrough
   ansible.builtin.include_tasks: intel-gvt.yaml

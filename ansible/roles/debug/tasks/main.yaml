@@ -1,0 +1,5 @@
+---
+- name: Log debug role
+  ansible.builtin.debug:
+    msg:
+      - "The debug role is running on {{ ansible_hostname }}"

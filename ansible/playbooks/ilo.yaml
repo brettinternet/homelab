@@ -1,0 +1,9 @@
+---
+- name: Setup servers with iLO
+  hosts: servers
+  become: true
+  roles:
+    - role: ilo
+      when:
+        - ilo__ip is defined
+        - ilo__ip | length > 0

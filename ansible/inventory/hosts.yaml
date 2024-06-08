@@ -25,10 +25,17 @@ linux:
         }}
     harambe:
       ansible_host: 10.1.2.3
+      proxmox__pci_passthrough: true
     baja:
       ansible_host: 10.1.2.4
+      proxmox__pci_passthrough: true
       proxmox__intel_gvt: true
       proxmox__acpi_lax: true
+    tars:
+      ansible_host: 10.1.2.6
+    farm:
+      ansible_host: 10.1.2.8
+      ilo__ip: 10.1.2.7
     bogota:
       ansible_host: 10.1.2.10
       cockpit: true
@@ -100,11 +107,15 @@ servers:
     baja:
     bogota:
     gertrude:
+    farm:
+    tars:
 
 proxmox:
   hosts:
     harambe:
     baja:
+    farm:
+    tars:
 
 vms:
   hosts:

@@ -11,7 +11,7 @@
 
 - name: Ensure common nfs root directory exists
   ansible.builtin.file:
-    path: "{{ nfs__root_dir}}"
+    path: "{{ nfs__root_dir }}"
     state: directory
     owner: root
     group: root

@@ -1,4 +1,5 @@
 ---
 # Intel GPU passthrough for physical host
+proxmox__pci_passthrough: false
 proxmox__intel_gvt: false
 proxmox__acpi_lax: false

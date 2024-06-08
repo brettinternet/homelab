@@ -2,29 +2,30 @@
 
 # {{ ansible_managed }}
 
+set -e
+
 ILO_IP="{{ ilo__ip }}"
 USERNAME="{{ ilo__user }}"
-PASSWORD="{{ ilo__password }}"
+B64_PASSWORD="{{ ilo__password | b64encode }}"
+SSHPASS="$(echo $B64_PASSWORD | base64 --decode)"
 
-{# -oStrictHostKeyChecking=no #}
-
-SSH_ARGS="ssh -oKexAlgorithms=+diffie-hellman-group14-sha1 -oHostKeyAlgorithms=+ssh-rsa"
+SSH_ARGS="-oStrictHostKeyChecking=no -oKexAlgorithms=+diffie-hellman-group14-sha1 -oHostKeyAlgorithms=+ssh-rsa"
 
 for i in {1..6}; do
-  sshpass -p $PASSWORD ssh $SSH_ARGS $USERNAME@$ILO_IP "fan p $i min 10"
+  (export SSHPASS=$SSHPASS; sshpass -e ssh $SSH_ARGS $USERNAME@$ILO_IP "fan p $i min 10" > /dev/null)
 done
 
 function set_fan_speed {
   local fan=$1
   local speed=$2
-  sshpass -p $PASSWORD ssh $SSH_ARGS $USERNAME@$ILO_IP "fan p $fan max $speed"
+  (export SSHPASS=$SSHPASS; sshpass -e ssh $SSH_ARGS $USERNAME@$ILO_IP "fan p $fan max $speed" > /dev/null)
 }
 
 function set_fan_speeds {
   local start=$1
   local end=$2
   local speed=$3
-  echo "Setting fan speed to $speed for fans $start to $end"
+  echo "Setting fans $start-$end to max $speed% speed"
   for i in $(seq $start $end); do
     set_fan_speed $i $speed
   done
@@ -45,25 +46,25 @@ function case_temp {
   elif (( cpu_temp > 77 )); then
     set_fan_speeds $start $end 50
   elif (( cpu_temp > 67 )); then
-    set_fan_speeds $start $end 30
+    set_fan_speeds $start $end 38
   elif (( cpu_temp > 62 )); then
-    set_fan_speeds $start $end 25
+    set_fan_speeds $start $end 32
   elif (( cpu_temp > 58 )); then
-    set_fan_speeds $start $end 20
+    set_fan_speeds $start $end 28
   elif (( cpu_temp > 55 )); then
-    set_fan_speeds $start $end 18
+    set_fan_speeds $start $end 24
   elif (( cpu_temp > 50 )); then
-    set_fan_speeds $start $end 15
+    set_fan_speeds $start $end 22
   else
-    set_fan_speeds $start $end 10
+    set_fan_speeds $start $end 20
   fi
 }
 
 T1="$(get_cpu_temp 0)"
 T2="$(get_cpu_temp 1)"
 
-echo "CPU 1 Temp $T1 °C"
+echo "CPU 1 temp: $T1°C"
 case_temp $T1 4 6
 
-echo "CPU 2 Temp $T2 °C"
+echo "CPU 2 temp: $T2°C"
 case_temp $T2 1 3
