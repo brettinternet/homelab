@@ -43,6 +43,7 @@
     group: root
     mode: "0744"
 
+# https://github.com/petersulyok/smfc/blob/1b18eca6bed739813c75dd3f32a74e3543600a99/src/smfc.conf
 - name: Copy config file
   ansible.builtin.template:
     src: smfc.conf.j2
