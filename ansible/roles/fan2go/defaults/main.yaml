@@ -1,0 +1,74 @@
+---
+fan2go__config:
+  fans:
+    - id: chassis_1
+      hwmon:
+        platform: nct6791-isa-0
+        index: 1
+      neverStop: true
+      curve: chassis_curve
+      minPwm: 8
+      maxPwm: 45
+    - id: chassis_2
+      hwmon:
+        platform: nct6791-isa-0
+        index: 2
+      neverStop: true
+      curve: chassis_curve
+      minPwm: 8
+      maxPwm: 45
+    - id: chassis_3
+      hwmon:
+        platform: nct6791-isa-0
+        index: 3
+      neverStop: true
+      curve: chassis_curve
+      minPwm: 8
+      maxPwm: 45
+  sensors:
+    - id: cpu_package
+      hwmon:
+        platform: coretemp-isa-0
+        index: 1
+    - id: mobo
+      hwmon:
+        platform: nct6791-isa-0
+        index: 1
+    - id: drive
+      hwmon:
+        platform: drivetemp-scsi-0-80
+        index: 1
+  curves:
+    - id: cpu_curve
+      linear:
+        sensor: cpu_package
+        steps:
+          - "40": 0
+          - "70": 18
+          - "90": 45
+    - id: mobo_curve
+      linear:
+        sensor: mobo
+        steps:
+          - "40": 0
+          - "70": 18
+          - "90": 45
+    - id: drive_curve
+      linear:
+        sensor: drive
+        steps:
+          - "40": 0
+          - "70": 18
+          - "90": 45
+    - id: chassis_curve
+      function:
+        type: average
+        curves:
+          - cpu_curve
+          - mobo_curve
+          - drive_curve
+  statistics:
+    enabled: false
+    port: 9000
+  api:
+    enabled: false

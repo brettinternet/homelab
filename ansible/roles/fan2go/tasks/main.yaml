@@ -1,0 +1,52 @@
+---
+# https://wiki.archlinux.org/title/Fan_speed_control#Device_paths_have_changed_in_/etc/fancontrol
+# Fancontrol only supports using hwmon devices which can change paths when new devices are plugged
+# into the host. fan2go is a better option since it uses immutable references to fans
+# https://github.com/markusressel/fan2go
+# kernel modules: coretemp, nct6775, drivetemp
+# may also need kernel boot parameter: `acpi_enforce_resources=lax`
+
+- name: Install dependencies
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    state: latest
+    packages: fan2go-git
+  when:
+    - ansible_facts['distribution'] | lower == 'archlinux'
+
+# TODO: identify change below
+# community.general.github_release:
+#   user: markusressel
+#   repo: fan2go
+#   action: latest_release
+
+- name: Get latest fan2go tag
+  ansible.builtin.get_url:
+    url: https://github.com/markusressel/fan2go/releases/latest/download/fan2go-linux-amd64
+    dest: /usr/local/bin/fan2go
+  when:
+    - ansible_facts['distribution'] | lower == 'debian'
+
+- name: Load 'drivetemp' kernel module
+  community.general.modprobe:
+    name: drivetemp
+    state: present
+
+- name: Write fan2go config
+  ansible.builtin.copy:
+    content: "{{ fan2go__config | to_nice_yaml }}"
+    dest: /etc/fan2go/fan2go.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  when: fancontrol_content is defined
+
+- name: Enable fan2go.service
+  ansible.builtin.systemd:
+    name: fan2go.service
+    enabled: true
+
+- name: Get fan speeds
+  ansible.builtin.command: "fan2go fan --id {{ item }} speed"
+  loop: "{{ fan2go__config.fans | map(attribute='id') }}"
