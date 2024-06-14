@@ -1,5 +1,5 @@
 ---
-x-service: &service
+x-options: &options
   profiles: [utils]
   networks: [default]
   environment: &environment
@@ -8,61 +8,66 @@ x-service: &service
     restart_policy:
       condition: unless-stopped
 
+x-media-volume:
+  driver_opts: &media_driver_opts
+    type: nfs
+    o: addr=${MEDIA_IP},hard,timeo=600,retrans=3,proto=tcp,nfsvers=4.2,port=2049,rsize=4096,wsize=4096,noacl,nocto,noatime,nodiratime
+    device: :/
+
+x-media-volume-nocache:
+  driver_opts: &media_driver_nocache_opts
+    type: nfs
+    o: addr=${MEDIA_IP},hard,timeo=600,retrans=3,proto=tcp,nfsvers=4.2,port=2049,rsize=4096,wsize=4096,noacl,nocto,noatime,nodiratime,fg,noac,lookupcache=none
+    device: :/
+
+# TODO: use new volume subpaths feature: https://docs.docker.com/compose/compose-file/05-services/#volumes
+volumes:
+  media:
+    name: media
+    driver_opts:
+      <<: *media_driver_opts
+      device: :/storage/media
+  media_library:
+    name: media_library
+    driver_opts:
+      <<: *media_driver_opts
+      device: :/storage/media/library
+  books:
+    name: books
+    driver_opts:
+      <<: *media_driver_opts
+      device: :/storage/media/library/books
+  usenet:
+    name: usenet
+    driver_opts:
+      <<: *media_driver_nocache_opts
+      device: :/storage/media/usenet
+  cameras:
+    name: cameras
+    driver_opts:
+      <<: *media_driver_opts
+      device: :/storage/media/cameras
+
 services:
-  maddy:
-    <<: *service
-    image: foxcpp/maddy:0.7
+  cloudflare-ddns:
+    <<: *options
+    image: ghcr.io/brettinternet/cloudflare-ddns:latest
     environment:
       <<: *environment
-      DEBUG: "false"
-      SMTP_PORT: "465"
-      SMTP_USER: "${SMTP_USER}"
-      SMTP_PASSWORD: "${SMTP_PASSWORD}"
-      SMTP_HOST: "${SMTP_HOST}"
-      SMTP_DOMAIN: "${SMTP_DOMAIN}"
-    volumes:
-      - "${CONFIG_DIR}/maddy/maddy.conf:/data/maddy.conf:ro"
-
-  ntfy:
-    <<: *service
-    image: binwiederhier/ntfy:latest
-    environment:
-      <<: *environment
-      NTFY_UPSTREAM_BASE_URL: https://ntfy.sh
-      NTFY_BEHIND_PROXY: "true"
-      NTFY_AUTH_FILE: /var/lib/ntfy/auth.db
-      NTFY_CACHE_FILE: /var/lib/ntfy/cache.db
-      NTFY_AUTH_DEFAULT_ACCESS: deny-all
-      NTFY_BASE_URL: "https://ntfy.${PUBLIC_DOMAIN}"
-      NTFY_ENABLE_LOGIN: "true"
-    command: [serve]
-    volumes:
-      - "${CONFIG_DIR}/ntfy:/var/lib/ntfy"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.ntfy.rule: Host(`ntfy.${PUBLIC_DOMAIN}`)
-      traefik.http.routers.ntfy.entrypoints: websecure
-      traefik.http.services.ntfy.loadbalancer.server.port: 80
-
-  espial:
-    <<: *service
-    image: jonschoning/espial:espial
-    environment:
-      <<: *environment
-      IP_FROM_HEADER: "true"
-      SQLITE_DATABASE: /app/data/espial.sqlite3
-      SHOULD_LOG_ALL: "false"
-    volumes:
-      - "${CONFIG_DIR}/espial:/app/data"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.espial.middlewares: hsts-header
-      traefik.http.routers.espial.rule: Host(`bookmarks.${PUBLIC_DOMAIN}`)
-      traefik.http.routers.espial.entrypoints: websecure
-      traefik.http.services.espial.loadbalancer.server.port: 3000
+      CRON: "*/10 * * * *"
+      CLOUDFLARE_API_TOKEN: "${CLOUDFLARE_API_TOKEN}"
+      CLOUDFLARE_RECORD_NAME: "local.${PRIVATE_DOMAIN}"
+      CLOUDFLARE_RECORD_PROXIED: "false"
+      CLOUDFLARE_RECORD_TYPE: A
+      PRE_COMMANDS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "http://healthchecks:8000/ping/${HEALTHCHECKS_DDNS_UUID}/start"
+      POST_COMMANDS_FAILURE: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "http://healthchecks:8000/ping/${HEALTHCHECKS_DDNS_UUID}/fail"
+      POST_COMMANDS_SUCCESS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "http://healthchecks:8000/ping/${HEALTHCHECKS_DDNS_UUID}"
 
   mealie:
-    <<: *service
+    <<: *options
     image: ghcr.io/mealie-recipes/mealie:v1.0.0-RC1.1
     environment:
       <<: *environment
@@ -89,7 +94,7 @@ services:
       traefik.http.services.mealie.loadbalancer.server.port: 9000
 
   ilo-fans-controller:
-    <<: *service
+    <<: *options
     image: ghcr.io/alex3025/ilo-fans-controller
     environment:
       <<: *environment

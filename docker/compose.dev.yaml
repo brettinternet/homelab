@@ -56,25 +56,6 @@ services:
     volumes:
       - "${CONFIG_DIR}/git:/repos"
 
-  # cgit_private:
-  #   <<: *service
-  #   image: ghcr.io/brettinternet/cgit:latest
-  #   environment:
-  #     <<: *environment
-  #     ROOT_TITLE: "git.${PRIVATE_DOMAIN}"
-  #     ROOT_DESC: Private mirrors
-  #     ROOT_README: /srv/git/README.md
-  #     SECTION_FROM_STARTPATH: 1
-  #     NOPLAINEMAIL: 1
-  #   volumes:
-  #     - "${CONFIG_DIR}/git_priv:/srv/git"
-  #   labels:
-  #     traefik.enable: "true"
-  #     traefik.http.routers.cgit-private.middlewares: hsts-header, ipallowlist, authelia_private
-  #     traefik.http.routers.cgit-private.rule: Host(`git.${PRIVATE_DOMAIN}`)
-  #     traefik.http.routers.cgit-private.entrypoints: websecure
-  #     traefik.http.services.cgit-private.loadbalancer.server.port: 80
-
   mirrors_private:
     <<: *service
     image: ghcr.io/brettinternet/update-mirrors:latest

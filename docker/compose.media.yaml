@@ -31,9 +31,6 @@ services:
       # - 127.0.0.1:32400:32400/tcp
       - 32400:32400/tcp
       # Plex DLNA Server
-      # https://support.plex.tv/articles/200350536-dlna/
-      # - 32469:32469/tcp
-      # - 1900:1900/udp
       # GDM Network discovery
       # https://support.plex.tv/articles/200430283-network/
       - 32410:32410/udp
