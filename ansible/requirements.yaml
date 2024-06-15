@@ -9,7 +9,7 @@ collections:
   - name: ansible.utils
     version: 5.0.0
   - name: ansible.windows
-    version: 2.3.0
+    version: 2.4.0
   - name: community.windows
     version: 2.2.0
   # https://github.com/kewlfft/ansible-aur
