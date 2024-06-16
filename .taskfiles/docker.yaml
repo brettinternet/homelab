@@ -13,7 +13,7 @@ vars:
 
 env:
   DOCKER_HOST: ssh://gertrude
-  COMPOSE_PROFILES: base,utils,home,backup,monitoring,auth,media,dev
+  COMPOSE_PROFILES: base,utils,home,auth,media
   COMPOSE_PROJECT: "{{ .PROJECT }}"
   COMPOSE_HTTP_TIMEOUT: 300
 
@@ -40,6 +40,7 @@ tasks:
 
   up:
     desc: Deploy compose files to hosts
+    aliases: [start, deploy]
     cmds:
       - echo $COMPOSE_PROFILES
       - "{{ .SOPS_COMMAND }} '{{ .COMPOSE_COMMAND }} up -d --remove-orphans'"
