@@ -1,6 +1,6 @@
 # Homelab
 
-[![Lint](https://github.com/brettinternet/homelab/actions/workflows/lint.yml/badge.svg)](https://github.com/brettinternet/homelab/actions/workflows/lint.yml)
+[![Lint](https://github.com/brettinternet/homelab/actions/workflows/lint.yaml/badge.svg)](https://github.com/brettinternet/homelab/actions/workflows/lint.yaml)
 
 Provisioning and experiments in my homelab. See also [homeops](https://github.com/brettinternet/homeops).
 
