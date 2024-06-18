@@ -8,5 +8,5 @@
   "prettier.ignorePath": ".github/linters/.prettierignore",
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
-  "ansible.python.interpreterPath": "./.venv/bin/python"
+  "ansible.python.interpreterPath": ".venv/bin/python"
 }

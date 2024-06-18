@@ -1,15 +1,15 @@
 ---
 collections:
-  - name: community.general
-    version: 9.0.1
-  - name: community.sops
-    version: 1.6.7
   - name: ansible.posix
     version: 1.5.4
   - name: ansible.utils
     version: 5.0.0
   - name: ansible.windows
     version: 2.4.0
+  - name: community.general
+    version: 9.0.1
+  - name: community.sops
+    version: 1.6.7
   - name: community.windows
     version: 2.2.0
   # https://github.com/kewlfft/ansible-aur

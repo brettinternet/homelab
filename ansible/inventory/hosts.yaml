@@ -45,15 +45,15 @@ linux:
         - /srv/nfs  *(rw,fsid=0,no_subtree_check,all_squash)
         - /srv/nfs/storage  *(rw,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)
       mergerfs__mounts:
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1-part1": /mnt/parity1
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2-part1": /mnt/parity2
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi3-part1": /mnt/parity3
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi4-part1": /mnt/disk1
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi5-part1": /mnt/disk2
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi6-part1": /mnt/disk3
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi7-part1": /mnt/disk4
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi8-part1": /mnt/disk5
-        "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi9-part1": /mnt/disk6
+        "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/parity1
+        "/dev/disk/by-id/ata-ST10000NE0008-2JM101_ZPW0MSQL-part1": /mnt/parity2
+        "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG5TJRM-part1": /mnt/parity3
+        "/dev/disk/by-id/ata-TOSHIBA_HDWT360_98R0A036FB1G-part1": /mnt/disk1
+        "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K44G5Y-part1": /mnt/disk2
+        "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M70Y-part1": /mnt/disk3
+        "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M5SY-part1": /mnt/disk4
+        "/dev/disk/by-id/ata-ST3000DM001-1ER166_Z502ZJH6-part1": /mnt/disk5
+        "/dev/disk/by-id/ata-HGST_HDN726060ALE610_NAGWMN6Y-part1": /mnt/disk6
       packages: >-
         {{ pkgs.base | join(' ') }}
         cockpit-storaged
