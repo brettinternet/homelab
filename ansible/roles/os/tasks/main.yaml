@@ -13,6 +13,15 @@
   community.general.timezone:
     name: "{{ os__timezone }}"
 
+- name: Clear MOTD
+  ansible.builtin.copy:
+    content: ""
+    dest: /etc/motd
+    force: true
+    group: root
+    owner: root
+    mode: "0544"
+
 - name: Set hostname to inventory hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
