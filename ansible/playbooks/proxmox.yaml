@@ -11,15 +11,16 @@
       community.general.proxmox_kvm:
         api_user: "{{ proxmox__api_user }}"
         api_password: "{{ proxmox__api_password }}"
-        api_host: "{{ proxmox__api_host }}"
+        api_host: "{{ ansible_host }}"
         name: bogota
-        node: "{{ proxmox__api_host }}"
+        node: harambe
         state: present
+        update: true
         vmid: 104
         agent: 1
         onboot: true
         bios: ovmf
-        cores: 2
+        cores: 4
         cpu: x86-64-v2-AES
         memory: 32768
         efidisk0:
@@ -38,3 +39,8 @@
           net0: virtio=BC:24:11:54:B2:56,bridge=vmbr0
         # ide:
         #   ide2: "local:iso/archlinux-2023.12.01-x86_64.iso,media=cdrom,size=20G"
+#
+# https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_module.html
+# https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_inventory.html
+# https://docs.ansible.com/ansible/latest/collections/community/libvirt/virt_module.html
+# https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_kvm_module.html
