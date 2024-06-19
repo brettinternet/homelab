@@ -4,3 +4,36 @@
   become: true
   roles:
     - role: proxmox
+  post_tasks:
+    # /etc/pve/qemu-server/<vmid>.conf
+    - name: Create NFS VM
+      community.general.proxmox_kvm:
+        api_user: "{{ proxmox__api_user }}"
+        api_password: "{{ proxmox__api_password }}"
+        api_host: "{{ proxmox__api_host }}"
+        name: bogota
+        node: "{{ proxmox__api_host }}"
+        state: present
+        vmid: 104
+        agent: 1
+        onboot: true
+        bios: ovmf
+        cores: 2
+        cpu: x86-64-v2-AES
+        memory: 32768
+        efidisk0:
+          storage: local-lvm
+          format: raw
+          efitype: 4m
+          pre_enrolled_keys: true
+        boot: order=sata0;ide2;net0
+        # boot: order=ide2;sata0;net0
+        sata:
+          sata0: local-lvm:vm-104-disk-1,size=64G,ssd=1
+        hostpci:
+          # SATA controller
+          hostpci0: "0000:06:00.0"
+        net:
+          net0: virtio=BC:24:11:54:B2:56,bridge=vmbr0
+        # ide:
+        #   ide2: "local:iso/archlinux-2023.12.01-x86_64.iso,media=cdrom,size=20G"
