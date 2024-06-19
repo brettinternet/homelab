@@ -52,6 +52,7 @@ services:
   cloudflare-ddns:
     <<: *options
     image: ghcr.io/brettinternet/cloudflare-ddns:latest
+    container_name: ddns
     environment:
       <<: *environment
       CRON: "*/10 * * * *"
@@ -59,16 +60,11 @@ services:
       CLOUDFLARE_RECORD_NAME: "local.${PRIVATE_DOMAIN}"
       CLOUDFLARE_RECORD_PROXIED: "false"
       CLOUDFLARE_RECORD_TYPE: A
-      PRE_COMMANDS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "http://healthchecks:8000/ping/${HEALTHCHECKS_DDNS_UUID}/start"
-      POST_COMMANDS_FAILURE: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "http://healthchecks:8000/ping/${HEALTHCHECKS_DDNS_UUID}/fail"
-      POST_COMMANDS_SUCCESS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "http://healthchecks:8000/ping/${HEALTHCHECKS_DDNS_UUID}"
 
   mealie:
     <<: *options
     image: ghcr.io/mealie-recipes/mealie:v1.0.0-RC1.1
+    container_name: mealie
     environment:
       <<: *environment
       WEB_CONCURRENCY: 1
@@ -79,16 +75,10 @@ services:
       BASE_URL: "https://recipes.${PUBLIC_DOMAIN}"
       AUTO_BACKUP_ENABLED: "true"
       ALLOW_SIGNUP: "false"
-      SMTP_HOST: maddy
-      SMTP_PORT: 25
-      SMTP_AUTH_STRATEGY: NONE
-      SMTP_FROM_NAME: Recipes
-      SMTP_FROM_EMAIL: "${SMTP_USER}"
     volumes:
       - "${CONFIG_DIR}/mealie:/app/data"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.mealie.middlewares: hsts-header
       traefik.http.routers.mealie.rule: Host(`recipes.${PUBLIC_DOMAIN}`)
       traefik.http.routers.mealie.entrypoints: websecure
       traefik.http.services.mealie.loadbalancer.server.port: 9000
@@ -96,6 +86,7 @@ services:
   ilo-fans-controller:
     <<: *options
     image: ghcr.io/alex3025/ilo-fans-controller
+    container_name: ilofans
     environment:
       <<: *environment
       ILO_HOST: "10.1.2.7"
@@ -103,7 +94,6 @@ services:
       ILO_PASSWORD: "${ILO_PASSWORD}"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.ilofan.middlewares: hsts-header, ipallowlist, authelia_private
       traefik.http.routers.ilofan.rule: Host(`ilofans.${PRIVATE_DOMAIN}`)
       traefik.http.routers.ilofan.entrypoints: websecure
       traefik.http.services.ilofan.loadbalancer.server.port: 80

@@ -11,6 +11,7 @@ services:
   homeassistant:
     <<: *options
     image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
     network_mode: host
     cap_add:
       - CAP_NET_RAW
@@ -33,6 +34,7 @@ services:
   esphome:
     <<: *options
     image: esphome/esphome:latest
+    container_name: esphome
     network_mode: host
     environment:
       <<: *environment
@@ -41,7 +43,6 @@ services:
       - "${CONFIG_DIR}/esphome:/config"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.esphome.middlewares: hsts-header, ipallowlist, authelia_private
       traefik.http.routers.esphome.rule: Host(`esphome.${PRIVATE_DOMAIN}`)
       traefik.http.services.esphome.loadbalancer.server.port: 6052
       traefik.http.routers.esphome.entrypoints: websecure
@@ -49,6 +50,7 @@ services:
   frigate:
     <<: *options
     image: ghcr.io/blakeblackshear/frigate:stable
+    container_name: frigate
     depends_on: [mosquitto]
     networks: [default]
     cap_add: [CAP_PERFMON]
@@ -75,12 +77,10 @@ services:
       - 8555:8555/udp # WebRTC
     labels:
       traefik.enable: "true"
-      traefik.http.routers.frigate.middlewares: hsts-header, ipallowlist, authelia_private
       traefik.http.routers.frigate.rule: Host(`video.${PRIVATE_DOMAIN}`)
       traefik.http.services.frigate.loadbalancer.server.port: 5000
       traefik.http.routers.frigate.entrypoints: websecure
       traefik.http.routers.frigate.service: frigate
-      traefik.http.routers.go2rtc.middlewares: hsts-header, ipallowlist, authelia_private
       traefik.http.routers.go2rtc.rule: Host(`rtc.${PRIVATE_DOMAIN}`)
       traefik.http.services.go2rtc.loadbalancer.server.port: 1984
       traefik.http.routers.go2rtc.entrypoints: websecure
@@ -88,6 +88,7 @@ services:
 
   mosquitto:
     <<: *options
+    container_name: mosquitto
     networks: [default]
     image: eclipse-mosquitto:latest
     ports:

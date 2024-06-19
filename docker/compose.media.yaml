@@ -12,6 +12,7 @@ services:
   plex:
     <<: *options
     image: plexinc/pms-docker:latest
+    container_name: plex
     environment:
       <<: *environment
       PLEX_UID: "${PUID}"
@@ -50,13 +51,13 @@ services:
   overseerr:
     <<: *options
     image: sctx/overseerr:latest
+    container_name: overseerr
     security_opt:
       - seccomp:unconfined
     volumes:
       - "${CONFIG_DIR}/overseerr:/app/config"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.overseer.middlewares: hsts-header
       traefik.http.routers.overseer.rule: Host(`request.${PUBLIC_DOMAIN}`)
       traefik.http.services.overseer.loadbalancer.server.port: 5055
       traefik.http.routers.overseer.entrypoints: websecure
@@ -64,6 +65,7 @@ services:
   tautulli:
     <<: *options
     image: ghcr.io/tautulli/tautulli:latest
+    container_name: tautulli
     environment:
       <<: *environment
       PUID: "${PUID}"
@@ -72,7 +74,6 @@ services:
       - "${CONFIG_DIR}/tautulli:/config"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.tautulli.middlewares: hsts-header, ipallowlist
       traefik.http.routers.tautulli.rule: Host(`tautulli.${PRIVATE_DOMAIN}`)
       traefik.http.services.tautulli.loadbalancer.server.port: 8181
       traefik.http.routers.tautulli.entrypoints: websecure
@@ -80,6 +81,7 @@ services:
   sabnzbd:
     <<: *options
     image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
     environment:
       <<: *environment
       PUID: "${PUID}"
@@ -89,7 +91,6 @@ services:
       - usenet:/data/usenet
     labels:
       traefik.enable: "true"
-      traefik.http.routers.sabnzbd.middlewares: hsts-header, ipallowlist
       traefik.http.routers.sabnzbd.rule: Host(`nzb.${PRIVATE_DOMAIN}`)
       traefik.http.services.sabnzbd.loadbalancer.server.port: 8080
       traefik.http.routers.sabnzbd.entrypoints: websecure
@@ -97,6 +98,7 @@ services:
   prowlarr:
     <<: *options
     image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
     environment:
       <<: *environment
       PUID: "${PUID}"
@@ -105,7 +107,6 @@ services:
       - "${CONFIG_DIR}/prowlarr:/config"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.prowlarr.middlewares: hsts-header, ipallowlist, authelia_private
       traefik.http.routers.prowlarr.rule: Host(`prowlarr.${PRIVATE_DOMAIN}`)
       traefik.http.services.prowlarr.loadbalancer.server.port: 9696
       traefik.http.routers.prowlarr.entrypoints: websecure
@@ -113,6 +114,7 @@ services:
   radarr:
     <<: *options
     image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
     environment:
       <<: *environment
       PUID: "${PUID}"
@@ -122,7 +124,6 @@ services:
       - media:/data
     labels:
       traefik.enable: "true"
-      traefik.http.routers.radarr.middlewares: hsts-header, ipallowlist
       traefik.http.routers.radarr.rule: Host(`radarr.${PRIVATE_DOMAIN}`)
       traefik.http.services.radarr.loadbalancer.server.port: 7878
       traefik.http.routers.radarr.entrypoints: websecure
@@ -130,6 +131,7 @@ services:
   sonarr:
     <<: *options
     image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
     environment:
       <<: *environment
       PUID: "${PUID}"
@@ -139,7 +141,6 @@ services:
       - media:/data
     labels:
       traefik.enable: "true"
-      traefik.http.routers.sonarr.middlewares: hsts-header, ipallowlist
       traefik.http.routers.sonarr.rule: Host(`sonarr.${PRIVATE_DOMAIN}`)
       traefik.http.services.sonarr.loadbalancer.server.port: 8989
       traefik.http.routers.sonarr.entrypoints: websecure
@@ -147,6 +148,7 @@ services:
   unpackerr:
     <<: *options
     image: golift/unpackerr
+    container_name: unpackerr
     volumes:
       - media:/data
     environment:
@@ -158,35 +160,10 @@ services:
       UN_RADARR_0_API_KEY: "${RADARR_API_KEY}"
       UN_RADARR_0_PATHS_0: /data/usenet/incomplete
 
-  # calibre:
-  #   <<: *options
-  #   image: lscr.io/linuxserver/calibre:latest
-  #   # security_opt:
-  #   #   - seccomp:unconfined
-  #   environment:
-  #     <<: *environment
-  #     PUID: "${PUID}"
-  #     PGID: "${PGID}"
-  #     TITLE: Calibre
-  #   volumes:
-  #     - "${CONFIG_DIR}/calibre:/config"
-  #     - media:/data
-  #   labels:
-  #     traefik.enable: "true"
-  #     traefik.http.routers.calibre.middlewares: hsts-header, ipallowlist, authelia_private
-  #     traefik.http.routers.calibre.rule: Host(`calibre.${PRIVATE_DOMAIN}`)
-  #     traefik.http.services.calibre.loadbalancer.server.port: 8080
-  #     traefik.http.routers.calibre.entrypoints: websecure
-  #     traefik.http.routers.calibre.service: calibre
-  #     traefik.http.routers.calibre-content.middlewares: hsts-header, ipallowlist, authelia_private
-  #     traefik.http.routers.calibre-content.rule: Host(`read.${PRIVATE_DOMAIN}`)
-  #     traefik.http.services.calibre-content.loadbalancer.server.port: 8081
-  #     traefik.http.routers.calibre-content.entrypoints: websecure
-  #     traefik.http.routers.calibre-content.service: calibre-content
-
   calibre_web:
     <<: *options
     image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
     environment:
       <<: *environment
       PUID: "${PUID}"
@@ -197,7 +174,6 @@ services:
       - books:/data
     labels:
       traefik.enable: "true"
-      traefik.http.routers.calibre-web.middlewares: hsts-header
       traefik.http.routers.calibre-web.rule: Host(`books.${PUBLIC_DOMAIN}`)
       traefik.http.services.calibre-web.loadbalancer.server.port: 8083
       traefik.http.routers.calibre-web.entrypoints: websecure

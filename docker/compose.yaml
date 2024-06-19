@@ -19,7 +19,7 @@ services:
   diun:
     <<: *service
     image: crazymax/diun:latest
-    depends_on: [socket-proxy]
+    container_name: diun
     command: serve
     environment:
       <<: *environment
@@ -31,47 +31,15 @@ services:
       DIUN_WATCH_RUNONSTARTUP: "true"
       DIUN_PROVIDERS_DOCKER: "true"
       DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT: "true"
-      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socket-proxy:2375
-      DIUN_NOTIF_NTFY_ENDPOINT: http://ntfy
-      DIUN_NOTIF_NTFY_TOKEN: "${NTFY_DIUN_TOKEN}"
-      DIUN_NOTIF_NTFY_TOPIC: homelab
-      DIUN_WATCH_HEALTHCHECKS_BASEURL: http://healthchecks:8000/ping/
-      DIUN_WATCH_HEALTHCHECKS_UUID: "${HEALTHCHECKS_DIUN_UUID}"
-
-  portainer:
-    <<: *service
-    image: portainer/portainer-ce:alpine
-    command: -H unix:///var/run/docker.sock
+      DIUN_NOTIF_PUSHOVER_TOKEN: "${PUSHOVER_DIUN_TOKEN}"
+      DIUN_NOTIF_PUSHOVER_RECIPIENT: "${PUSHOVER_USER_KEY}"
     volumes:
-      # Or connect to proxy: https://www.reddit.com/r/portainer/comments/12tdl8y/issue_connecting_portainer_to_docker_socket_proxy/
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "${CONFIG_DIR}/portainer:/data"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.portainer.middlewares: hsts-header, ipallowlist
-      traefik.http.routers.portainer.rule: Host(`portainer.${PRIVATE_DOMAIN}`)
-      traefik.http.routers.portainer.entrypoints: websecure
-      traefik.http.services.portainer.loadbalancer.server.port: 9000
-
-  socket-proxy:
-    <<: *service
-    image: tecnativa/docker-socket-proxy:latest
-    environment:
-      <<: *environment
-      CONTAINERS: 1
-      IMAGES: 1
-      NETWORKS: 1
-      CONTAINERS_CREATE: 1
-      CONTAINERS_START: 1
-      CONTAINERS_UPDATE: 1
-      CONTAINERS_DELETE: 1
-      IMAGES_DELETE: 1
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
 
   cloudflared-tunnel:
     <<: *service
     image: cloudflare/cloudflared:2024.6.0
+    container_name: cloudflared-tunnel
     environment:
       <<: *environment
       # TUNNEL_LOGLEVEL: debug
@@ -85,8 +53,8 @@ services:
 
   traefik:
     <<: *service
-    image: traefik:v2.11
-    depends_on: [socket-proxy, authelia_private, authelia_public]
+    image: traefik:v3.0
+    container_name: traefik
     environment:
       <<: *environment
       CF_DNS_API_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
@@ -100,6 +68,7 @@ services:
       - 80:80
       - 443:443
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - "${CONFIG_DIR}/traefik/conf:/etc/traefik"
       - "${CONFIG_DIR}/traefik/log:/var/log"
     command:
@@ -108,7 +77,6 @@ services:
       - --accesslog.filters.statuscodes=400-499
       - --api=true
       - --providers.docker=true
-      - --providers.docker.endpoint=tcp://socket-proxy:2375
       - --providers.docker.exposedbydefault=false
       - --providers.file.directory=/etc/traefik
       - --providers.file.watch=true
@@ -131,24 +99,18 @@ services:
       - --certificatesresolvers.leresolver.acme.email=${ACME_EMAIL}
       # - --certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --serverstransport.insecureskipverify=true
-    # healthcheck:
-    #   test: [CMD, traefik, healthcheck, --ping]
     labels:
       traefik.enable: "true"
       traefik.http.routers.traefik.rule: Host(`traefik.${PRIVATE_DOMAIN}`)
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.entrypoints: websecure
-      traefik.http.routers.traefik.middlewares: hsts-header, ipallowlist, authelia_private
-      traefik.http.middlewares.ipallowlist.ipallowlist.sourcerange: "${IPALLOWLIST:-0.0.0.0/0,::/0}"
-      traefik.http.middlewares.hsts-header.headers.customResponseHeaders.Strict-Transport-Security: max-age=63072000
 
   cloudflare-companion:
     <<: *service
     image: tiredofit/traefik-cloudflare-companion:latest
-    depends_on: [socket-proxy]
+    container_name: cloudflare-companion
     environment:
       <<: *environment
-      DOCKER_HOST: tcp://socket-proxy:2375
       TIMEZONE: "${TIMEZONE}"
       TRAEFIK_VERSION: 2
       CF_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
