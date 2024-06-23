@@ -26,27 +26,27 @@ volumes:
     name: media
     driver_opts:
       <<: *media_driver_opts
-      device: :/storage/media
+      device: :/media
   media_library:
     name: media_library
     driver_opts:
       <<: *media_driver_opts
-      device: :/storage/media/library
+      device: :/media/library
   books:
     name: books
     driver_opts:
       <<: *media_driver_opts
-      device: :/storage/media/library/books
+      device: :/media/library/books
   usenet:
     name: usenet
     driver_opts:
       <<: *media_driver_nocache_opts
-      device: :/storage/media/usenet
+      device: :/media/usenet
   cameras:
     name: cameras
     driver_opts:
       <<: *media_driver_opts
-      device: :/storage/media/cameras
+      device: :/media/cameras
 
 services:
   cloudflare-ddns:

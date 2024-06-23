@@ -43,7 +43,7 @@ linux:
       proxmox__acpi_lax: true
       nfs__exports:
         - /srv/nfs  *(rw,fsid=0,no_subtree_check,all_squash)
-        - /srv/nfs/storage  *(rw,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)
+        - /srv/nfs/media  *(rw,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)
       mergerfs__mounts:
         "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/parity1
         "/dev/disk/by-id/ata-ST10000NE0008-2JM101_ZPW0MSQL-part1": /mnt/parity2

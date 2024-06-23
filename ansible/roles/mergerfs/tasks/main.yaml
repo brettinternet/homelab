@@ -51,10 +51,10 @@
     opts: allow_other,use_ino,cache.files=partial,dropcacheonclose=true,category.create=mfs,fsname=mergerfs,minfreespace=10G
     state: mounted
 
-- name: Bind mount storage to nfs root
+- name: Bind mount media to nfs root
   ansible.posix.mount:
-    src: "{{ mergerfs__storage_dir }}"
-    path: "{{ nfs__root_dir }}/storage"
+    src: "{{ mergerfs__storage_dir }}/media"
+    path: "{{ nfs__root_dir }}/media"
     fstype: none
     opts: bind
     state: mounted
