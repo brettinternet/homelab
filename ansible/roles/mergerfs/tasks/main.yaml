@@ -33,6 +33,19 @@
     name:
       - fuse2
 
+- name: Ensure mount targets exist
+  ansible.builtin.file:
+    path: "{{ item.value }}"
+    state: directory
+    mode: "0755"
+  with_dict: "{{ mergerfs__mounts }}"
+
+- name: Ensure mergerfs target exists
+  ansible.builtin.file:
+    path: /mnt/storage
+    state: directory
+    mode: "0755"
+
 # https://github.com/trapexit/backup-and-recovery-howtos/blob/master/docs/setup_(fstab).md
 - name: Mount JBOD drives
   ansible.posix.mount:
@@ -56,5 +69,5 @@
     src: "{{ mergerfs__storage_dir }}/media"
     path: "{{ nfs__root_dir }}/media"
     fstype: none
-    opts: bind
+    opts: x-systemd.requires=/mnt/storage,x-systemd.automount,bind
     state: mounted
