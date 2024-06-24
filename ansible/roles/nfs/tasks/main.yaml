@@ -33,10 +33,31 @@
         owner: root
         group: root
         mode: "0644"
-      notify: reload nfs
+      notify: Reload nfs
 
     - name: Enable and start NFS server
       ansible.builtin.service:
         name: "{{ nfs__server_daemon }}"
         state: started
         enabled: true
+
+- name: Make services required for NFS
+  when: nfs__required_services | length
+  block:
+    - name: Create NFS systemd override directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/nfs-server.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Create NFS systemd override
+      ansible.builtin.copy:
+        # /srv/nfs/media would become `srv-nfs-media.mount`
+        content: "Requires=network.target proc-fs-nfsd.mount {{ nfs__required_services.strip().join(' ') }}"
+        dest: /etc/systemd/system/nfs-server.service.d/override.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload systemd

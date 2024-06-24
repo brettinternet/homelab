@@ -41,6 +41,8 @@ linux:
       cockpit: true
       snapraid: true
       proxmox__acpi_lax: true
+      nfs__required_services:
+        - srv-nfs-media.mount
       nfs__exports:
         - /srv/nfs  *(rw,fsid=0,no_subtree_check,all_squash)
         - /srv/nfs/media  *(rw,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)

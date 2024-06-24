@@ -5,3 +5,4 @@ nfs__supported_distributions:
 
 nfs__root_dir: /srv/nfs
 nfs__exports: []
+nfs__required_services: []
