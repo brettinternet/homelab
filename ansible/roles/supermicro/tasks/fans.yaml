@@ -58,7 +58,7 @@
     dest: /etc/systemd/system/smfc.service
     owner: root
     group: root
-    mode: "0744"
+    mode: "0644"
 
 - name: Start and enable smfc service
   ansible.builtin.systemd:
