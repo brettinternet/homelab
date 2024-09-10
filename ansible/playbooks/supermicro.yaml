@@ -1,0 +1,6 @@
+---
+- name: Setup Supermicro servers
+  hosts: supermicro
+  become: true
+  roles:
+    - supermicro
