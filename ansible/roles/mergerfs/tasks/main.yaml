@@ -61,7 +61,16 @@
     src: /mnt/disk*
     path: "{{ mergerfs__storage_dir }}"
     fstype: fuse.mergerfs
-    opts: allow_other,use_ino,cache.files=partial,dropcacheonclose=true,category.create=mfs,fsname=mergerfs,minfreespace=10G
+    opts: >-
+      allow_other,
+      use_ino,
+      inodecalc=path-hash,
+      security_capability=false,
+      cache.files=partial,
+      dropcacheonclose=true,
+      category.create=mfs,
+      fsname=mergerfs,
+      minfreespace=10G
     state: mounted
 
 - name: Bind mount media to nfs root
