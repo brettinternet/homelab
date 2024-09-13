@@ -64,6 +64,7 @@
     opts: >-
       allow_other,
       use_ino,
+      noforget,
       inodecalc=path-hash,
       security_capability=false,
       cache.files=partial,
