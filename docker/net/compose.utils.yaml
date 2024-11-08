@@ -1,0 +1,65 @@
+---
+x-options: &options
+  profiles: &profiles [utils]
+  networks: [default]
+  environment: &environment
+    TZ: "${TIMEZONE}"
+  deploy: &deploy
+    restart_policy:
+      condition: unless-stopped
+
+services:
+  # A record has to exist first
+  cloudflare-ddns:
+    <<: *options
+    image: ghcr.io/brettinternet/cloudflare-ddns:latest
+    container_name: ddns
+    environment:
+      <<: *environment
+      CRON: "*/10 * * * *"
+      CLOUDFLARE_API_TOKEN: "${CLOUDFLARE_API_TOKEN}"
+      CLOUDFLARE_RECORD_NAME: "vpn.${PRIVATE_DOMAIN}"
+      CLOUDFLARE_RECORD_PROXIED: "false"
+      CLOUDFLARE_RECORD_TYPE: A
+
+  adguard:
+    image: adguard/adguardhome:latest
+    container_name: adguard
+    profiles: *profiles
+    environment: *environment
+    deploy: *deploy
+    dns: 10.1.0.1
+    network_mode: host
+    # ports:
+    #   - 53:53/tcp
+    #   - 53:53/udp
+    #   # - 784:784/udp # DNS over QUIC
+    #   # - 853:853/tcp
+    volumes:
+      - "${CONFIG_DIR}/adguard/work:/opt/adguardhome/work"
+      - "${CONFIG_DIR}/adguard/conf:/opt/adguardhome/conf"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.adguard.rule: Host(`dns.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.adguard.entrypoints: websecure
+      traefik.http.services.adguard.loadbalancer.server.port: 3000
+      traefik.http.services.adguard.loadbalancer.passHostHeader: "true"
+      traefik.tcp.routers.adguard-tls.rule: HostSNI(`dns.${PRIVATE_DOMAIN}`)
+      traefik.tcp.routers.adguard-tls.tls: "true"
+      traefik.tcp.routers.adguard-tls.entrypoints: dot
+      traefik.tcp.services.adguard-tls.loadbalancer.server.port: 53
+
+  ilo-fans-controller:
+    <<: *options
+    image: ghcr.io/alex3025/ilo-fans-controller
+    container_name: ilofans
+    environment:
+      <<: *environment
+      ILO_HOST: "10.1.2.7"
+      ILO_USERNAME: "${ILO_USERNAME}"
+      ILO_PASSWORD: "${ILO_PASSWORD}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.ilofan.rule: Host(`ilofans.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.ilofan.entrypoints: websecure
+      traefik.http.services.ilofan.loadbalancer.server.port: 80

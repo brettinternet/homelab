@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
 vars:
@@ -26,6 +27,10 @@ includes:
     taskfile: .taskfiles/docker.yaml
     dir: ./docker
     aliases: [d]
+  # docker2:
+  #   taskfile: .taskfiles/docker2.yaml
+  #   dir: ./docker2
+  #   aliases: [d2]
   lint: .taskfiles/lint.yaml
   precommit: .taskfiles/precommit.yaml
   setup: .taskfiles/setup_{{OS}}.yaml

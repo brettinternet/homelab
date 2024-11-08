@@ -1,5 +1,5 @@
 ---
-x-service: &service
+x-options: &options
   profiles: [base]
   networks: [default]
   environment: &environment
@@ -17,7 +17,7 @@ networks:
 
 services:
   diun:
-    <<: *service
+    <<: *options
     image: crazymax/diun:latest
     container_name: diun
     command: serve
@@ -36,8 +36,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  cloudflared-tunnel:
-    <<: *service
+  tunnel:
+    <<: *options
     image: cloudflare/cloudflared:2024.9.1
     container_name: cloudflared-tunnel
     environment:
@@ -52,7 +52,7 @@ services:
     command: [tunnel, run]
 
   traefik:
-    <<: *service
+    <<: *options
     image: traefik:v3.1
     container_name: traefik
     environment:
@@ -61,12 +61,12 @@ services:
       CLOUDFLARE_POLLING_INTERVAL: 10
       CLOUDFLARE_PROPAGATION_TIMEOUT: 300
       PRIVATE_DOMAIN: "${PRIVATE_DOMAIN}"
-      PUBLIC_DOMAIN: "${PUBLIC_DOMAIN}"
     extra_hosts:
       - host.docker.internal:host-gateway
     ports:
       - 80:80
       - 443:443
+      - 853:853
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "${CONFIG_DIR}/traefik/conf:/etc/traefik"
@@ -83,14 +83,16 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.dot.address=:853
+      - --entrypoints.dot.http.tls.certResolver=leresolver
+      # - --entrypoints.dot.http.tls.domains[0].main=${PRIVATE_DOMAIN}
+      # - --entrypoints.dot.http.tls.domains[0].sans=*.${PRIVATE_DOMAIN}
       - --entrypoints.websecure.address=:443
       - --entryPoints.websecure.forwardedHeaders.insecure=false
       - --entryPoints.websecure.forwardedHeaders.trustedIPs=${DOCKER_SUBNET}
       - --entrypoints.websecure.http.tls.certResolver=leresolver
-      - --entrypoints.websecure.http.tls.domains[0].main=${PUBLIC_DOMAIN}
-      - --entrypoints.websecure.http.tls.domains[0].sans=*.${PUBLIC_DOMAIN}
-      - --entrypoints.websecure.http.tls.domains[1].main=${PRIVATE_DOMAIN}
-      - --entrypoints.websecure.http.tls.domains[1].sans=*.${PRIVATE_DOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].main=${PRIVATE_DOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.${PRIVATE_DOMAIN}
       - --certificatesresolvers.leresolver.acme.dnschallenge=true
       - --certificatesresolvers.leresolver.acme.dnschallenge.disablepropagationcheck=true # for internal domain
       - --certificatesresolvers.leresolver.acme.dnschallenge.provider=cloudflare
@@ -104,18 +106,15 @@ services:
       traefik.http.routers.traefik.rule: Host(`traefik.${PRIVATE_DOMAIN}`)
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.entrypoints: websecure
+      traefik.tls.option.default.alpnProtocols: http/1.1,h2,dot
 
-  cloudflare-companion:
-    <<: *service
-    image: tiredofit/traefik-cloudflare-companion:latest
-    container_name: cloudflare-companion
-    environment:
-      <<: *environment
-      TIMEZONE: "${TIMEZONE}"
-      TRAEFIK_VERSION: 2
-      CF_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
-      TARGET_DOMAIN: "tunnel.${PUBLIC_DOMAIN}"
-      DOMAIN1: "${PUBLIC_DOMAIN}"
-      DOMAIN1_ZONE_ID: "${CLOUDFLARE_PUBLIC_DOMAIN_ZONE_ID}"
-      DOMAIN1_PROXIED: "true"
-      DOMAIN1_EXCLUDED_SUB_DOMAINS: "*.internal.${PUBLIC_DOMAIN},*heim.${PUBLIC_DOMAIN}"
+  whoami:
+    <<: *options
+    image: traefik/whoami
+    container_name: whoami
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.whoami.rule: Host(`whoami.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.whoami.entrypoints: websecure
+      traefik.http.services.whoami.loadbalancer.server.port: 80
+      traefik.http.services.whoami.loadbalancer.passHostHeader: "true"

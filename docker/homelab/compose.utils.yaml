@@ -42,18 +42,3 @@ services:
       traefik.http.routers.mealie.rule: Host(`recipes.${PUBLIC_DOMAIN}`)
       traefik.http.routers.mealie.entrypoints: websecure
       traefik.http.services.mealie.loadbalancer.server.port: 9000
-
-  ilo-fans-controller:
-    <<: *options
-    image: ghcr.io/alex3025/ilo-fans-controller
-    container_name: ilofans
-    environment:
-      <<: *environment
-      ILO_HOST: "10.1.2.7"
-      ILO_USERNAME: "${ILO_USERNAME}"
-      ILO_PASSWORD: "${ILO_PASSWORD}"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.ilofan.rule: Host(`ilofans.${PRIVATE_DOMAIN}`)
-      traefik.http.routers.ilofan.entrypoints: websecure
-      traefik.http.services.ilofan.loadbalancer.server.port: 80
