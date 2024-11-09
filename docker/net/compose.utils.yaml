@@ -11,7 +11,7 @@ x-options: &options
 
 services:
   # A record has to exist first
-  cloudflare-ddns:
+  ddns:
     <<: *options
     image: ghcr.io/brettinternet/cloudflare-ddns:latest
     container_name: ddns
@@ -24,11 +24,10 @@ services:
       CLOUDFLARE_RECORD_TYPE: A
 
   adguard:
+    <<: *options
     image: adguard/adguardhome:latest
     container_name: adguard
-    profiles: *profiles
-    environment: *environment
-    deploy: *deploy
+    hostname: adguard
     ports:
       - 53:53/tcp
       - 53:53/udp
@@ -48,10 +47,11 @@ services:
       traefik.tcp.routers.adguard-tls.entrypoints: dot
       traefik.tcp.services.adguard-tls.loadbalancer.server.port: 53
 
-  ilo-fans-controller:
+  ilo-fans:
     <<: *options
     image: ghcr.io/alex3025/ilo-fans-controller
     container_name: ilofans
+    hostname: ilofans
     environment:
       <<: *environment
       ILO_HOST: "10.1.2.7"
@@ -62,3 +62,25 @@ services:
       traefik.http.routers.ilofan.rule: Host(`ilofans.${PRIVATE_DOMAIN}`)
       traefik.http.routers.ilofan.entrypoints: websecure
       traefik.http.services.ilofan.loadbalancer.server.port: 80
+
+  smokeping:
+    <<: *options
+    image: ghcr.io/linuxserver/smokeping:latest
+    container_name: ping
+    hostname: smokeping
+    environment:
+      <<: *environment
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+    volumes:
+      - "${CONFIG_DIR}/smokeping/config:/config"
+      - "${CONFIG_DIR}/smokeping/data:/data"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.ping.rule: Host(`ping.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.ping.entrypoints: websecure
+      traefik.http.services.ping.loadbalancer.server.port: 80
+      traefik.http.middlewares.smokeping-redirectregex.redirectRegex.regex: /smokeping/$
+      traefik.http.middlewares.smokeping-redirectregex.redirectRegex.replacement: /
+      traefik.http.middlewares.smokeping-addprefix.addPrefix.prefix: /smokeping
+      traefik.http.routers.ping.middlewares: smokeping-redirectregex,smokeping-addprefix
