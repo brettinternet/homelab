@@ -53,7 +53,7 @@ services:
 
   traefik:
     <<: *service
-    image: traefik:v3.1
+    image: traefik:v3.2
     container_name: traefik
     environment:
       <<: *environment
@@ -105,17 +105,20 @@ services:
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.entrypoints: websecure
 
-  # cloudflare-companion:
-  #   <<: *service
-  #   image: tiredofit/traefik-cloudflare-companion:latest
-  #   container_name: cloudflare-companion
-  #   environment:
-  #     <<: *environment
-  #     TIMEZONE: "${TIMEZONE}"
-  #     TRAEFIK_VERSION: 2
-  #     CF_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
-  #     TARGET_DOMAIN: "tunnel.${PUBLIC_DOMAIN}"
-  #     DOMAIN1: "${PUBLIC_DOMAIN}"
-  #     DOMAIN1_ZONE_ID: "${CLOUDFLARE_PUBLIC_DOMAIN_ZONE_ID}"
-  #     DOMAIN1_PROXIED: "true"
-  #     DOMAIN1_EXCLUDED_SUB_DOMAINS: "*.internal.${PUBLIC_DOMAIN},*heim.${PUBLIC_DOMAIN}"
+  cloudflare-companion:
+    <<: *service
+    image: tiredofit/traefik-cloudflare-companion:latest
+    container_name: cloudflare-companion
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      <<: *environment
+      TIMEZONE: "${TIMEZONE}"
+      TRAEFIK_VERSION: 2
+      CF_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
+      TARGET_DOMAIN: "tunnel.${PUBLIC_DOMAIN}"
+      DOMAIN1: "${PUBLIC_DOMAIN}"
+      DOMAIN1_ZONE_ID: "${CLOUDFLARE_PUBLIC_DOMAIN_ZONE_ID}"
+      DOMAIN1_PROXIED: "true"
+      DOMAIN1_EXCLUDED_SUB_DOMAINS: "*.internal.${PUBLIC_DOMAIN},*heim.${PUBLIC_DOMAIN}"
+      ENABLE_ZABBIX: "false"

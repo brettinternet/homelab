@@ -1,7 +1,9 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/docker/cli/master/cli/compose/schema/data/config_schema_v3.9.json
 x-options: &options
   profiles: [base]
   networks: [default]
+  # dns: ["${DNS}"]
   environment: &environment
     TZ: "${TIMEZONE}"
   deploy:
@@ -35,21 +37,6 @@ services:
       DIUN_NOTIF_PUSHOVER_RECIPIENT: "${PUSHOVER_USER_KEY}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
-  tunnel:
-    <<: *options
-    image: cloudflare/cloudflared:2024.9.1
-    container_name: cloudflared-tunnel
-    environment:
-      <<: *environment
-      # TUNNEL_LOGLEVEL: debug
-      # TUNNEL_POST_QUANTUM: "true"
-      NO_AUTOUPDATE: "true"
-      NO_TLS_VERIFY: "true"
-      TUNNEL_TOKEN: "${CLOUDFLARE_TUNNEL_TOKEN:?err}"
-      TUNNEL_URL: https://traefik
-      TUNNEL_ID: "${CLOUDFLARE_TUNNEL_ID}"
-    command: [tunnel, run]
 
   traefik:
     <<: *options
@@ -107,14 +94,3 @@ services:
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.entrypoints: websecure
       traefik.tls.option.default.alpnProtocols: http/1.1,h2,dot
-
-  whoami:
-    <<: *options
-    image: traefik/whoami
-    container_name: whoami
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.whoami.rule: Host(`whoami.${PRIVATE_DOMAIN}`)
-      traefik.http.routers.whoami.entrypoints: websecure
-      traefik.http.services.whoami.loadbalancer.server.port: 80
-      traefik.http.services.whoami.loadbalancer.passHostHeader: "true"

@@ -17,3 +17,9 @@ Run playbooks and commands:
 ```sh
 task ansible:{init,list,setup,upgrade,status}
 ```
+
+Deploy docker-compose remotely to hosts:
+
+```sh
+task docker:homelab run=up
+```

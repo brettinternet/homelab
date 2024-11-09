@@ -2,6 +2,7 @@
 x-options: &options
   profiles: &profiles [utils]
   networks: [default]
+  # dns: ["${DNS}"]
   environment: &environment
     TZ: "${TIMEZONE}"
   deploy: &deploy
@@ -28,13 +29,11 @@ services:
     profiles: *profiles
     environment: *environment
     deploy: *deploy
-    dns: 10.1.0.1
-    network_mode: host
-    # ports:
-    #   - 53:53/tcp
-    #   - 53:53/udp
-    #   # - 784:784/udp # DNS over QUIC
-    #   # - 853:853/tcp
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      # - 784:784/udp # DNS over QUIC
+      # - 853:853/tcp
     volumes:
       - "${CONFIG_DIR}/adguard/work:/opt/adguardhome/work"
       - "${CONFIG_DIR}/adguard/conf:/opt/adguardhome/conf"
