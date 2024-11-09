@@ -69,7 +69,7 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 4000000000
-    shm_size: 2gb
+    shm_size: 8gb
     devices:
       - /dev/dri
       - /dev/bus/usb
