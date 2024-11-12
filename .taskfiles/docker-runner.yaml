@@ -33,7 +33,10 @@ tasks:
       - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} config'"
     requires:
       vars: [SECRETS_FILE]
-    preconditions:
+    preconditions: &preconditions
+      - command -v docker
+      - command -v docker-compose
+      - command -v sops
       - test -f sops.env
 
   pull:
@@ -44,8 +47,7 @@ tasks:
       - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} pull'"
     requires:
       vars: [SECRETS_FILE]
-    preconditions:
-      - test -f sops.env
+    preconditions: *preconditions
 
   up:
     dir: "/{{.PROJECT_DIR}}"
@@ -57,8 +59,7 @@ tasks:
       - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} up -d --remove-orphans'"
     requires:
       vars: [SECRETS_FILE]
-    preconditions:
-      - test -f sops.env
+    preconditions: *preconditions
 
   stop:
     dir: "/{{.PROJECT_DIR}}"
@@ -79,5 +80,4 @@ tasks:
       - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} down --remove-orphans --rmi all'"
     requires:
       vars: [SECRETS_FILE]
-    preconditions:
-      - test -f sops.env
+    preconditions: *preconditions
