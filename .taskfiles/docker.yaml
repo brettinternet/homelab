@@ -40,7 +40,6 @@ tasks:
       - task: net
         vars:
           run: "{{.run}}"
-    cmd: echo "Task complete."
     requires: &docker-vars
       vars: [run]
     preconditions: &docker-preconditions
