@@ -2,6 +2,9 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
+vars:
+  VALID_RUN_VARS: [up, pull, stop, down]
+
 includes:
   run:
     taskfile: docker-runner.yaml
@@ -13,24 +16,55 @@ tasks:
     cmds:
       - task -l
 
+  up:
+    desc: Up on all services and hosts.
+    cmd:
+      task: all
+      vars:
+        run: up
+
+  pull:
+    desc: Pull on all services and hosts.
+    cmd:
+      task: all
+      vars:
+        run: pull
+
+  all:
+    desc: Run command on all services and hosts.
+    # To be run in parallel
+    deps:
+      - task: homelab
+        vars:
+          run: "{{.run}}"
+      - task: net
+        vars:
+          run: "{{.run}}"
+    cmd: echo "Task complete."
+    requires: &docker-vars
+      vars: [run]
+    preconditions: &docker-preconditions
+      - msg: Invalid run command '{{.run}}', must be one of {{.VALID_RUN_VARS | join ", "}}.
+        sh: "{{.VALID_RUN_VARS | has .run}}"
+
   homelab:
-    aliases: [gertrude]
+    desc: Run command for homelab services.
     cmds:
       - task: run:{{.run}}
         vars:
           PROJECT: homelab
           HOSTNAME: gertrude
           PROFILES: base,utils,home,auth,media
-    requires:
-      vars: [run]
+    requires: *docker-vars
+    preconditions: *docker-preconditions
 
   net:
-    aliases: [mailbox]
+    desc: Run command for net services.
     cmds:
       - task: run:{{.run}}
         vars:
           PROJECT: net
           HOSTNAME: mailbox
-          PROFILES: base,utils
-    requires:
-      vars: [run]
+          PROFILES: base,utils,network
+    requires: *docker-vars
+    preconditions: *docker-preconditions
