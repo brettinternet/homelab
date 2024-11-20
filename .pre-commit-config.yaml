@@ -9,7 +9,7 @@ repos:
           - .github/linters/.yamllint.yaml
         id: yamllint
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-merge-conflict
       - id: end-of-file-fixer
@@ -23,7 +23,7 @@ repos:
       - id: remove-tabs
         exclude: .php$
   - repo: https://github.com/sirosen/texthooks
-    rev: 0.6.6
+    rev: 0.6.7
     hooks:
       - id: fix-smartquotes
   - repo: https://github.com/k8s-at-home/sops-pre-commit
@@ -32,12 +32,12 @@ repos:
       - id: forbid-secrets
         exclude: rbac.yaml
   - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.23
+    rev: v0.1.24
     hooks:
       - id: terraform-fmt
       - id: terraform-validate
       - id: tflint
   - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.18.3
+    rev: v8.21.2
     hooks:
       - id: gitleaks
