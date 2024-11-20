@@ -63,7 +63,7 @@ tasks:
       - task: run:{{.run}}
         vars:
           PROJECT: net
-          HOSTNAME: mailbox
+          HOSTNAME: sienna
           PROFILES: base,utils,network
     requires: *docker-vars
     preconditions: *docker-preconditions

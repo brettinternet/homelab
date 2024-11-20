@@ -1,6 +1,7 @@
 ---
 supported_distributions:
   - archlinux
+  - debian
 
 allow_reboot: false
 
