@@ -6,7 +6,6 @@ tasks:
     desc: MacOS setup
     cmds:
       - task: brew
-      - task: python
 
   brew:
     desc: Install homebrew dependencies
@@ -18,23 +17,5 @@ tasks:
     vars:
       DEPS: >-
         age
-        ansible
         go-task/tap/go-task
-        pre-commit
-        prettier
         sops
-        yamllint
-
-  python:
-    desc: Set up virtual environment
-    cmds:
-      - "{{.PYTHON_BIN}} -m venv {{.VIRTUAL_ENV}}"
-      - "{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade pip setuptools wheel"
-      - '{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade --requirement "{{.PIP_REQUIREMENTS_FILE}}"'
-    sources:
-      - "{{.PIP_REQUIREMENTS_FILE}}"
-    generates:
-      - "{{.VIRTUAL_ENV}}/pyvenv.cfg"
-    preconditions:
-      - msg: "Missing Pip requirements file"
-        sh: "test -f {{.PIP_REQUIREMENTS_FILE}}"

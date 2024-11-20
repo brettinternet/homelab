@@ -1,0 +1,44 @@
+---
+version: "3"
+
+tasks:
+  init:
+    desc: Project setup
+    cmds:
+      - task: direnv
+      - task: python-setup
+      - task: python-install
+
+  direnv:
+    desc: Run direnv hooks
+    cmd: direnv allow .
+    status:
+      - "[[ $(direnv status --json | jq '.state.foundRC.allowed') == 0 ]]"
+      - "[[ $(direnv status --json | jq '.state.loadedRC.allowed') == 0 ]]"
+    preconditions:
+      - command -v direnv
+      - test -f .envrc
+
+  python-setup:
+    desc: Set up virtual environment
+    cmds:
+      - "{{.PYTHON_BIN}} -m venv {{.VIRTUAL_ENV}}"
+      - "{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade pip setuptools wheel"
+      - '{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade --requirement "{{.PIP_REQUIREMENTS_FILE}}"'
+    sources:
+      - "{{.PIP_REQUIREMENTS_FILE}}"
+    generates:
+      - "{{.VIRTUAL_ENV}}/pyvenv.cfg"
+    preconditions:
+      - msg: "Missing Pip requirements file"
+        sh: "test -f {{.PIP_REQUIREMENTS_FILE}}"
+
+  python-install:
+    desc: Install python dependencies
+    cmds:
+      - |
+        ([ "{{.CLI_ARGS}}" == "force" ] || pip -V 2>/dev/null | grep -q .virtualenv) && \
+            pip install -r requirements.txt || \
+            echo "You may want to activate a python virtual environment before installing the python dependencies.
+        Pass 'force' as argument to continue anyway (e.g. task python -- force)."
+    silent: true

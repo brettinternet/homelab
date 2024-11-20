@@ -27,13 +27,10 @@ includes:
     taskfile: .taskfiles/docker.yaml
     dir: ./docker
     aliases: [d]
-  # docker2:
-  #   taskfile: .taskfiles/docker2.yaml
-  #   dir: ./docker2
-  #   aliases: [d2]
   lint: .taskfiles/lint.yaml
   precommit: .taskfiles/precommit.yaml
-  setup: .taskfiles/setup_{{OS}}.yaml
+  setup-os: .taskfiles/setup_{{OS}}.yaml
+  setup: .taskfiles/setup.yaml
   sops: .taskfiles/sops.yaml
 
 tasks:
@@ -45,34 +42,9 @@ tasks:
   init:
     desc: Install dependencies and setup environment
     cmds:
+      - task: setup-os:init
       - task: setup:init
       - task: precommit:init
       - task: precommit:update
-      - task: setup-age
-      - task: direnv
-
-  python:
-    desc: Install python dependencies
-    cmds:
-      - |
-        ([ "{{.CLI_ARGS}}" == "force" ] || pip -V 2>/dev/null | grep -q .virtualenv) && \
-            pip install -r requirements.txt || \
-            echo "You may want to activate a python virtual environment before installing the python dependencies.
-        Pass 'force' as argument to continue anyway (e.g. task python -- force)."
-    silent: true
-
-  setup-age:
-    cmds:
-      - age-keygen -o age.agekey
-      - "mkdir -p {{.AGE_DIR}}"
-      - "mv age.agekey {{.AGE_FILE}}"
-      - "echo 'Source from .profile: \n\nexport SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt'"
-    status:
-      - "test -f {{.AGE_FILE}}"
-
-  direnv:
-    desc: Run direnv hooks
-    cmd: direnv allow .
-    status:
-      - "[[ $(direnv status --json | jq '.state.foundRC.allowed') == 0 ]]"
-      - "[[ $(direnv status --json | jq '.state.loadedRC.allowed') == 0 ]]"
+      - task: sops:init
+      - task: ansible:init
