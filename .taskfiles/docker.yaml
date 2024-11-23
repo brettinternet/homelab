@@ -32,8 +32,7 @@ tasks:
 
   all:
     desc: Run command on all services and hosts.
-    # To be run in parallel
-    deps:
+    cmds:
       - task: homelab
         vars:
           run: "{{.run}}"
