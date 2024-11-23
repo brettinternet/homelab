@@ -38,7 +38,7 @@ services:
 
   cloudflared-tunnel:
     <<: *service
-    image: cloudflare/cloudflared:2024.11.0
+    image: cloudflare/cloudflared:2024.11.1
     container_name: cloudflared-tunnel
     environment:
       <<: *environment
