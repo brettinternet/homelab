@@ -95,25 +95,3 @@ services:
       traefik.http.routers.healthchecks.rule: Host(`hc.${PRIVATE_DOMAIN}`)
       traefik.http.routers.healthchecks.entrypoints: websecure
       traefik.http.services.healthchecks.loadbalancer.server.port: 8000
-
-  wireshark:
-    profiles: *profiles
-    deploy: *deploy
-    image: lscr.io/linuxserver/wireshark:latest
-    container_name: wireshark
-    hostname: wireshark
-    cap_add: [NET_ADMIN]
-    security_opt:
-      - seccomp:unconfined
-    network_mode: host
-    environment:
-      <<: *environment
-      PUID: "${PUID}"
-      PGID: "${PGID}"
-    volumes:
-      - "${CONFIG_DIR}/wireshark:/config"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.wireshark.rule: Host(`wireshark.${PRIVATE_DOMAIN}`)
-      traefik.http.routers.wireshark.entrypoints: websecure
-      traefik.http.services.wireshark.loadbalancer.server.port: 3000
