@@ -21,3 +21,4 @@ megalinter-reports
 *.pub
 *.key
 .env
+htpasswd

@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/docker/cli/master/cli/compose/schema/data/config_schema_v3.13.json
+x-options: &options
+  profiles: &profiles [ai]
+  networks: [default]
+  environment: &environment
+    TZ: "${TIMEZONE}"
+  deploy: &deploy
+    restart_policy:
+      condition: unless-stopped
+
+services:
+  # https://github.com/skrashevich/double-take
+  double-take:
+    <<: *options
+    image: docker.io/skrashevich/double-take:latest
+    container_name: double-take
+    volumes:
+      - "${CONFIG_DIR}/double-take:/.storage"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.double-take.rule: Host(`double-take.${PRIVATE_DOMAIN}`)
+      traefik.http.services.double-take.loadbalancer.server.port: 3000
+      traefik.http.routers.double-take.entrypoints: websecure
+
+# https://github.com/exadel-inc/CompreFace/blob/master/docker-compose.yml

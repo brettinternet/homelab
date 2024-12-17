@@ -3,7 +3,7 @@
 version: "3"
 
 vars:
-  VALID_RUN_VARS: [up, pull, stop, down]
+  VALID_RUN_VARS: [up, pull, stop, down, verify]
 
 includes:
   run:

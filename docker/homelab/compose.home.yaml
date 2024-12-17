@@ -45,19 +45,23 @@ services:
       ESPHOME_DASHBOARD_USE_PING: "true"
     volumes:
       - "${CONFIG_DIR}/esphome:/config"
+    ports:
+      - 6052:6052
     labels:
       traefik.enable: "true"
       traefik.http.routers.esphome.rule: Host(`esphome.${PRIVATE_DOMAIN}`)
       traefik.http.services.esphome.loadbalancer.server.port: 6052
       traefik.http.routers.esphome.entrypoints: websecure
 
+  # https://docs.frigate.video/configuration/hardware_acceleration/#configuring-intel-gpu-stats-in-docker
   frigate:
     <<: *options
     image: ghcr.io/blakeblackshear/frigate:stable
     container_name: frigate
     depends_on: [mosquitto]
     networks: [default]
-    cap_add: [CAP_PERFMON]
+    privileged: true
+    # cap_add: [CAP_PERFMON]
     environment:
       <<: *environment
       FRIGATE_RTSP_PASSWORD: "${FRIGATE_RTSP_PASSWORD}"

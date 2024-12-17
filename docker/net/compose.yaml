@@ -94,3 +94,4 @@ services:
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.entrypoints: websecure
       traefik.tls.option.default.alpnProtocols: http/1.1,h2,dot
+      traefik.http.middlewares.basicAuth.basicauth.users: "${BASIC_AUTH_USERS}"
