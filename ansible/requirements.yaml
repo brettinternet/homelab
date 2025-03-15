@@ -11,6 +11,6 @@ collections:
   - name: community.sops
     version: 2.0.0
   - name: community.windows
-    version: 2.3.0
+    version: 2.4.0
   # https://github.com/kewlfft/ansible-aur
   - name: kewlfft.aur
