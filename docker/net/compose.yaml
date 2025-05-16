@@ -40,7 +40,7 @@ services:
 
   traefik:
     <<: *options
-    image: traefik:v3.2
+    image: traefik:v3.4
     container_name: traefik
     environment:
       <<: *environment
