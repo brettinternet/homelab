@@ -30,3 +30,27 @@ services:
       traefik.http.routers.mealie.rule: Host(`recipes.${PUBLIC_DOMAIN}`)
       traefik.http.routers.mealie.entrypoints: websecure
       traefik.http.services.mealie.loadbalancer.server.port: 9000
+
+  slackbot:
+    <<: *options
+    image: ghcr.io/brettinternet/slackbot:main
+    container_name: slackbot
+    environment:
+      <<: *environment
+      LOG_LEVEL: debug
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 4200
+      FEATURES: obituary,chat,vibecheck
+      DATA_DIR: /app/data
+      CONFIG_FILE: /app/data/config.yaml
+      SLACK_TOKEN: "${SLACKBOT_SLACK_TOKEN}"
+      SLACK_OBITUARY_NOTIFY_CHANNEL: "${SLACKBOT_SLACK_OBITUARY_NOTIFY_CHANNEL}"
+      SLACK_SIGNING_SECRET: "${SLACKBOT_SLACK_SIGNING_SECRET}"
+      SLACK_PREFERRED_USERS: "${SLACKBOT_SLACK_PREFERRED_USERS}"
+    volumes:
+      - "${CONFIG_DIR}/slackbot:/app/data"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.slackbot.rule: Host(`bot.${PUBLIC_DOMAIN}`)
+      traefik.http.routers.slackbot.entrypoints: websecure
+      traefik.http.services.slackbot.loadbalancer.server.port: 4200
