@@ -40,7 +40,7 @@ services:
       LOG_LEVEL: debug
       SERVER_HOST: 0.0.0.0
       SERVER_PORT: 4200
-      FEATURES: obituary,chat,vibecheck
+      FEATURES: obituary,chat,vibecheck,aichat
       DATA_DIR: /app/data
       CONFIG_FILE: /app/data/config.yaml
       SLACK_TOKEN: "${SLACKBOT_SLACK_TOKEN}"

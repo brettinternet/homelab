@@ -54,6 +54,7 @@ services:
       traefik.http.routers.esphome.entrypoints: websecure
 
   # https://docs.frigate.video/configuration/hardware_acceleration/#configuring-intel-gpu-stats-in-docker
+  # Trouble killing the container: https://github.com/moby/moby/issues/43094#issuecomment-1000003389
   frigate:
     <<: *options
     image: ghcr.io/blakeblackshear/frigate:stable
