@@ -1,0 +1,13 @@
+[tools]
+age = "latest"
+direnv = "latest"
+python = "{{ get_env(name='PYTHON_VERSION', default='latest') }}"
+sops = "latest"
+task = "latest"
+uv = "latest"
+
+[settings]
+disable_backends = ["asdf", "pipx"]
+pipx.uvx = true
+npm.bun = true
+python.uv_venv_auto = true

@@ -5,9 +5,18 @@ tasks:
   init:
     desc: Project setup
     cmds:
+      - task: mise
       - task: direnv
-      - task: python-setup
-      - task: python-install
+      - task: python
+
+  mise:
+    desc: Install workstation dependencies
+    cmds:
+      - mise trust --silent -a
+      - mise install
+    preconditions:
+      - sh: command -v mise
+        msg: Mise is not installed
 
   direnv:
     desc: Run direnv hooks
@@ -19,26 +28,9 @@ tasks:
       - command -v direnv
       - test -f .envrc
 
-  python-setup:
-    desc: Set up virtual environment
-    cmds:
-      - "{{.PYTHON_BIN}} -m venv {{.VIRTUAL_ENV}}"
-      - "{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade pip setuptools wheel"
-      - '{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade --requirement "{{.PIP_REQUIREMENTS_FILE}}"'
-    sources:
-      - "{{.PIP_REQUIREMENTS_FILE}}"
-    generates:
-      - "{{.VIRTUAL_ENV}}/pyvenv.cfg"
+  python:
+    desc: Install Python dependencies
+    cmd: uv pip install -r requirements.txt
     preconditions:
-      - msg: "Missing Pip requirements file"
-        sh: "test -f {{.PIP_REQUIREMENTS_FILE}}"
-
-  python-install:
-    desc: Install python dependencies
-    cmds:
-      - |
-        ([ "{{.CLI_ARGS}}" == "force" ] || pip -V 2>/dev/null | grep -q .virtualenv) && \
-            pip install -r requirements.txt || \
-            echo "You may want to activate a python virtual environment before installing the python dependencies.
-        Pass 'force' as argument to continue anyway (e.g. task python -- force)."
-    silent: true
+      - sh: command -v uv
+        msg: UV is not installed

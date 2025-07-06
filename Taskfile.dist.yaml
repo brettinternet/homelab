@@ -29,7 +29,6 @@ includes:
     aliases: [d]
   lint: .taskfiles/lint.yaml
   precommit: .taskfiles/precommit.yaml
-  setup-os: .taskfiles/setup_{{OS}}.yaml
   setup: .taskfiles/setup.yaml
   sops: .taskfiles/sops.yaml
 
@@ -42,7 +41,6 @@ tasks:
   init:
     desc: Install dependencies and setup environment
     cmds:
-      - task: setup-os:init
       - task: setup:init
       - task: precommit:init
       - task: precommit:update

@@ -22,3 +22,5 @@ megalinter-reports
 *.key
 .env
 htpasswd
+mise.local.toml
+Taskfile.y?ml

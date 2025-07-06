@@ -6,7 +6,7 @@ Provisioning and experiments in my homelab. See also [homeops](https://github.co
 
 ## Setup
 
-[Install go-task](https://taskfile.dev/installation/). Then, setup age, precommit hooks and install repo dependencies:
+[Install go-task](https://taskfile.dev/installation/). Then, install dependencies with mise, setup age, and precommit hooks:
 
 ```sh
 task init
