@@ -11,3 +11,7 @@ disable_backends = ["asdf", "pipx"]
 pipx.uvx = true
 npm.bun = true
 python.uv_venv_auto = true
+experimental = true
+
+[hooks]
+enter = "mise i -q"
