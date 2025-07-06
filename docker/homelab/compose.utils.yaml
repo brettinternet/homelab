@@ -55,3 +55,48 @@ services:
       traefik.http.routers.slackbot.rule: Host(`bot.${PUBLIC_DOMAIN}`)
       traefik.http.routers.slackbot.entrypoints: websecure
       traefik.http.services.slackbot.loadbalancer.server.port: 4200
+
+  atuin:
+    <<: *options
+    image: ghcr.io/atuinsh/atuin:latest
+    container_name: atuin
+    command: server start
+    links:
+      - atuin-postgres:db
+    environment:
+      <<: *environment
+      ATUIN_HOST: "0.0.0.0"
+      ATUIN_OPEN_REGISTRATION: "true"
+      ATUIN_DB_URI: postgres://${ATUIN_DB_USERNAME}:${ATUIN_DB_PASSWORD}@db/atuin
+      RUST_LOG: info,atuin_server=info
+    volumes:
+      - "${CONFIG_DIR}/atuin:/config"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.atuin.rule: Host(`sh.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.atuin.entrypoints: websecure
+      traefik.http.services.atuin.loadbalancer.server.port: 8888
+
+  atuin-postgres:
+    <<: *options
+    image: postgres:17
+    container_name: atuin-postgres
+    environment:
+      <<: *environment
+      POSTGRES_USER: ${ATUIN_DB_USERNAME}
+      POSTGRES_PASSWORD: ${ATUIN_DB_PASSWORD}
+      POSTGRES_DB: atuin
+    volumes:
+      - "${CONFIG_DIR}/atuin-postgres:/var/lib/postgresql/data/"
+
+  linkding:
+    <<: *options
+    container_name: linkding
+    image: sissbruecker/linkding:latest
+    volumes:
+      - "${CONFIG_DIR}/linkding:/etc/linkding/data"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.linkding.rule: Host(`links.${PUBLIC_DOMAIN}`)
+      traefik.http.routers.linkding.entrypoints: websecure
+      traefik.http.services.linkding.loadbalancer.server.port: 9090
