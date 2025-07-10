@@ -113,3 +113,4 @@ services:
       STORES: amazon,newegg,bestbuy,pny
       PUSHOVER_USER: "${PUSHOVER_USER_KEY}"
       PUSHOVER_TOKEN: "${PUSHOVER_STREETMERCHANT_TOKEN}"
+      PAGE_SLEEP_MIN: 60000
