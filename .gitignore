@@ -23,4 +23,5 @@ megalinter-reports
 .env
 htpasswd
 mise.local.toml
-Taskfile.ya?ml
+Taskfile.yaml
+Taskfile.yml
