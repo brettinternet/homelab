@@ -100,3 +100,16 @@ services:
       traefik.http.routers.linkding.rule: Host(`links.${PUBLIC_DOMAIN}`)
       traefik.http.routers.linkding.entrypoints: websecure
       traefik.http.services.linkding.loadbalancer.server.port: 9090
+
+  streetmerchant:
+    <<: *options
+    container_name: streetmerchant
+    image: ghcr.io/jef/streetmerchant:latest
+    environment:
+      <<: *environment
+      MAX_PRICE_SERIES_5070TI: 800
+      SHOW_ONLY_SERIES: 5070ti
+      SHOW_ONLY_COUNTRY: US
+      STORES: amazon,newegg,bestbuy
+      PUSHOVER_USER: "${PUSHOVER_USER_KEY}"
+      PUSHOVER_TOKEN: "${PUSHOVER_STREETMERCHANT_TOKEN}"
