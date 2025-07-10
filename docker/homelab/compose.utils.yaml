@@ -110,6 +110,6 @@ services:
       MAX_PRICE_SERIES_5070TI: 800
       SHOW_ONLY_SERIES: 5070ti
       SHOW_ONLY_COUNTRY: US
-      STORES: amazon,newegg,bestbuy
+      STORES: amazon,newegg,bestbuy,pny
       PUSHOVER_USER: "${PUSHOVER_USER_KEY}"
       PUSHOVER_TOKEN: "${PUSHOVER_STREETMERCHANT_TOKEN}"
