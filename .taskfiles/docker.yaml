@@ -52,7 +52,7 @@ tasks:
         vars:
           PROJECT: homelab
           HOSTNAME: gertrude
-          PROFILES: base,utils,home,auth,media,mcp
+          PROFILES: base,utils,home,auth,media
     requires: *docker-vars
     preconditions: *docker-preconditions
 
