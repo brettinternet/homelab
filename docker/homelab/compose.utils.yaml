@@ -98,7 +98,7 @@ services:
       - "${CONFIG_DIR}/linkding:/etc/linkding/data"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.linkding.rule: Host(`links.${PUBLIC_DOMAIN}`)
+      traefik.http.routers.linkding.rule: Host(`bookmarks.${PUBLIC_DOMAIN}`)
       traefik.http.routers.linkding.entrypoints: websecure
       traefik.http.services.linkding.loadbalancer.server.port: 9090
 
