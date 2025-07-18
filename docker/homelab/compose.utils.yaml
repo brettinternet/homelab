@@ -115,3 +115,38 @@ services:
       PUSHOVER_USER: "${PUSHOVER_USER_KEY}"
       PUSHOVER_TOKEN: "${PUSHOVER_STREETMERCHANT_TOKEN}"
       PAGE_SLEEP_MIN: 60000
+
+  n8n:
+    <<: *options
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    links: [n8n-postgres]
+    depends_on: [n8n-postgres]
+    environment:
+      <<: *environment
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: n8n-postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: ${N8N_DB_USERNAME}
+      DB_POSTGRESDB_PASSWORD: ${N8N_DB_PASSWORD}
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: false
+    volumes:
+      - "${CONFIG_DIR}/n8n:/home/node/.n8n"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.n8n.rule: Host(`n8n.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.n8n.entrypoints: websecure
+      traefik.http.services.n8n.loadbalancer.server.port: 5678
+
+  n8n-postgres:
+    <<: *options
+    image: postgres:17
+    container_name: n8n-postgres
+    environment:
+      <<: *environment
+      POSTGRES_USER: ${N8N_DB_USERNAME}
+      POSTGRES_PASSWORD: ${N8N_DB_PASSWORD}
+      POSTGRES_DB: n8n
+    volumes:
+      - "${CONFIG_DIR}/n8n-postgres:/var/lib/postgresql/data/"
