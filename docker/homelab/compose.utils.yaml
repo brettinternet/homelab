@@ -31,31 +31,6 @@ services:
       traefik.http.routers.mealie.entrypoints: websecure
       traefik.http.services.mealie.loadbalancer.server.port: 9000
 
-  slackbot:
-    <<: *options
-    image: ghcr.io/brettinternet/slackbot:main
-    container_name: slackbot
-    environment:
-      <<: *environment
-      LOG_LEVEL: debug
-      SERVER_HOST: 0.0.0.0
-      SERVER_PORT: 4200
-      FEATURES: obituary,chat,vibecheck,aichat
-      DATA_DIR: /app/data
-      CONFIG_FILE: /app/data/config.yaml
-      SLACK_TOKEN: "${SLACKBOT_SLACK_TOKEN}"
-      SLACK_OBITUARY_NOTIFY_CHANNEL: "${SLACKBOT_SLACK_OBITUARY_NOTIFY_CHANNEL}"
-      SLACK_SIGNING_SECRET: "${SLACKBOT_SLACK_SIGNING_SECRET}"
-      SLACK_PREFERRED_USERS: "${SLACKBOT_SLACK_PREFERRED_USERS}"
-      OPENAI_API_KEY: "${OPENAI_API_KEY}"
-    volumes:
-      - "${CONFIG_DIR}/slackbot:/app/data"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.slackbot.rule: Host(`bot.${PUBLIC_DOMAIN}`)
-      traefik.http.routers.slackbot.entrypoints: websecure
-      traefik.http.services.slackbot.loadbalancer.server.port: 4200
-
   atuin:
     <<: *options
     image: ghcr.io/atuinsh/atuin:latest
@@ -102,19 +77,35 @@ services:
       traefik.http.routers.linkding.entrypoints: websecure
       traefik.http.services.linkding.loadbalancer.server.port: 9090
 
-  streetmerchant:
+  miniflux:
     <<: *options
-    container_name: streetmerchant
-    image: ghcr.io/jef/streetmerchant:latest
+    container_name: miniflux
+    image: docker.io/miniflux/miniflux:latest
     environment:
       <<: *environment
-      MAX_PRICE_SERIES_5070TI: 800
-      SHOW_ONLY_SERIES: 5070ti
-      SHOW_ONLY_COUNTRY: US
-      STORES: amazon,newegg,bestbuy,pny
-      PUSHOVER_USER: "${PUSHOVER_USER_KEY}"
-      PUSHOVER_TOKEN: "${PUSHOVER_STREETMERCHANT_TOKEN}"
-      PAGE_SLEEP_MIN: 60000
+      CREATE_ADMIN: "1"
+      RUN_MIGRATIONS: "1"
+      ADMIN_USERNAME: "${MINIFLUX_ADMIN_USERNAME}"
+      ADMIN_PASSWORD: "${MINIFLUX_ADMIN_PASSWORD}"
+      DATABASE_URL: postgres://miniflux:${MINIFLUX_DB_PASSWORD}@minflux-postgres/miniflux?sslmode=disable
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.miniflux.rule: Host(`rss.${PUBLIC_DOMAIN}`)
+      traefik.http.routers.miniflux.entrypoints: websecure
+      traefik.http.services.miniflux.loadbalancer.server.port: 8080
+
+  miniflux-postgres:
+    <<: *options
+    image: postgres:17-alpine
+    container_name: miniflux-postgres
+    environment:
+      <<: *environment
+      POSTGRES_USER: miniflux
+      POSTGRES_PASSWORD: ${MINIFLUX_DB_PASSWORD}
+      POSTGRES_DB: miniflux
+    volumes:
+      - "${CONFIG_DIR}/miniflux-postgres:/var/lib/postgresql/data/"
+
 
   n8n:
     <<: *options
@@ -141,7 +132,7 @@ services:
 
   n8n-postgres:
     <<: *options
-    image: postgres:17
+    image: postgres:17-alpine
     container_name: n8n-postgres
     environment:
       <<: *environment
