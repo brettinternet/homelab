@@ -81,13 +81,14 @@ services:
     <<: *options
     container_name: miniflux
     image: docker.io/miniflux/miniflux:latest
+    # depends_on: [miniflux-postgres]
     environment:
       <<: *environment
       CREATE_ADMIN: "1"
       RUN_MIGRATIONS: "1"
       ADMIN_USERNAME: "${MINIFLUX_ADMIN_USERNAME}"
       ADMIN_PASSWORD: "${MINIFLUX_ADMIN_PASSWORD}"
-      DATABASE_URL: postgres://miniflux:${MINIFLUX_DB_PASSWORD}@minflux-postgres/miniflux?sslmode=disable
+      DATABASE_URL: postgres://miniflux:${MINIFLUX_DB_PASSWORD}@miniflux-postgres/miniflux?sslmode=disable
     labels:
       traefik.enable: "true"
       traefik.http.routers.miniflux.rule: Host(`rss.${PUBLIC_DOMAIN}`)
@@ -141,3 +142,18 @@ services:
       POSTGRES_DB: n8n
     volumes:
       - "${CONFIG_DIR}/n8n-postgres:/var/lib/postgresql/data/"
+
+  gickup:
+    <<: *options
+    image: buddyspencer/gickup:latest
+    container_name: gickup
+    command: [/gickup/conf.yaml]
+    environment:
+      <<: *environment
+      GICKUP_GITHUB_TOKEN: "${GICKUP_GITHUB_TOKEN}"
+      GICKUP_GITLAB_TOKEN: "${GICKUP_GITLAB_TOKEN}"
+      GICKUP_S3_ACCESS_KEY_ID: "${GICKUP_S3_ACCESS_KEY_ID}"
+      GICKUP_S3_SECRET_KEY: "${GICKUP_S3_SECRET_KEY}"
+    volumes:
+      - "${CONFIG_DIR}/gickup/conf.yaml:/gickup/conf.yaml"
+      - "${CONFIG_DIR}/git:/destination"
