@@ -157,3 +157,36 @@ services:
     volumes:
       - "${CONFIG_DIR}/gickup/conf.yaml:/gickup/conf.yaml"
       - "${CONFIG_DIR}/git:/destination"
+
+  cgit:
+    image: ghcr.io/brettinternet/cgit:latest
+    container_name: cgit
+    environment:
+      <<: *environment
+      ROOT_TITLE: "git.${PUBLIC_DOMAIN}"
+      ROOT_DESC: Mirrors of various public projects
+      ROOT_README: /srv/git/README.md
+      SECTION_FROM_STARTPATH: 1
+      NOPLAINEMAIL: 1
+    volumes:
+      - "${CONFIG_DIR}/git/github.com:/srv/git"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.cgit.rule: Host(`git.${PUBLIC_DOMAIN}`)
+      traefik.http.routers.cgit.entrypoints: websecure
+      traefik.http.services.cgit.loadbalancer.server.port: 80
+
+  gickup-priv:
+    <<: *options
+    image: buddyspencer/gickup:latest
+    container_name: gickup-priv
+    command: [/gickup/conf.yaml]
+    environment:
+      <<: *environment
+      GICKUP_GITHUB_TOKEN: "${GICKUP_GITHUB_TOKEN}"
+      GICKUP_GITLAB_TOKEN: "${GICKUP_GITLAB_TOKEN}"
+      GICKUP_S3_ACCESS_KEY_ID: "${GICKUP_S3_ACCESS_KEY_ID}"
+      GICKUP_S3_SECRET_KEY: "${GICKUP_S3_SECRET_KEY}"
+    volumes:
+      - "${CONFIG_DIR}/gickup-priv/conf.yaml:/gickup/conf.yaml"
+      - "${CONFIG_DIR}/git-priv:/destination"
