@@ -168,6 +168,7 @@ services:
       ROOT_README: /srv/git/README.md
       SECTION_FROM_STARTPATH: 1
       NOPLAINEMAIL: 1
+      MAX_REPO_COUNT: 50 # per page
     volumes:
       - "${CONFIG_DIR}/git/github.com:/srv/git"
     labels:
