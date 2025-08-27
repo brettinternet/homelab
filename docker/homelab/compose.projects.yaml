@@ -11,18 +11,16 @@ x-options: &options
 services:
   slackbot:
     <<: *options
-    image: ghcr.io/brettinternet/slackbot:main
+    image: ghcr.io/brettinternet/slackbot:latest
     container_name: slackbot
     environment:
       <<: *environment
       LOG_LEVEL: debug
-      SERVER_HOST: 0.0.0.0
       SERVER_PORT: 4200
-      FEATURES: obituary,chat,vibecheck,aichat
       DATA_DIR: /app/data
       CONFIG_FILE: /app/data/config.yaml
       SLACK_TOKEN: "${SLACKBOT_SLACK_TOKEN}"
-      SLACK_OBITUARY_NOTIFY_CHANNEL: "${SLACKBOT_SLACK_OBITUARY_NOTIFY_CHANNEL}"
+      SLACK_USER_NOTIFY_CHANNEL: "${SLACKBOT_SLACK_OBITUARY_NOTIFY_CHANNEL}"
       SLACK_SIGNING_SECRET: "${SLACKBOT_SLACK_SIGNING_SECRET}"
       SLACK_PREFERRED_USERS: "${SLACKBOT_SLACK_PREFERRED_USERS}"
       OPENAI_API_KEY: "${OPENAI_API_KEY}"
