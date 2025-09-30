@@ -31,6 +31,27 @@ services:
       traefik.http.routers.mealie.entrypoints: websecure
       traefik.http.services.mealie.loadbalancer.server.port: 9000
 
+  beaverhabits:
+    <<: *options
+    image: daya0576/beaverhabits:latest
+    container_name: beaverhabits
+    user: "${PUID}:${PGID}"
+    environment:
+      <<: *environment
+      HABITS_STORAGE: DATABASE
+      FIRST_DAY_OF_WEEK: 6
+      MAX_USER_COUNT: 1
+      ENABLE_IOS_STANDALONE: true
+      INDEX_HABIT_DATE_COLUMNS: 2
+      INDEX_SHOW_HABIT_STREAK: true
+    volumes:
+      - "${CONFIG_DIR}/beaverhabits:/app/.user/"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.beaverhabits.rule: Host(`habits.${PUBLIC_DOMAIN}`)
+      traefik.http.routers.beaverhabits.entrypoints: websecure
+      traefik.http.services.beaverhabits.loadbalancer.server.port: 8080
+
   atuin:
     <<: *options
     image: ghcr.io/atuinsh/atuin:latest
@@ -106,7 +127,6 @@ services:
       POSTGRES_DB: miniflux
     volumes:
       - "${CONFIG_DIR}/miniflux-postgres:/var/lib/postgresql/data/"
-
 
   n8n:
     <<: *options
