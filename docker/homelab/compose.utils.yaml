@@ -55,7 +55,7 @@ services:
 
   atuin-postgres:
     <<: *options
-    image: postgres:17
+    image: postgres:18
     container_name: atuin-postgres
     environment:
       <<: *environment
@@ -97,7 +97,7 @@ services:
 
   miniflux-postgres:
     <<: *options
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     container_name: miniflux-postgres
     environment:
       <<: *environment
