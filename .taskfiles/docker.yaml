@@ -63,6 +63,6 @@ tasks:
         vars:
           PROJECT: net
           HOSTNAME: sienna
-          PROFILES: base,utils,network
+          PROFILES: base,utils,network,backup
     requires: *docker-vars
     preconditions: *docker-preconditions
