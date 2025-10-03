@@ -97,6 +97,7 @@ services:
       traefik.http.routers.plex.rule: Host(`plex.${PUBLIC_DOMAIN}`)
       traefik.http.services.plex.loadbalancer.server.port: 32400
 
+  # TODO: switch to jellyseerr https://github.com/fallenbagel/jellyseerr
   overseerr:
     <<: *options
     image: sctx/overseerr:latest
