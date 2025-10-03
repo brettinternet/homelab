@@ -26,6 +26,7 @@ services:
     volumes:
       - "${CONFIG_DIR}/homeassistant:/config"
       - /var/run/dbus:/var/run/dbus
+    # https://github.com/walthowd/husbzb-firmware
     devices:
       - /dev/serial/by-id/${DEVICE_ID_ZWAVE}:/dev/ttyUSB0
       - /dev/serial/by-id/${DEVICE_ID_ZIGBEE}:/dev/ttyUSB1
@@ -39,14 +40,14 @@ services:
     <<: *options
     image: esphome/esphome:latest
     container_name: esphome
-    network_mode: host
     environment:
       <<: *environment
       ESPHOME_DASHBOARD_USE_PING: "true"
     volumes:
       - "${CONFIG_DIR}/esphome:/config"
-    ports:
-      - 6052:6052
+    network_mode: host
+    # ports:
+    #   - 6052:6052
     labels:
       traefik.enable: "true"
       traefik.http.routers.esphome.rule: Host(`esphome.${PRIVATE_DOMAIN}`)

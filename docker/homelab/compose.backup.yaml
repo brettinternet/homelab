@@ -1,0 +1,146 @@
+# https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#backblaze-b2
+---
+x-options: &options
+  profiles: [backup]
+  networks: [default]
+  environment: &environment
+    TZ: "${TIMEZONE}"
+  deploy:
+    restart_policy:
+      condition: unless-stopped
+
+x-remote-environment: &remote-environment
+  <<: *environment
+  RESTIC_REPOSITORY: "${REMOTE_RESTIC_REPOSITORY}"
+  RESTIC_PASSWORD: "${REMOTE_RESTIC_PASSWORD}"
+  B2_ACCOUNT_ID: "${B2_ACCOUNT_ID}"
+  B2_ACCOUNT_KEY: "${B2_ACCOUNT_KEY}"
+
+x-local-environment: &local-environment
+  <<: *environment
+  RESTIC_PASSWORD: "${LOCAL_RESTIC_PASSWORD}"
+
+services:
+  restic-remote-backup:
+    <<: *options
+    image: mazzolino/restic:latest
+    container_name: restic-remote-backup
+    cap_add: [SYS_ADMIN]
+    environment:
+      <<: *remote-environment
+      BACKUP_CRON: "0 0 0 * * *"
+      RESTIC_BACKUP_SOURCES: /data
+      RESTIC_BACKUP_ARGS: >-
+        --tag ${PUBLIC_DOMAIN}
+        --tag restic
+        --exclude='.Trash*'
+        --verbose
+      RESTIC_FORGET_ARGS: >-
+        --keep-last 10
+        --keep-daily 7
+        --keep-weekly 5
+        --keep-monthly 12
+      PRE_COMMANDS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/start"
+      POST_COMMANDS_FAILURE: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/fail"
+      POST_COMMANDS_SUCCESS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}"
+    volumes: &backup-volumes
+      - "${CONFIG_DIR}/esphome:/data/esphome"
+      - "${CONFIG_DIR}/frigate:/data/frigate"
+      - "${CONFIG_DIR}/gaming:/data/gaming"
+      - "${CONFIG_DIR}/gickup:/data/gickup"
+      - "${CONFIG_DIR}/gickup-priv:/data/gickup-priv"
+      - "${CONFIG_DIR}/homeassistant:/data/homeassistant"
+      - "${CONFIG_DIR}/linkding:/data/linkding"
+      - "${CONFIG_DIR}/mealie:/data/mealie"
+      - "${CONFIG_DIR}/moquitto:/data/moquitto"
+      - "${CONFIG_DIR}/prowlarr/Backups/scheduled:/data/prowlarr-backups"
+      - "${CONFIG_DIR}/radarr/Backups/scheduled:/data/radarr-backups"
+      - "${CONFIG_DIR}/sonarr/Backups/scheduled:/data/sonarr-backups"
+      - "${CONFIG_DIR}/traefik/conf:/data/traefik-conf"
+
+  restic-remote-prune:
+    <<: *options
+    image: mazzolino/restic:latest
+    container_name: restic-remote-prune
+    environment:
+      <<: *remote-environment
+      PRUNE_CRON: "0 0 2 * * *"
+      PRE_COMMANDS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/start"
+      POST_COMMANDS_FAILURE: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/fail"
+      POST_COMMANDS_SUCCESS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}"
+
+  restic-remote-check:
+    <<: *options
+    image: mazzolino/restic:latest
+    container_name: restic-remote-check
+    environment:
+      <<: *remote-environment
+      CHECK_CRON: "0 0 4 * * *"
+      RESTIC_CHECK_ARGS: >-
+        --read-data-subset=10%
+      PRE_COMMANDS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/start"
+      POST_COMMANDS_FAILURE: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/fail"
+      POST_COMMANDS_SUCCESS: |-
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}"
+
+  # restic-local-backup:
+  #   <<: *options
+  #   image: mazzolino/restic:latest
+  #   cap_add: [SYS_ADMIN]
+  #   environment:
+  #     <<: *local-environment
+  #     BACKUP_CRON: "0 0 1 * * *"
+  #     RESTIC_BACKUP_SOURCES: /data
+  #     RESTIC_BACKUP_ARGS: >-
+  #       --tag ${PUBLIC_DOMAIN}
+  #       --tag restic
+  #       --exclude='.Trash*'
+  #       --verbose
+  #     RESTIC_FORGET_ARGS: >-
+  #       --keep-last 10
+  #       --keep-daily 7
+  #       --keep-weekly 5
+  #       --keep-monthly 12
+  #     PRE_COMMANDS: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}/start"
+  #     POST_COMMANDS_FAILURE: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}/fail"
+  #     POST_COMMANDS_SUCCESS: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}"
+  #   volumes: *backup-volumes
+
+  # restic-local-prune:
+  #   <<: *options
+  #   image: mazzolino/restic:latest
+  #   environment:
+  #     <<: *local-environment
+  #     PRUNE_CRON: "0 0 2 * * *"
+  #     PRE_COMMANDS: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}/start"
+  #     POST_COMMANDS_FAILURE: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}/fail"
+  #     POST_COMMANDS_SUCCESS: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}"
+
+  # restic-local-check:
+  #   <<: *options
+  #   image: mazzolino/restic:latest
+  #   environment:
+  #     <<: *local-environment
+  #     CHECK_CRON: "0 0 4 * * *"
+  #     RESTIC_CHECK_ARGS: >-
+  #       --read-data-subset=10%
+  #     PRE_COMMANDS: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}/start"
+  #     POST_COMMANDS_FAILURE: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}/fail"
+  #     POST_COMMANDS_SUCCESS: |-
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}"
