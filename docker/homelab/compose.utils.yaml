@@ -155,3 +155,18 @@ services:
     volumes:
       - "${CONFIG_DIR}/gickup-priv/conf.yaml:/gickup/conf.yaml"
       - "${CONFIG_DIR}/git-priv:/destination"
+
+  # https://github.com/mguessan/davmail/blob/master/src/docker/README.md
+  # davmail:
+  #   <<: *options
+  #   image: ghcr.io/mguessan/davmail:latest
+  #   container_name: davmail
+  #   environment:
+  #     <<: *environment
+  #   volumes:
+  #     - "${CONFIG_DIR}/davmail:/config"
+  #   labels:
+  #     traefik.enable: "true"
+  #     traefik.http.routers.davmail-calendar.rule: Host(`calendar.${PUBLIC_DOMAIN}`)
+  #     traefik.http.routers.davmail-calendar.entrypoints: websecure
+  #     traefik.http.services.davmail-calendar.loadbalancer.server.port: 1080
