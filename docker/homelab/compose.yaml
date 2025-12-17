@@ -93,7 +93,6 @@ services:
       - --entrypoints.websecure.http.tls.domains[1].main=${PRIVATE_DOMAIN}
       - --entrypoints.websecure.http.tls.domains[1].sans=*.${PRIVATE_DOMAIN}
       - --entrypoints.websecure.http.middlewares=default-headers@file
-      - --entrypoints.bolt.address=:7687 # Neo4j Bolt
       - --certificatesresolvers.leresolver.acme.dnschallenge=true
       - --certificatesresolvers.leresolver.acme.dnschallenge.disablepropagationcheck=true # for internal domain
       - --certificatesresolvers.leresolver.acme.dnschallenge.provider=cloudflare
