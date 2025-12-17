@@ -92,7 +92,7 @@ services:
       - --entrypoints.websecure.http.tls.domains[0].sans=*.${PUBLIC_DOMAIN}
       - --entrypoints.websecure.http.tls.domains[1].main=${PRIVATE_DOMAIN}
       - --entrypoints.websecure.http.tls.domains[1].sans=*.${PRIVATE_DOMAIN}
-      - --entrypoints.websecure.http.middlewares=default-headers@file
+      - --entrypoints.websecure.http.middlewares=default-headers@docker
       - --certificatesresolvers.leresolver.acme.dnschallenge=true
       - --certificatesresolvers.leresolver.acme.dnschallenge.disablepropagationcheck=true # for internal domain
       - --certificatesresolvers.leresolver.acme.dnschallenge.provider=cloudflare
@@ -108,6 +108,13 @@ services:
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.middlewares: basicAuth
       traefik.http.routers.traefik.entrypoints: websecure
+      traefik.http.middlewares.default-headers.headers.stsSeconds: "31536000"
+      traefik.http.middlewares.default-headers.headers.stsIncludeSubdomains: "true"
+      traefik.http.middlewares.default-headers.headers.stsPreload: "true"
+      traefik.http.middlewares.default-headers.headers.forceSTSHeader: "true"
+      traefik.http.middlewares.default-headers.headers.contentTypeNosniff: "true"
+      traefik.http.middlewares.default-headers.headers.browserXssFilter: "true"
+      traefik.http.middlewares.default-headers.headers.frameDeny: "true"
 
   cloudflare-companion:
     <<: *service
