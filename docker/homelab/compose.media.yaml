@@ -146,25 +146,25 @@ services:
       traefik.http.services.sabnzbd.loadbalancer.server.port: 8080
       traefik.http.routers.sabnzbd.entrypoints: websecure
 
-  # nzbget:
-  #   <<: *options
-  #   image: ghcr.io/linuxserver/nzbget:latest
-  #   container_name: nzbget
-  #   environment:
-  #     <<: *environment
-  #     PUID: "${PUID}"
-  #     PGID: "${PGID}"
-  #     NZBGET_USER: "${NZBGET_USER}"
-  #     NZBGET_PASS: "${NZBGET_PASS}"
-  #   volumes:
-  #     - "${CONFIG_DIR}/nzbget:/config"
-  #     - usenet_complete:/downloads/complete
-  #     - usenet_incomplete:/downloads/incomplete
-  #   labels:
-  #     traefik.enable: "true"
-  #     traefik.http.routers.nzbget.rule: Host(`nzbget.${PRIVATE_DOMAIN}`)
-  #     traefik.http.services.nzbget.loadbalancer.server.port: 6789
-  #     traefik.http.routers.nzbget.entrypoints: websecure
+  nzbget:
+    <<: *options
+    image: nzbgetcom/nzbget:latest
+    container_name: nzbget
+    environment:
+      <<: *environment
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+      NZBGET_USER: "${NZBGET_USER}"
+      NZBGET_PASS: "${NZBGET_PASS}"
+    volumes:
+      - "${CONFIG_DIR}/nzbget:/config"
+      - usenet_complete:/downloads/complete
+      - usenet_incomplete:/downloads/incomplete
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.nzbget.rule: Host(`nzbget.${PRIVATE_DOMAIN}`)
+      traefik.http.services.nzbget.loadbalancer.server.port: 6789
+      traefik.http.routers.nzbget.entrypoints: websecure
 
   prowlarr:
     <<: *options
