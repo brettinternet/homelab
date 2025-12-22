@@ -9,7 +9,7 @@ collections:
   - name: community.general
     version: 11.4.2
   - name: community.sops
-    version: 2.2.1
+    version: 2.2.7
   - name: community.windows
     version: 3.0.1
   # https://github.com/kewlfft/ansible-aur
