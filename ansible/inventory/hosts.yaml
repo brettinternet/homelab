@@ -46,8 +46,8 @@ linux:
       nfs__required_services:
         - srv-nfs-media.mount
       nfs__exports:
-        - /srv/nfs  *(rw,fsid=fe48ca08-42a5-41a4-aa3d-7bd5d07aa893,no_subtree_check,no_root_squash)
-        - /srv/nfs/media  *(rw,fsid=8dbb5fac-6beb-46e9-8ded-f3538555dd83,no_subtree_check,no_root_squash)
+        - /srv/nfs/media  *(rw,sync,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)
+        - /srv/nfs/backup  *(rw,sync,fsid=20,no_subtree_check,all_squash,anonuid=1000,anongid=1000)
       mergerfs__mounts:
         "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/parity1
         "/dev/disk/by-id/ata-ST10000NE0008-2JM101_ZPW0MSQL-part1": /mnt/parity2
