@@ -74,7 +74,7 @@ services:
       - type: tmpfs
         target: /tmp/cache
         tmpfs:
-          size: 8000000000
+          size: 4000000000
     shm_size: 8gb
     devices:
       - /dev/dri
