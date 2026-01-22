@@ -23,15 +23,15 @@ x-local-environment: &local-environment
 x-backup-volume:
   driver_opts: &backup_driver_opts
     type: nfs
-    o: addr=${MEDIA_IP},hard,timeo=600,retrans=3,proto=tcp,nfsvers=4.2,port=2049,noacl,nocto,noatime,nodiratime
-    device: :/
+    o: addr=${MEDIA_IP},hard,timeo=600,retrans=2,proto=tcp,nfsvers=4.2,port=2049,noatime,nodiratime
+    device: :/srv/nfs/backup
 
 volumes:
   backup_icloud:
     name: backup_icloud
     driver_opts:
       <<: *backup_driver_opts
-      device: :/backup/icloud
+      device: :/srv/nfs/backup/icloud
 
 services:
   icloud:
