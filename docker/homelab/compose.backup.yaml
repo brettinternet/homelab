@@ -11,10 +11,12 @@ x-options: &options
 
 x-remote-environment: &remote-environment
   <<: *environment
-  RESTIC_REPOSITORY: "${REMOTE_RESTIC_REPOSITORY}"
+  RESTIC_REPOSITORY: "${BACKUP_S3_RESTIC_REPOSITORY}"
   RESTIC_PASSWORD: "${REMOTE_RESTIC_PASSWORD}"
-  B2_ACCOUNT_ID: "${B2_ACCOUNT_ID}"
-  B2_ACCOUNT_KEY: "${B2_ACCOUNT_KEY}"
+  AWS_ACCESS_KEY_ID: "${BACKUP_AWS_ACCESS_KEY_ID}"
+  AWS_SECRET_ACCESS_KEY: "${BACKUP_AWS_SECRET_ACCESS_KEY}"
+  # B2_ACCOUNT_ID: "${B2_ACCOUNT_ID}"
+  # B2_ACCOUNT_KEY: "${B2_ACCOUNT_KEY}"
 
 x-local-environment: &local-environment
   <<: *environment
@@ -55,6 +57,7 @@ services:
     cap_add: [SYS_ADMIN]
     environment:
       <<: *remote-environment
+      # RUN_ON_STARTUP: "true"
       BACKUP_CRON: "0 0 0 * * *"
       RESTIC_BACKUP_SOURCES: /data
       RESTIC_BACKUP_ARGS: >-
@@ -64,7 +67,7 @@ services:
       RESTIC_FORGET_ARGS: >-
         --keep-last 10
         --keep-daily 7
-        --keep-weekly 5
+        --keep-weekly 4
         --keep-monthly 12
       PRE_COMMANDS: |-
         curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/start"
@@ -91,6 +94,7 @@ services:
     <<: *options
     image: mazzolino/restic:latest
     container_name: restic-remote-prune
+    depends_on: [restic-remote-backup]
     environment:
       <<: *remote-environment
       PRUNE_CRON: "0 0 2 * * *"
@@ -105,6 +109,7 @@ services:
     <<: *options
     image: mazzolino/restic:latest
     container_name: restic-remote-check
+    depends_on: [restic-remote-backup]
     environment:
       <<: *remote-environment
       CHECK_CRON: "0 0 4 * * *"
