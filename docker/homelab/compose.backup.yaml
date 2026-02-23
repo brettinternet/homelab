@@ -70,11 +70,11 @@ services:
         --keep-weekly 4
         --keep-monthly 12
       PRE_COMMANDS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/start"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/start"
       POST_COMMANDS_FAILURE: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/fail"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/fail"
       POST_COMMANDS_SUCCESS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}"
     volumes: &backup-volumes
       - "${CONFIG_DIR}/esphome:/data/esphome"
       - "${CONFIG_DIR}/frigate:/data/frigate"
@@ -99,11 +99,11 @@ services:
       <<: *remote-environment
       PRUNE_CRON: "0 0 2 * * *"
       PRE_COMMANDS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/start"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/start"
       POST_COMMANDS_FAILURE: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/fail"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/fail"
       POST_COMMANDS_SUCCESS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}"
 
   restic-remote-check:
     <<: *options
@@ -116,11 +116,39 @@ services:
       RESTIC_CHECK_ARGS: >-
         --read-data-subset=10%
       PRE_COMMANDS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/start"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/start"
       POST_COMMANDS_FAILURE: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/fail"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/fail"
       POST_COMMANDS_SUCCESS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}"
+
+  restic-remote-restore:
+    <<: *options
+    profiles: [restore]
+    image: mazzolino/restic:latest
+    container_name: restic-remote-restore
+    environment:
+      <<: *remote-environment
+      RUN_ON_STARTUP: "true"
+      RESTIC_RESTORE_TARGET: /data
+      # RESTIC_RESTORE_ARGS: "--snapshot latest" # Optional: defaults to latest
+    volumes:
+      - "${CONFIG_DIR}/esphome:/data/esphome"
+      - "${CONFIG_DIR}/frigate:/data/frigate"
+      - "${CONFIG_DIR}/gaming:/data/gaming"
+      - "${CONFIG_DIR}/gickup:/data/gickup"
+      - "${CONFIG_DIR}/gickup-priv:/data/gickup-priv"
+      - "${CONFIG_DIR}/homeassistant:/data/homeassistant"
+      - "${CONFIG_DIR}/linkding:/data/linkding"
+      - "${CONFIG_DIR}/mealie:/data/mealie"
+      - "${CONFIG_DIR}/moquitto:/data/moquitto"
+      - "${CONFIG_DIR}/prowlarr/Backups/scheduled:/data/prowlarr-backups"
+      - "${CONFIG_DIR}/radarr/Backups/scheduled:/data/radarr-backups"
+      - "${CONFIG_DIR}/sonarr/Backups/scheduled:/data/sonarr-backups"
+      - "${CONFIG_DIR}/traefik/conf:/data/traefik-conf"
+    deploy:
+      restart_policy:
+        condition: none
 
   # restic-local-backup:
   #   <<: *options
@@ -141,11 +169,11 @@ services:
   #       --keep-weekly 5
   #       --keep-monthly 12
   #     PRE_COMMANDS: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}/start"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}/start"
   #     POST_COMMANDS_FAILURE: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}/fail"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}/fail"
   #     POST_COMMANDS_SUCCESS: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_BACKUP_UUID}"
   #   volumes: *backup-volumes
 
   # restic-local-prune:
@@ -155,11 +183,11 @@ services:
   #     <<: *local-environment
   #     PRUNE_CRON: "0 0 2 * * *"
   #     PRE_COMMANDS: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}/start"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}/start"
   #     POST_COMMANDS_FAILURE: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}/fail"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}/fail"
   #     POST_COMMANDS_SUCCESS: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_PRUNE_UUID}"
 
   # restic-local-check:
   #   <<: *options
@@ -170,8 +198,8 @@ services:
   #     RESTIC_CHECK_ARGS: >-
   #       --read-data-subset=10%
   #     PRE_COMMANDS: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}/start"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}/start"
   #     POST_COMMANDS_FAILURE: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}/fail"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}/fail"
   #     POST_COMMANDS_SUCCESS: |-
-  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}"
+  #       curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_LOCAL_CHECK_UUID}"

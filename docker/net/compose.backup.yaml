@@ -24,6 +24,7 @@ services:
     cap_add: [SYS_ADMIN]
     environment:
       <<: *remote-environment
+      # RUN_ON_STARTUP: "true"
       BACKUP_CRON: "0 0 1 * * *"
       RESTIC_BACKUP_SOURCES: /data
       RESTIC_BACKUP_ARGS: >-
@@ -36,11 +37,11 @@ services:
         --keep-weekly 5
         --keep-monthly 12
       PRE_COMMANDS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/start"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/start"
       POST_COMMANDS_FAILURE: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/fail"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}/fail"
       POST_COMMANDS_SUCCESS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_BACKUP_UUID}"
     volumes:
       - "${CONFIG_DIR}/adguard:/data/adguard"
       - "${CONFIG_DIR}/healthchecks:/data/healthchecks"
@@ -57,11 +58,11 @@ services:
       <<: *remote-environment
       PRUNE_CRON: "0 0 3 * * *"
       PRE_COMMANDS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/start"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/start"
       POST_COMMANDS_FAILURE: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/fail"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/fail"
       POST_COMMANDS_SUCCESS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}"
 
   restic-remote-check:
     <<: *options
@@ -74,8 +75,28 @@ services:
       RESTIC_CHECK_ARGS: >-
         --read-data-subset=10%
       PRE_COMMANDS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/start"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/start"
       POST_COMMANDS_FAILURE: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/fail"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}/fail"
       POST_COMMANDS_SUCCESS: |-
-        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.kaile.dev/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}"
+        curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${PRIVATE_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_CHECK_UUID}"
+
+  restic-remote-restore:
+    <<: *options
+    profiles: [restore]
+    image: mazzolino/restic:latest
+    container_name: restic-remote-restore
+    environment:
+      <<: *remote-environment
+      RUN_ON_STARTUP: "true"
+      RESTIC_RESTORE_TARGET: /data
+      # RESTIC_RESTORE_ARGS: "--snapshot latest" # Optional: defaults to latest
+    volumes:
+      - "${CONFIG_DIR}/adguard:/data/adguard"
+      - "${CONFIG_DIR}/healthchecks:/data/healthchecks"
+      - "${CONFIG_DIR}/homepage:/data/homepage"
+      - "${CONFIG_DIR}/smokeping:/data/smokeping"
+      - "${CONFIG_DIR}/traefik/conf:/data/traefik-conf"
+    deploy:
+      restart_policy:
+        condition: none
