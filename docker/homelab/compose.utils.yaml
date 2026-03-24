@@ -35,7 +35,7 @@ services:
     <<: *options
     image: ghcr.io/atuinsh/atuin:latest
     container_name: atuin
-    command: server start
+    command: start
     user: "${PUID}:${PGID}"
     links:
       - atuin-postgres:db
