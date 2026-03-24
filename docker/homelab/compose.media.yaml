@@ -213,6 +213,18 @@ services:
       traefik.http.services.sonarr.loadbalancer.server.port: 8989
       traefik.http.routers.sonarr.entrypoints: websecure
 
+  recyclarr:
+    <<: *options
+    image: ghcr.io/recyclarr/recyclarr:8
+    container_name: recyclarr
+    user: ${PUID}:${PGID}
+    environment:
+      <<: *environment
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+    volumes:
+      - ${CONFIG_DIR}/recyclarr:/config
+
   unpackerr:
     <<: *options
     image: golift/unpackerr
