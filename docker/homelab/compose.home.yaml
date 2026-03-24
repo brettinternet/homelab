@@ -56,6 +56,7 @@ services:
 
   # https://docs.frigate.video/configuration/hardware_acceleration/#configuring-intel-gpu-stats-in-docker
   # Trouble killing the container: https://github.com/moby/moby/issues/43094#issuecomment-1000003389
+  # Amcrest: https://amcrest.com/forum/amcrest-smart-home-f32/ad410-rtsp-streams-t16618.html
   frigate:
     <<: *options
     image: ghcr.io/blakeblackshear/frigate:stable
