@@ -5,9 +5,11 @@ version: "3"
 tasks:
   init:
     desc: Project setup
+    aliases: [setup]
     cmds:
       - task: mise
       - task: direnv
+      - task: lefthook
       - task: python
 
   mise:
@@ -28,6 +30,14 @@ tasks:
     preconditions:
       - command -v direnv
       - test -f .envrc
+
+  lefthook:
+    desc: Install Lefthook
+    cmds:
+      - lefthook install
+    preconditions:
+      - command -v lefthook
+      - test -f lefthook.yaml
 
   python:
     desc: Install Python dependencies

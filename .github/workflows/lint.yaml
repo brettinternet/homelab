@@ -10,49 +10,52 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-env:
-  # Currently no way to detect automatically
-  DEFAULT_BRANCH: main
-
 jobs:
-  build:
-    name: MegaLinter
+  yamllint:
+    name: yamllint
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skipci')"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
         with:
-          fetch-depth: 0
+          install_args: yamllint
+      - run: yamllint .
 
-      - name: MegaLinter
-        uses: oxsecurity/megalinter@v9.4.0
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'workflow_dispatch' }}
-          ENABLE_LINTERS: |-
-            ${{
-              join(
-                fromJSON('
-                  [
-                    "ACTION_ACTIONLINT",
-                    "ANSIBLE_ANSIBLE_LINT",
-                    "COPYPASTE_JSCPD",
-                    "MARKDOWN_MARKDOWNLINT",
-                    "REPOSITORY_GIT_DIFF",
-                    "REPOSITORY_SECRETLINT",
-                    "TERRAFORM_TERRAFORM_FMT",
-                    "YAML_PRETTIER",
-                    "YAML_YAMLLINT"
-                  ]
-                '),
-                ','
-              )
-            }}
-          ANSIBLE_DIRECTORY: provision
-          ANSIBLE_ANSIBLE_LINT_CONFIG_FILE: .github/linters/.ansible-lint
-          MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .github/linters/.markdownlint.yaml
-          MARKDOWN_MARKDOWNLINT_RULES_PATH: .github/
-          YAML_YAMLLINT_CONFIG_FILE: .github/linters/.yamllint.yaml
-          YAML_PRETTIER_CONFIG_FILE: .github/linters/.prettierrc.yaml
-          YAML_PRETTIER_FILTER_REGEX_EXCLUDE: "(.*\\.sops\\.ya?ml)"
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skipci')"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          install_args: shellcheck
+      - run: >-
+          find . -type f
+          \( -name '*.sh' -o -name '*.bash' -o -name '*.ksh' -o -name '*.bashrc'
+          -o -name '*.bash_profile' -o -name '*.bash_login' -o -name '*.bash_logout' \)
+          -not -path "./dotbot/*"
+          | xargs shellcheck
+
+  dprint:
+    name: dprint
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skipci')"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          install_args: dprint
+      - run: dprint check
+
+  prettier:
+    name: prettier
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skipci')"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          install_args: prettier
+      - run: prettier --check "**/*.{yaml,yml}"

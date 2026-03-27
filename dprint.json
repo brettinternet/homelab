@@ -1,0 +1,20 @@
+{
+  "$schema": "https://dprint.dev/schemas/v0.json",
+  "useTabs": false,
+  "lineWidth": 100,
+  "json": {
+  },
+  "markdown": {
+  },
+  "toml": {
+  },
+  "markup": {
+  },
+  "excludes": [],
+  "plugins": [
+    "https://plugins.dprint.dev/json-0.20.0.wasm",
+    "https://plugins.dprint.dev/markdown-0.19.0.wasm",
+    "https://plugins.dprint.dev/toml-0.7.0.wasm",
+    "https://plugins.dprint.dev/g-plane/markup_fmt-v0.23.1.wasm"
+  ]
+}

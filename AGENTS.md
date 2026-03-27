@@ -8,7 +8,7 @@ Dependencies used in this project are installed by `mise` and defined in `mise.t
 
 Secrets for each docker context are defined in a `sops.env` file that's encrypted with Sops. Don't read these files.
 
-Make sure the checks passes after each change.
+Make sure the checks passes after each change. Keep working until all checks pass.
 
 ## Lint
 

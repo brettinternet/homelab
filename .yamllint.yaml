@@ -1,7 +1,8 @@
 ---
 ignore: |
   *.sops.*
-  gotk-components.yaml
+  sops.env
+  .venv
 extends: default
 rules:
   truthy:

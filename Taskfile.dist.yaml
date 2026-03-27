@@ -27,8 +27,6 @@ includes:
     taskfile: .taskfiles/docker.yaml
     dir: ./docker
     aliases: [d]
-  lint: .taskfiles/lint.yaml
-  precommit: .taskfiles/precommit.yaml
   setup: .taskfiles/setup.yaml
   sops: .taskfiles/sops.yaml
 
@@ -40,9 +38,27 @@ tasks:
 
   init:
     desc: Install dependencies and setup environment
+    aliases: [setup]
     cmds:
       - task: setup:init
-      - task: precommit:init
-      - task: precommit:update
       - task: sops:init
       - task: ansible:init
+
+  check:
+    desc: Run checks
+    cmds:
+      - yamllint .
+      - >-
+        find . -type f
+        \( -name '*.sh' -o -name '*.bash' -o -name '*.ksh' -o -name '*.bashrc'
+        -o -name '*.bash_profile' -o -name '*.bash_login' -o -name '*.bash_logout' \)
+        -not -path "./.venv/*"
+        | xargs shellcheck
+      - dprint check
+      - prettier --check "**/*.{yaml,yml}"
+
+  fix:
+    desc: Run fixes
+    cmds:
+      - dprint fmt
+      - prettier --write "**/*.{yaml,yml}"

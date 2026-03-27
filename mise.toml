@@ -1,10 +1,21 @@
+[env]
+_.python.venv = { path = ".venv", create = true }
+
 [tools]
 age = "latest"
+dprint = "latest"
 direnv = "latest"
+docker-cli = "latest"
+docker-compose = "latest"
+gitleaks = "latest"
+lefthook = "latest"
+prettier = "latest"
 python = "{{ get_env(name='PYTHON_VERSION', default='latest') }}"
 sops = "latest"
+shellcheck = "latest"
 task = "latest"
 uv = "latest"
+yamllint = "latest"
 
 [settings]
 disable_backends = ["asdf", "pipx"]

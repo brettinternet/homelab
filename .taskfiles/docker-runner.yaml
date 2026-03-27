@@ -7,7 +7,7 @@ x-dynamic-vars: &dynamic-vars
   COMPOSE_FILES:
     sh: find {{.PROJECT_DIR}} -type f -iname "compose*.yaml" -exec basename {} ';' | sort -r
   COMPOSE_FILES_ARGS: -f {{.COMPOSE_FILES | splitLines | join " -f "}}
-  COMPOSE_COMMAND: docker-compose --parallel 5 -p $COMPOSE_PROJECT {{.COMPOSE_FILES_ARGS}}
+  COMPOSE_COMMAND: docker compose --parallel 5 -p $COMPOSE_PROJECT {{.COMPOSE_FILES_ARGS}}
 
 vars:
   SECRETS_FILE: sops.env
@@ -36,7 +36,6 @@ tasks:
       vars: [SECRETS_FILE]
     preconditions: &preconditions
       - command -v docker
-      - command -v docker-compose
       - command -v sops
       - test -f sops.env
 

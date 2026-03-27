@@ -1,8 +1,6 @@
 ansible
-ansible-lint
+ansible-dev-tools
 jsonpatch
 netaddr
-pre-commit
 pyyaml
 pywinrm
-yamllint
