@@ -25,3 +25,4 @@ htpasswd
 mise.local.toml
 /Taskfile.yaml
 /Taskfile.yml
+AGENTS.local.md
