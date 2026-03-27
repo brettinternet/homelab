@@ -25,7 +25,7 @@
     line: "{{ item.line | default('') }}"
     state: "{{ item.state | default('present') }}"
     mode: 0644
-    create: yes
+    create: true
   with_items:
     - regexp: ^.*Example$
       state: absent

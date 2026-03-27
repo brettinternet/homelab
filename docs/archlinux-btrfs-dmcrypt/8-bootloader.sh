@@ -46,10 +46,11 @@ if [ ! -f "$BACKUP_CONF_PATH" ]; then
   mv $CONF_DIR/refind.conf $BACKUP_CONF_PATH
 fi
 
-DRIVE="/dev/nvme0n1"
 DRIVE_SYSTEM_PARTITION="/dev/nvme0n1p2"
 DRIVE_PART_UUID="$(blkid $DRIVE_SYSTEM_PARTITION | cut -d " " -f2 | cut -d '=' -f2 | sed 's/\"//g')"
-RESUME_OFFSET="$(echo $(/mnt/usr/local/bin/btrfs_map_physical /mnt/.swap/swapfile | head -n2 | tail -n1 | awk '{print $6}') / $(run_in_system "getconf PAGESIZE") | bc)"
+PHYS_OFFSET="$(/mnt/usr/local/bin/btrfs_map_physical /mnt/.swap/swapfile | head -n2 | tail -n1 | awk '{print $6}')"
+PAGE_SIZE="$(run_in_system "getconf PAGESIZE")"
+RESUME_OFFSET="$(echo "$PHYS_OFFSET / $PAGE_SIZE" | bc)"
 cat > $CONF_DIR/refind.conf <<EOF
 menuentry "Arch Linux" {
     icon     /EFI/refind/themes/$THEME_NAME/icons/128-48/os_arch.png

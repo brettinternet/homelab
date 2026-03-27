@@ -47,6 +47,7 @@ tasks:
   check:
     desc: Run checks
     cmds:
+      - task: sops:check
       - yamllint .
       - >-
         find . -type f

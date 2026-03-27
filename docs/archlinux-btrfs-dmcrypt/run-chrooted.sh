@@ -12,5 +12,5 @@ ARGS=$(printf '%q ' "$@")
 if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
   /bin/bash -c "$ARGS"
 else
-  arch-chroot $CHROOT_TARGET /bin/bash -c "$ARGS"
+  arch-chroot "$CHROOT_TARGET" /bin/bash -c "$ARGS"
 fi

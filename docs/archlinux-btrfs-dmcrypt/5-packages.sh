@@ -29,4 +29,4 @@ PACKAGES=(
   btop
 )
 
-pacstrap /mnt ${PACKAGES[@]}
+pacstrap /mnt "${PACKAGES[@]}"

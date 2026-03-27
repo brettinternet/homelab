@@ -17,6 +17,17 @@ tasks:
     status:
       - "test -f {{.AGE_FILE}}"
 
+  check:
+    desc: Check SOPS files are encrypted
+    cmds:
+      - |-
+        unencrypted=$(find . -type f -name "*sops.*" -not -path "./.venv/*" -not -name ".sops.yaml" -exec grep -FL "ENC[AES256_GCM" {} \;)
+        if [ -n "$unencrypted" ]; then
+          echo "Unencrypted SOPS files:"
+          echo "$unencrypted"
+          exit 1
+        fi
+
   echo:
     desc: Echo SOPS secret
     cmds:
