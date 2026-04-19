@@ -17,7 +17,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skipci')"
     steps:
       - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v4
         with:
           install_args: uv
       - run: uvx yamllint .
@@ -28,7 +28,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skipci')"
     steps:
       - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v4
         with:
           install_args: shellcheck
       - run: >-
@@ -44,7 +44,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skipci')"
     steps:
       - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v4
         with:
           install_args: dprint
       - run: dprint check
@@ -55,7 +55,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skipci')"
     steps:
       - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v4
         with:
           install_args: bun prettier
       - run: prettier --check "**/*.{yaml,yml}"
