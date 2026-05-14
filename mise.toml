@@ -1,3 +1,5 @@
+# :schema https://mise.en.dev/schema/mise.json
+
 [env]
 _.python.venv = { path = ".venv", create = true }
 
