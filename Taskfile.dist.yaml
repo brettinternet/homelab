@@ -54,11 +54,9 @@ tasks:
         -o -name '*.bash_profile' -o -name '*.bash_login' -o -name '*.bash_logout' \)
         -not -path "./.venv/*"
         | xargs shellcheck
-      - dprint check
       - prettier --check "**/*.{yaml,yml}"
 
   fix:
     desc: Run fixes
     cmds:
-      - dprint fmt
       - prettier --write "**/*.{yaml,yml}"

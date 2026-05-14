@@ -1,11 +1,10 @@
-# :schema https://mise.en.dev/schema/mise.json
+#: schema https://mise.en.dev/schema/mise.json
 
 [env]
 _.python.venv = { path = ".venv", create = true }
 
 [tools]
 age = "latest"
-dprint = "latest"
 direnv = "latest"
 docker-cli = "latest"
 docker-compose = { version = "latest", postinstall = "ln -sf $(which docker-cli-plugin-docker-compose) ~/.docker/cli-plugins/docker-compose" }
