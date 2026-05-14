@@ -23,19 +23,3 @@ services:
   #     traefik.http.routers.double-take.rule: Host(`double-take.${PRIVATE_DOMAIN}`)
   #     traefik.http.services.double-take.loadbalancer.server.port: 3000
   #     traefik.http.routers.double-take.entrypoints: websecure
-
-  # https://github.com/rynfar/meridian
-  meridian:
-    <<: *options
-    image: ghcr.io/rynfar/meridian:latest
-    container_name: meridian
-    environment:
-      <<: *environment
-      MERIDIAN_PROFILES: >-
-        [{"id":"claude","oauthToken":"${MERIDIAN_CLAUDE_OAUTH_TOKEN}"}]
-      MERIDIAN_DEFAULT_PROFILE: claude
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.meridian.rule: Host(`meridian.${PRIVATE_DOMAIN}`)
-      traefik.http.services.meridian.loadbalancer.server.port: 3456
-      traefik.http.routers.meridian.entrypoints: websecure
