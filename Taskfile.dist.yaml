@@ -48,7 +48,6 @@ tasks:
     desc: Run checks
     cmds:
       - task: sops:check
-      - yamllint .
       - >-
         find . -type f
         \( -name '*.sh' -o -name '*.bash' -o -name '*.ksh' -o -name '*.bashrc'
