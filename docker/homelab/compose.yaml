@@ -51,6 +51,7 @@ services:
       TUNNEL_ID: "${CLOUDFLARE_TUNNEL_ID}"
     command: [tunnel, run]
 
+  # TODO: add anubis https://anubis.techaro.lol/docs/admin/environments/traefik
   traefik:
     <<: *service
     image: traefik:v3.6
