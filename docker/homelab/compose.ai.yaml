@@ -9,7 +9,7 @@ x-options: &options
     restart_policy:
       condition: unless-stopped
 
-services:
+services: {}
   # https://github.com/exadel-inc/CompreFace/blob/master/docker-compose.yml
   # https://github.com/skrashevich/double-take
   # double-take:
