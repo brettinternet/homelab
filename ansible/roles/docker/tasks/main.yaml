@@ -33,12 +33,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     line: MaxStartups 50
+  notify: Reload sshd
 
 - name: Add SSH max sessions
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     line: MaxSessions 100
-
+  notify: Reload sshd
 # https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes
 - name: Set net read/write memory max for UDP
   ansible.posix.sysctl:

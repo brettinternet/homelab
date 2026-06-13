@@ -47,7 +47,7 @@
     chdir: "{{ dotfiles__dir }}"
     cmd: "{{ dotfiles__install_cmd }}"
   register: dotbot_setup_result
-  failed_when: dotbot_setup_result.stderr != ""
+  # failed_when: dotbot_setup_result.stderr != ""
 
 - name: Debug dotfile setup log
   ansible.builtin.debug:

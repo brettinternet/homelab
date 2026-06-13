@@ -13,7 +13,8 @@
     name:
       - cockpit
       # https://cockpit-project.org/blog/pcp-grafana.html
-      - cockpit-pcp
+      - pcp
+      - cockpit-files
 
 - name: Remove Cockpit motd
   ansible.builtin.file:
