@@ -51,7 +51,7 @@ tasks:
       - task: run:{{.run}}
         vars:
           PROJECT: homelab
-          HOSTNAME: gertrude
+          HOSTNAME: harambe
           # PROFILES: base,utils,home,auth,projects,backup,media
           PROFILES: base,utils,home,auth,projects,media-lite
     requires: *docker-vars
