@@ -66,3 +66,125 @@ services:
       - "${CONFIG_DIR}/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf"
       - "${CONFIG_DIR}/mosquitto/data:/mosquitto/data"
       - "${CONFIG_DIR}/mosquitto/log:/mosquitto/log"
+
+  terminus-init-certificates:
+    profiles: [home]
+    image: ghcr.io/usetrmnl/terminus:latest
+    container_name: terminus-init-certificates
+    user: root
+    environment:
+      CERTIFICATE_URLS: "${TRMNL_CERTIFICATE_URLS:-}"
+    volumes:
+      - "${CONFIG_DIR}/terminus/certificates:/etc/ssl/certs"
+    entrypoint: [/bin/bash, -c]
+    command: scripts/docker/install-certificates
+    restart: "no"
+
+  terminus:
+    <<: *options
+    image: ghcr.io/usetrmnl/terminus:latest
+    container_name: terminus
+    init: true
+    environment:
+      <<: *environment
+      HANAMI_PORT: 2300
+      API_URI: "https://trmnl.${PRIVATE_DOMAIN}"
+      APP_SECRET: "${TRMNL_APP_SECRET:?err}"
+      APP_SETUP: "true"
+      DATABASE_URL: "postgres://terminus:${TRMNL_DATABASE_PASSWORD:?err}@terminus-database:5432/terminus"
+      KEYVALUE_URL: "redis://:${TRMNL_KEYVALUE_PASSWORD:?err}@terminus-keyvalue:6379/0"
+    volumes:
+      - "${CONFIG_DIR}/terminus/certificates:/etc/ssl/certs"
+      - "${CONFIG_DIR}/terminus/fonts:/app/public/fonts"
+      - "${CONFIG_DIR}/terminus/fonts:/usr/share/fonts/terminus"
+      - "${CONFIG_DIR}/terminus/uploads:/app/public/uploads"
+    depends_on:
+      terminus-init-certificates:
+        condition: service_completed_successfully
+      terminus-database:
+        condition: service_healthy
+      terminus-keyvalue:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, "curl --fail --silent http://localhost:2300/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.terminus.rule: Host(`trmnl.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.terminus.entrypoints: websecure
+      traefik.http.services.terminus.loadbalancer.server.port: 2300
+
+  terminus-worker:
+    <<: *options
+    image: ghcr.io/usetrmnl/terminus:latest
+    container_name: terminus-worker
+    init: true
+    environment:
+      <<: *environment
+      HANAMI_PORT: 2300
+      API_URI: "https://trmnl.${PRIVATE_DOMAIN}"
+      APP_SECRET: "${TRMNL_APP_SECRET:?err}"
+      DATABASE_URL: "postgres://terminus:${TRMNL_DATABASE_PASSWORD:?err}@terminus-database:5432/terminus"
+      KEYVALUE_URL: "redis://:${TRMNL_KEYVALUE_PASSWORD:?err}@terminus-keyvalue:6379/0"
+    command: bundle exec sidekiq -r ./config/sidekiq.rb
+    volumes:
+      - "${CONFIG_DIR}/terminus/certificates:/etc/ssl/certs"
+      - "${CONFIG_DIR}/terminus/fonts:/app/public/fonts"
+      - "${CONFIG_DIR}/terminus/fonts:/usr/share/fonts/terminus"
+      - "${CONFIG_DIR}/terminus/uploads:/app/public/uploads"
+    depends_on:
+      terminus:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, pgrep, -f, sidekiq]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+  terminus-database:
+    <<: *options
+    image: postgres:18.4-alpine
+    container_name: terminus-database
+    environment:
+      POSTGRES_USER: terminus
+      POSTGRES_DB: terminus
+      POSTGRES_PASSWORD: "${TRMNL_DATABASE_PASSWORD:?err}"
+    volumes:
+      - "${CONFIG_DIR}/terminus/postgres:/var/lib/postgresql"
+    command: -p 5432
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready --username terminus --dbname terminus --port 5432
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  terminus-keyvalue:
+    <<: *options
+    image: valkey/valkey:9-alpine
+    container_name: terminus-keyvalue
+    command:
+      - valkey-server
+      - --requirepass
+      - "${TRMNL_KEYVALUE_PASSWORD:?err}"
+      - --maxmemory
+      - 512mb
+      - --maxmemory-policy
+      - noeviction
+      - --port
+      - "6379"
+    volumes:
+      - "${CONFIG_DIR}/terminus/valkey:/data"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'redis-cli -a "${TRMNL_KEYVALUE_PASSWORD:?err}" -p 6379 ping || exit 1'
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 2s
