@@ -67,19 +67,6 @@ services:
       - "${CONFIG_DIR}/mosquitto/data:/mosquitto/data"
       - "${CONFIG_DIR}/mosquitto/log:/mosquitto/log"
 
-  terminus-init-certificates:
-    profiles: [home]
-    image: ghcr.io/usetrmnl/terminus:latest
-    container_name: terminus-init-certificates
-    user: root
-    environment:
-      CERTIFICATE_URLS: "${TRMNL_CERTIFICATE_URLS:-}"
-    volumes:
-      - "${CONFIG_DIR}/terminus/certificates:/etc/ssl/certs"
-    entrypoint: [/bin/bash, -c]
-    command: scripts/docker/install-certificates
-    restart: "no"
-
   terminus:
     <<: *options
     image: ghcr.io/usetrmnl/terminus:latest
@@ -94,13 +81,10 @@ services:
       DATABASE_URL: "postgres://terminus:${TRMNL_DATABASE_PASSWORD:?err}@terminus-database:5432/terminus"
       KEYVALUE_URL: "redis://:${TRMNL_KEYVALUE_PASSWORD:?err}@terminus-keyvalue:6379/0"
     volumes:
-      - "${CONFIG_DIR}/terminus/certificates:/etc/ssl/certs"
       - "${CONFIG_DIR}/terminus/fonts:/app/public/fonts"
       - "${CONFIG_DIR}/terminus/fonts:/usr/share/fonts/terminus"
       - "${CONFIG_DIR}/terminus/uploads:/app/public/uploads"
     depends_on:
-      terminus-init-certificates:
-        condition: service_completed_successfully
       terminus-database:
         condition: service_healthy
       terminus-keyvalue:
@@ -131,7 +115,6 @@ services:
       KEYVALUE_URL: "redis://:${TRMNL_KEYVALUE_PASSWORD:?err}@terminus-keyvalue:6379/0"
     command: bundle exec sidekiq -r ./config/sidekiq.rb
     volumes:
-      - "${CONFIG_DIR}/terminus/certificates:/etc/ssl/certs"
       - "${CONFIG_DIR}/terminus/fonts:/app/public/fonts"
       - "${CONFIG_DIR}/terminus/fonts:/usr/share/fonts/terminus"
       - "${CONFIG_DIR}/terminus/uploads:/app/public/uploads"
