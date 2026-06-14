@@ -1,6 +1,6 @@
 ---
 x-options: &options
-  profiles: [home]
+  profiles: &profiles [home]
   environment: &environment
     TZ: "${TIMEZONE}"
   deploy:
@@ -67,6 +67,19 @@ services:
       - "${CONFIG_DIR}/mosquitto/data:/mosquitto/data"
       - "${CONFIG_DIR}/mosquitto/log:/mosquitto/log"
 
+  terminus-permissions:
+    profiles: *profiles
+    image: alpine:latest
+    container_name: terminus-permissions
+    user: root
+    command:
+      - sh
+      - -c
+      - mkdir -p /terminus/fonts /terminus/uploads/cache && chown -R 1000:1000 /terminus/fonts /terminus/uploads
+    volumes:
+      - "${CONFIG_DIR}/terminus:/terminus"
+    restart: "no"
+
   terminus:
     <<: *options
     image: ghcr.io/usetrmnl/terminus:latest
@@ -85,6 +98,8 @@ services:
       - "${CONFIG_DIR}/terminus/fonts:/usr/share/fonts/terminus"
       - "${CONFIG_DIR}/terminus/uploads:/app/public/uploads"
     depends_on:
+      terminus-permissions:
+        condition: service_completed_successfully
       terminus-database:
         condition: service_healthy
       terminus-keyvalue:
