@@ -12,9 +12,10 @@
 
     - name: Split packages
       ansible.builtin.set_fact:
-        packages: "{{ packages.strip().split() if packages is string and packages is defined else packages }}"
-        aur_packages: "{{ aur_packages.strip().split() if aur_packages is string and aur_packages is defined else aur_packages }}"
-        remove_packages: "{{ remove_packages.strip().split() if remove_packages is string and remove_packages is defined else remove_packages }}"
+        packages: "{{ (packages | default([], true)).strip().split() if (packages | default([], true)) is string else (packages | default([], true)) }}"
+        aur_packages: "{{ (aur_packages | default([], true)).strip().split() if (aur_packages | default([], true)) is string else (aur_packages | default([], true)) }}"
+        remove_packages: "{{ (remove_packages | default([], true)).strip().split() if (remove_packages | default([], true)) is string else (remove_packages | default([], true)) }}"
+        remove_aur_packages: "{{ (remove_aur_packages | default([], true)).strip().split() if (remove_aur_packages | default([], true)) is string else (remove_aur_packages | default([], true)) }}"
 
     - name: Install packages
       ansible.builtin.package:
@@ -35,12 +36,12 @@
 
     - name: Combine packages to remove
       ansible.builtin.set_fact:
-        remove_packages: "{{ remove_packages | default([]) + remove_aur_packages | default([]) }}"
+        remove_packages: "{{ remove_packages + remove_aur_packages }}"
 
     - name: Remove packages
       ansible.builtin.package:
         state: absent
-        name: "{{ sum_packages_remove }}"
+        name: "{{ remove_packages }}"
       when:
         - remove_packages | length > 0
   roles:
