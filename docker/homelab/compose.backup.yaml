@@ -97,7 +97,7 @@ services:
     depends_on: [restic-remote-backup]
     environment:
       <<: *remote-environment
-      PRUNE_CRON: "0 0 2 * * *"
+      PRUNE_CRON: "0 30 0 * * *"
       PRE_COMMANDS: |-
         curl -fsS -m 10 --retry 5 -o /dev/null "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_RESTIC_REMOTE_PRUNE_UUID}/start"
       POST_COMMANDS_FAILURE: |-
@@ -112,7 +112,7 @@ services:
     depends_on: [restic-remote-backup]
     environment:
       <<: *remote-environment
-      CHECK_CRON: "0 0 4 * * *"
+      CHECK_CRON: "0 45 0 * * *"
       RESTIC_CHECK_ARGS: >-
         --read-data-subset=10%
       PRE_COMMANDS: |-
