@@ -36,19 +36,19 @@ volumes:
       device: /mnt/storage/backup/icloud
 
 services:
-  icloud:
-    <<: *options
-    image: mandarons/icloud-drive
-    container_name: icloud
-    environment:
-      <<: *environment
-      PUID: "${PUID}"
-      PGID: "${PGID}"
-      ENV_CONFIG_FILE_PATH: /config/config.yaml
-    volumes:
-      - ${CONFIG_DIR}/icloud:/config
-      - ${CONFIG_DIR}/icloud/keyring:/home/abc/.local
-      - backup_icloud:/icloud
+  # icloud:
+  #   <<: *options
+  #   image: mandarons/icloud-drive
+  #   container_name: icloud
+  #   environment:
+  #     <<: *environment
+  #     PUID: "${PUID}"
+  #     PGID: "${PGID}"
+  #     ENV_CONFIG_FILE_PATH: /config/config.yaml
+  #   volumes:
+  #     - ${CONFIG_DIR}/icloud:/config
+  #     - ${CONFIG_DIR}/icloud/keyring:/home/abc/.local
+  #     - backup_icloud:/icloud
 
   restic-remote-backup:
     <<: *options
