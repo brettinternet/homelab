@@ -70,6 +70,8 @@
       when:
         - snapraid is defined
         - snapraid is true
+      tags:
+        - snapraid
     - role: mergerfs
       when:
         - mergerfs__mounts is defined

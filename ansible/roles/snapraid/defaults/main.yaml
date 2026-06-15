@@ -7,7 +7,6 @@ snapraid__supported_distributions:
 snapraid__executable: /usr/bin/snapraid
 snapraid__conf_file: /etc/snapraid.conf
 snapraid__log_dir: /var/log/snapraid
-snapraid__log_file: /var/log/snapraid-runner.log
 snapraid__content_dir: /var/snapraid
 
 # Snapraid daemon
@@ -31,17 +30,6 @@ snapraid__daemon_net_allowed_origin: self
 snapraid__daemon_net_config_full_access: 0
 snapraid__daemon_net_web_root: commander.zip
 snapraid__daemon_net_auth_credential:
-
-# Snapraid-runner
-snapraid__runner_dir: /usr/local/src/snapraid-runner
-snapraid__runner_src_executable: "{{ snapraid__runner_dir }}/snapraid-runner.py"
-snapraid__runner_executable: "/usr/local/bin/snapraid-runner"
-snapraid__runner_conf_file: "/usr/local/etc/snapraid-runner.conf"
-
-# Custom wrapper for notifications/handling
-snapraid__runner_notify_executable: /usr/local/bin/snapraid-runner-notify
-snapraid__runner_handler_executable: /usr/local/bin/snapraid-runner-handler
-snapraid__runner_handler_command: "{{ snapraid__runner_executable }} -c {{ snapraid__runner_conf_file }}"
 
 healthchecks__ping_url:
 healthchecks__snapraid_runner_uuid:
