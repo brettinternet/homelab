@@ -1,5 +1,5 @@
-# Snapraid-runner runs via Kubernetes cron-job
-# https://github.com/IronicBadger/ansible-role-snapraid
+# Snapraid automation is handled by snapraidd.
+# snapraid-runner remains installed but disabled for rollback/manual use.
 ---
 - name: Check supported distribution
   ansible.builtin.fail:
@@ -24,6 +24,10 @@
     owner: root
     group: root
     mode: "0644"
+
+- name: Setup Snapraid daemon
+  ansible.builtin.include_tasks: daemon.yaml
+  when: ansible_facts['distribution'] | lower == 'archlinux'
 
 - name: Setup Snapraid runner
   ansible.builtin.include_tasks: runner.yaml

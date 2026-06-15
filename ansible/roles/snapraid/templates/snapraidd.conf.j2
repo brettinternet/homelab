@@ -1,0 +1,41 @@
+# {{ ansible_managed }}
+# Source: https://github.com/amadvance/snapraid-daemon/blob/master/snapraidd.conf.example
+
+### System
+sys_log_directory = {{ snapraid__log_dir }}
+sys_log_retention_days = {{ snapraid__daemon_log_retention_days }}
+
+### Network & REST API
+net_enabled = {{ snapraid__daemon_net_enabled }}
+net_port = {{ snapraid__daemon_net_port }}
+{% if snapraid__daemon_net_acl %}
+net_acl = {{ snapraid__daemon_net_acl }}
+{% endif %}
+net_security_headers = {{ snapraid__daemon_net_security_headers }}
+net_allowed_origin = {{ snapraid__daemon_net_allowed_origin }}
+net_config_full_access = {{ snapraid__daemon_net_config_full_access }}
+net_web_root = {{ snapraid__daemon_net_web_root }}
+{% if snapraid__daemon_net_auth_credential %}
+net_auth_credential = {{ snapraid__daemon_net_auth_credential }}
+{% endif %}
+
+### Automation & Maintenance
+check_updates = 0
+maintenance_schedule = {{ snapraid__daemon_maintenance_schedule }}
+sync_threshold_deletes = {{ snapraid__daemon_sync_threshold_deletes }}
+sync_threshold_updates = {{ snapraid__daemon_sync_threshold_updates }}
+scrub_percentage = {{ snapraid__daemon_scrub_percentage }}
+scrub_older_than = {{ snapraid__daemon_scrub_older_than }}
+touch_zero_subseconds = {{ snapraid__daemon_touch_zero_subseconds }}
+
+### Disk Monitoring & Power
+probe_interval_minutes = {{ snapraid__daemon_probe_interval_minutes }}
+spindown_idle_minutes = {{ snapraid__daemon_spindown_idle_minutes }}
+
+### Notifications
+notify_syslog_enabled = 1
+notify_syslog_level = info
+notify_heartbeat = curl -fsS --max-time 30 --retry 3 {{ healthchecks__ping_url }}/{{ healthchecks__snapraid_runner_uuid }}
+notify_result = curl --narrow -fsS --max-time 30 --retry 3 --data-binary @- {{ healthchecks__ping_url }}/{{ healthchecks__snapraid_runner_uuid }}/fail
+notify_result_level = {{ snapraid__daemon_notify_result_level }}
+notify_differences = {{ snapraid__daemon_notify_differences }}

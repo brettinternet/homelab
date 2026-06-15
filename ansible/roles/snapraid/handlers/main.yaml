@@ -1,0 +1,5 @@
+---
+- name: Reload snapraidd
+  ansible.builtin.systemd:
+    name: snapraidd.service
+    state: reloaded

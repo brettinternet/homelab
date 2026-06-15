@@ -17,17 +17,28 @@ linux:
       aur_packages: >-
         {{ pkgs.base_aur }}
       snapraid: true
+      snapraid__daemon_maintenance_schedule: "03:00"
+      snapraid__daemon_scrub_percentage: 6
+      snapraid__daemon_scrub_older_than: 15
+      snapraid__daemon_sync_threshold_deletes: 0
+      snapraid__daemon_sync_threshold_updates: 0
+      snapraid__daemon_net_enabled: 1
+      snapraid__daemon_net_port: 10.1.2.4:7627
+      snapraid__daemon_net_acl: +10.1.0.5
+      snapraid__daemon_net_security_headers: 1
       mergerfs__mounts:
-        "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/parity1
         "/dev/disk/by-id/ata-ST10000NE0008-2JM101_ZPW0MSQL-part1": /mnt/parity2
         "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG5TJRM-part1": /mnt/parity3
         "/dev/disk/by-id/ata-TOSHIBA_HDWT360_98R0A036FB1G-part1": /mnt/disk1
         "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K44G5Y-part1": /mnt/disk2
         "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M70Y-part1": /mnt/disk3
         "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M5SY-part1": /mnt/disk4
-        "/dev/disk/by-id/ata-HGST_HDN726060ALE610_NAGWMN6Y-part1": /mnt/disk5
-        "/dev/disk/by-id/scsi-35000c5009550f7d7-part1": /mnt/disk6
-        "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG887NM-part1": /mnt/disk7
+        "/dev/disk/by-id/scsi-35000c50095513177-part1": /mnt/disk5
+        "/dev/disk/by-id/ata-HGST_HDN726060ALE610_NAGWMN6Y-part1": /mnt/disk6
+        # "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/parity1
+        "/dev/disk/by-id/scsi-35000c5009550f7d7-part1": /mnt/disk7
+        "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG887NM-part1": /mnt/disk8
+        "/dev/disk/by-id/scsi-35000c5009550f12f-part1": /mnt/disk9
       # nfs__required_services:
       #   - srv-nfs-media.mount
       # nfs__exports:

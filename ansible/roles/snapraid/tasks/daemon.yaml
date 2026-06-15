@@ -1,0 +1,24 @@
+---
+- name: Create Snapraid daemon log directory
+  ansible.builtin.file:
+    path: "{{ snapraid__log_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy snapraidd.conf
+  ansible.builtin.template:
+    src: snapraidd.conf.j2
+    dest: "{{ snapraid__daemon_conf_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload snapraidd
+
+- name: Enable snapraidd service
+  ansible.builtin.systemd:
+    name: snapraidd.service
+    state: started
+    enabled: true
+    daemon_reload: true

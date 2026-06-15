@@ -13,7 +13,7 @@
     name:
       - docker
 
-- name: "Setup user groups, set user shell to {{ shell }}"
+- name: Add user to docker group
   become: true
   ansible.builtin.user:
     name: "{{ ansible_user }}"

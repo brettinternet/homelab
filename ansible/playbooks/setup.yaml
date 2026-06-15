@@ -67,7 +67,9 @@
   become: true
   roles:
     - role: snapraid
-      when: snapraid is true
+      when:
+        - snapraid is defined
+        - snapraid is true
     - role: mergerfs
       when:
         - mergerfs__mounts is defined
@@ -77,9 +79,13 @@
         - nfs__exports is defined
         - nfs__exports | length > 0
     - role: cockpit
-      when: cockpit is true
+      when:
+        - cockpit is defined
+        - cockpit is true
     - role: docker
-      when: docker is true
+      when:
+        - docker is defined
+        - docker is true
 
 # TODO: workstations
 # setup powertop auto tune service https://wiki.archlinux.org/index.php/Powertop

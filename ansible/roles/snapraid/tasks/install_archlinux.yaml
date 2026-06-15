@@ -4,4 +4,6 @@
     name: aur
   vars:
     state: present
-    packages: snapraid
+    packages:
+      - snapraid
+      - snapraid-daemon

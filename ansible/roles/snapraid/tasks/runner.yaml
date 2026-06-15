@@ -59,8 +59,9 @@
       snapraid-runner.timer.j2: /etc/systemd/system/snapraid-runner.timer
       snapraid-runner.service.j2: /etc/systemd/system/snapraid-runner.service
 
-- name: Enable snapraid-runner service timer
+- name: Configure snapraid-runner service timer
   ansible.builtin.systemd:
     name: snapraid-runner.timer
-    state: started
-    enabled: true
+    state: "{{ 'stopped' if ansible_facts['distribution'] | lower == 'archlinux' else 'started' }}"
+    enabled: "{{ ansible_facts['distribution'] | lower != 'archlinux' }}"
+    daemon_reload: true

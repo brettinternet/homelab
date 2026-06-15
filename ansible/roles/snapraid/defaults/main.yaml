@@ -6,8 +6,31 @@ snapraid__supported_distributions:
 # Snapraid
 snapraid__executable: /usr/bin/snapraid
 snapraid__conf_file: /etc/snapraid.conf
+snapraid__log_dir: /var/log/snapraid
 snapraid__log_file: /var/log/snapraid-runner.log
 snapraid__content_dir: /var/snapraid
+
+# Snapraid daemon
+snapraid__daemon_conf_file: /etc/snapraidd.conf
+snapraid__daemon_log_retention_days: 120
+snapraid__daemon_maintenance_schedule: "03:00"
+snapraid__daemon_sync_threshold_deletes: 0
+snapraid__daemon_sync_threshold_updates: 0
+snapraid__daemon_scrub_percentage: 6
+snapraid__daemon_scrub_older_than: 15
+snapraid__daemon_touch_zero_subseconds: 1
+snapraid__daemon_probe_interval_minutes: 3
+snapraid__daemon_spindown_idle_minutes: 15
+snapraid__daemon_notify_result_level: error
+snapraid__daemon_notify_differences: 1
+snapraid__daemon_net_enabled: 0
+snapraid__daemon_net_port: 127.0.0.1:7627
+snapraid__daemon_net_acl:
+snapraid__daemon_net_security_headers: 1
+snapraid__daemon_net_allowed_origin: self
+snapraid__daemon_net_config_full_access: 0
+snapraid__daemon_net_web_root: commander.zip
+snapraid__daemon_net_auth_credential:
 
 # Snapraid-runner
 snapraid__runner_dir: /usr/local/src/snapraid-runner
