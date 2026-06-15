@@ -67,20 +67,41 @@ services:
       - "${CONFIG_DIR}/mosquitto/data:/mosquitto/data"
       - "${CONFIG_DIR}/mosquitto/log:/mosquitto/log"
 
-  inker:
+  larapaper-permissions:
+    profiles: *profiles
+    image: alpine:latest
+    container_name: larapaper-permissions
+    user: root
+    command:
+      - sh
+      - -c
+      - mkdir -p /larapaper/database /larapaper/storage && touch /larapaper/database/database.sqlite && chown -R 82:82 /larapaper
+    volumes:
+      - "${CONFIG_DIR}/larapaper:/larapaper"
+    restart: "no"
+
+  larapaper:
     <<: *options
-    image: wojooo/inker:latest
-    container_name: inker
+    image: ghcr.io/usetrmnl/larapaper:latest
+    container_name: larapaper
     environment:
       <<: *environment
-      ADMIN_PIN: "${TRMNL_ADMIN_PIN:-1111}"
-      CORS_ORIGINS: "https://trmnl.${PRIVATE_DOMAIN}"
+      APP_KEY: "${LARAPAPER_APP_KEY:?err}"
+      APP_URL: "https://trmnl.${PRIVATE_DOMAIN}"
+      DB_DATABASE: database/storage/database.sqlite
+      FORCE_HTTPS: "1"
+      PHP_OPCACHE_ENABLE: "1"
+      REGISTRATION_ENABLED: "1"
+      TRMNL_PROXY_REFRESH_MINUTES: "15"
+      TRUSTED_PROXIES: "*"
     volumes:
-      - "${CONFIG_DIR}/inker/postgres:/var/lib/postgresql/17/main"
-      - "${CONFIG_DIR}/inker/redis:/data"
-      - "${CONFIG_DIR}/inker/uploads:/app/uploads"
+      - "${CONFIG_DIR}/larapaper/database:/var/www/html/database/storage"
+      - "${CONFIG_DIR}/larapaper/storage:/var/www/html/storage/app/public/images/generated"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.inker.rule: Host(`trmnl.${PRIVATE_DOMAIN}`)
-      traefik.http.routers.inker.entrypoints: websecure
-      traefik.http.services.inker.loadbalancer.server.port: 80
+      traefik.http.routers.larapaper.rule: Host(`trmnl.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.larapaper.entrypoints: websecure
+      traefik.http.services.larapaper.loadbalancer.server.port: 8080
+    depends_on:
+      larapaper-permissions:
+        condition: service_completed_successfully
