@@ -115,6 +115,8 @@ services:
       traefik.http.routers.terminus.rule: Host(`trmnl.${PRIVATE_DOMAIN}`)
       traefik.http.routers.terminus.entrypoints: websecure
       traefik.http.services.terminus.loadbalancer.server.port: 2300
+      traefik.http.routers.terminus.middlewares: terminus-csp
+      traefik.http.middlewares.terminus-csp.headers.customresponseheaders.Content-Security-Policy: "base-uri 'self'; child-src 'self'; connect-src 'self' https://trmnl.com; default-src 'none'; font-src 'self' https://trmnl.com; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; img-src 'self' data: blob: https:; media-src 'self'; object-src 'none'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://trmnl.com; style-src 'self' 'unsafe-inline' https:; manifest-src 'self'"
 
   terminus-worker:
     <<: *options
