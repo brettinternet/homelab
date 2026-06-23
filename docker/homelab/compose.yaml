@@ -54,7 +54,7 @@ services:
   # TODO: add anubis https://anubis.techaro.lol/docs/admin/environments/traefik
   traefik:
     <<: *service
-    image: traefik:v3.6
+    image: traefik:v3.7
     container_name: traefik
     environment:
       <<: *environment
