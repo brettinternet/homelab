@@ -127,8 +127,7 @@ services:
     volumes:
       - "${CONFIG_DIR}/plex:/config"
       - media_library:/data/library
-    tmpfs:
-      - /tmp
+      - /var/lib/plex-transcode:/transcode
     labels:
       traefik.enable: "true"
       traefik.http.routers.plex.rule: Host(`plex.${PUBLIC_DOMAIN}`)
