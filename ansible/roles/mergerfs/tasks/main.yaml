@@ -59,21 +59,23 @@
 # Ensure options for NFS compatibility
 # https://github.com/trapexit/mergerfs?tab=readme-ov-file#nfs
 - name: Mount mergerfs fuse
+  vars:
+    _mergerfs_opts:
+      - allow_other
+      - use_ino
+      - noforget
+      - inodecalc=path-hash
+      - security_capability=false
+      - cache.files=partial
+      - dropcacheonclose=true
+      - category.create=mfs
+      - fsname=mergerfs
+      - minfreespace=10G
   ansible.posix.mount:
     src: /mnt/disk*
     path: "{{ mergerfs__storage_dir }}"
     fstype: fuse.mergerfs
-    opts: >-
-      allow_other,
-      use_ino,
-      noforget,
-      inodecalc=path-hash,
-      security_capability=false,
-      cache.files=partial,
-      dropcacheonclose=true,
-      category.create=mfs,
-      fsname=mergerfs,
-      minfreespace=10G
+    opts: "{{ _mergerfs_opts | join(',') }}"
     state: mounted
 
 - name: Bind mount media to nfs root
