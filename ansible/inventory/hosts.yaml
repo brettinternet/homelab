@@ -35,10 +35,10 @@ linux:
         "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M5SY-part1": /mnt/disk4
         "/dev/disk/by-id/scsi-35000c50095513177-part1": /mnt/disk5
         "/dev/disk/by-id/ata-HGST_HDN726060ALE610_NAGWMN6Y-part1": /mnt/disk6
-        # "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/parity1
         "/dev/disk/by-id/scsi-35000c5009550f7d7-part1": /mnt/disk7
         "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG887NM-part1": /mnt/disk8
         "/dev/disk/by-id/scsi-35000c5009550f12f-part1": /mnt/disk9
+        "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/disk10
       # nfs__required_services:
       #   - srv-nfs-media.mount
       # nfs__exports:
