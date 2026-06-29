@@ -5,9 +5,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 x-remote-environment: &remote-environment
   <<: *environment
@@ -97,6 +95,4 @@ services:
       - "${CONFIG_DIR}/homepage:/data/homepage"
       - "${CONFIG_DIR}/smokeping:/data/smokeping"
       - "${CONFIG_DIR}/traefik/conf:/data/traefik-conf"
-    deploy:
-      restart_policy:
-        condition: none
+    restart: "no"

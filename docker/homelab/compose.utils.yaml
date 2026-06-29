@@ -4,9 +4,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 services:
   mealie:
@@ -25,7 +23,9 @@ services:
       ALLOW_SIGNUP: "false"
     volumes:
       - "${CONFIG_DIR}/mealie:/app/data"
+    # mealie ships its own HEALTHCHECK (curl /api/app/about); just enable autoheal
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.mealie.rule: Host(`recipes.${PUBLIC_DOMAIN}`)
       traefik.http.routers.mealie.entrypoints: websecure
@@ -39,6 +39,9 @@ services:
     user: "${PUID}:${PGID}"
     links:
       - atuin-postgres:db
+    depends_on:
+      atuin-postgres:
+        condition: service_healthy
     environment:
       <<: *environment
       ATUIN_HOST: "0.0.0.0"
@@ -64,6 +67,12 @@ services:
       POSTGRES_DB: atuin
     volumes:
       - "${CONFIG_DIR}/atuin-postgres:/var/lib/postgresql/data/"
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   linkding:
     <<: *options
@@ -71,7 +80,9 @@ services:
     image: sissbruecker/linkding:latest
     volumes:
       - "${CONFIG_DIR}/linkding:/etc/linkding/data"
+    # linkding ships its own HEALTHCHECK (curl /health); just enable autoheal
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.linkding.rule: Host(`bookmarks.${PUBLIC_DOMAIN}`)
       traefik.http.routers.linkding.entrypoints: websecure
@@ -81,7 +92,9 @@ services:
     <<: *options
     container_name: miniflux
     image: docker.io/miniflux/miniflux:latest
-    # depends_on: [miniflux-postgres]
+    depends_on:
+      miniflux-postgres:
+        condition: service_healthy
     environment:
       <<: *environment
       CREATE_ADMIN: "1"
@@ -89,7 +102,15 @@ services:
       ADMIN_USERNAME: "${MINIFLUX_ADMIN_USERNAME}"
       ADMIN_PASSWORD: "${MINIFLUX_ADMIN_PASSWORD}"
       DATABASE_URL: postgres://miniflux:${MINIFLUX_DB_PASSWORD}@miniflux-postgres/miniflux?sslmode=disable
+    # miniflux has no curl/wget; use its own binary (exec form)
+    healthcheck:
+      test: [CMD, /usr/bin/miniflux, -healthcheck, auto]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.miniflux.rule: Host(`rss.${PUBLIC_DOMAIN}`)
       traefik.http.routers.miniflux.entrypoints: websecure
@@ -106,6 +127,12 @@ services:
       POSTGRES_DB: miniflux
     volumes:
       - "${CONFIG_DIR}/miniflux-postgres:/var/lib/postgresql/data/"
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   gickup:
     <<: *options
@@ -125,6 +152,7 @@ services:
   cgit:
     image: ghcr.io/brettinternet/cgit:latest
     container_name: cgit
+    restart: unless-stopped
     environment:
       <<: *environment
       ROOT_TITLE: "git.${PUBLIC_DOMAIN}"
@@ -135,6 +163,13 @@ services:
       MAX_REPO_COUNT: 50 # per page
     volumes:
       - "${CONFIG_DIR}/git/github.com:/srv/git"
+    # verify on host: image's http client (curl/wget) may differ
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsS http://localhost:80/ >/dev/null || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     labels:
       traefik.enable: "true"
       traefik.http.routers.cgit.rule: Host(`git.${PUBLIC_DOMAIN}`)

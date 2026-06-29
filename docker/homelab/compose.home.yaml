@@ -3,9 +3,7 @@ x-options: &options
   profiles: &profiles [home]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 services:
   homeassistant:
@@ -30,6 +28,13 @@ services:
     devices:
       - /dev/serial/by-id/${DEVICE_ID_ZWAVE}:/dev/ttyUSB0
       - /dev/serial/by-id/${DEVICE_ID_ZIGBEE}:/dev/ttyUSB1
+    healthcheck:
+      test:
+        [CMD-SHELL, "curl -fsS http://localhost:8123/manifest.json || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     labels:
       traefik.enable: "true"
       traefik.http.routers.homeassistant.rule: Host(`home.${PUBLIC_DOMAIN}`)
@@ -66,6 +71,17 @@ services:
       - "${CONFIG_DIR}/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf"
       - "${CONFIG_DIR}/mosquitto/data:/mosquitto/data"
       - "${CONFIG_DIR}/mosquitto/log:/mosquitto/log"
+    # no autoheal: probe fails if the broker requires auth — verify on host first
+    healthcheck:
+      test:
+        [
+          CMD-SHELL,
+          "mosquitto_sub -h localhost -p 1883 -t '$$SYS/#' -E -C 1 -W 3 || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   larapaper-permissions:
     profiles: *profiles
@@ -97,6 +113,13 @@ services:
     volumes:
       - "${CONFIG_DIR}/larapaper/database:/var/www/html/database/storage"
       - "${CONFIG_DIR}/larapaper/storage:/var/www/html/storage/app/public/images/generated"
+    # verify on host: /up is the Laravel health route; fall back to / if absent
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsS http://localhost:8080/up || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     labels:
       traefik.enable: "true"
       traefik.http.routers.larapaper.rule: Host(`trmnl.${PRIVATE_DOMAIN}`)

@@ -5,9 +5,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 services:
   frigate-lite:
@@ -36,6 +34,13 @@ services:
       - 9554:8554 # RTSP
       - 8555:8555/tcp # WebRTC
       - 8555:8555/udp # WebRTC
+    # verify on host: docker inspect frigate --format '{{json .State.Health}}'
+    healthcheck:
+      test: [CMD-SHELL, "curl -f http://localhost:5000/api/version || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     labels:
       traefik.enable: "true"
       traefik.http.routers.frigate.rule: Host(`video.${PRIVATE_DOMAIN}`)

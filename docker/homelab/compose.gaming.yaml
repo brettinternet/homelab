@@ -4,9 +4,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 services:
   palworld1:

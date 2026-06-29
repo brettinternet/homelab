@@ -6,9 +6,7 @@ x-options: &options
   # dns: ["${DNS}"]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 networks:
   default:
@@ -37,6 +35,12 @@ services:
       DIUN_NOTIF_PUSHOVER_RECIPIENT: "${PUSHOVER_USER_KEY}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: [CMD, diun, healthcheck]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   traefik:
     <<: *options
@@ -63,6 +67,7 @@ services:
       - --accesslog.filepath=/var/log/access.log
       - --accesslog.filters.statuscodes=400-499
       - --api=true
+      - --ping=true
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --providers.file.directory=/etc/traefik
@@ -88,6 +93,12 @@ services:
       - --certificatesresolvers.leresolver.acme.email=${ACME_EMAIL}
       # - --certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --serverstransport.insecureskipverify=true
+    healthcheck:
+      test: [CMD, traefik, healthcheck, --ping]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     labels:
       traefik.enable: "true"
       traefik.http.routers.traefik.rule: Host(`traefik.${PRIVATE_DOMAIN}`)

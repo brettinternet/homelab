@@ -5,9 +5,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy: &deploy
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 services:
   homepage:
@@ -33,7 +31,9 @@ services:
     volumes:
       - "${CONFIG_DIR}/homepage:/app/config"
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    # homepage ships its own HEALTHCHECK (wget /api/healthcheck); just enable autoheal
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.homepage.rule: Host(`dashboard.${PRIVATE_DOMAIN}`)
       traefik.http.routers.homepage.entrypoints: websecure

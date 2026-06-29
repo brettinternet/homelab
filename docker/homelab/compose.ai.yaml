@@ -5,9 +5,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy: &deploy
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 services: {}
   # https://github.com/exadel-inc/CompreFace/blob/master/docker-compose.yml

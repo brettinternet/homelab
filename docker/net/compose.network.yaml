@@ -5,9 +5,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy: &deploy
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 services:
   # A record has to exist first
@@ -36,6 +34,16 @@ services:
     volumes:
       - "${CONFIG_DIR}/adguard/work:/opt/adguardhome/work"
       - "${CONFIG_DIR}/adguard/conf:/opt/adguardhome/conf"
+    # no autoheal: DNS is critical, prefer to investigate rather than auto-restart.
+    # UI port is 3000 here (matches the traefik service port below)
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "wget -q -O- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     labels:
       traefik.enable: "true"
       traefik.http.routers.adguard.rule: Host(`dns.${PRIVATE_DOMAIN}`)
@@ -59,6 +67,12 @@ services:
     volumes:
       - "${CONFIG_DIR}/smokeping/config:/config"
       - "${CONFIG_DIR}/smokeping/data:/data"
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsS http://localhost:80/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     labels:
       traefik.enable: "true"
       traefik.http.routers.ping.rule: Host(`ping.${PRIVATE_DOMAIN}`)
@@ -90,7 +104,14 @@ services:
     volumes:
       - "${CONFIG_DIR}/healthchecks:/config"
       - "${CONFIG_DIR}/healthchecks/logo.svg:/app/healthchecks/static-collected/img/logo.svg"
+    healthcheck:
+      test: [CMD-SHELL, "wget -q -O /dev/null http://localhost:8000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.healthchecks.rule: Host(`hc.${PRIVATE_DOMAIN}`)
       traefik.http.routers.healthchecks.entrypoints: websecure

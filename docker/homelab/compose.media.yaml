@@ -4,9 +4,7 @@ x-options: &options
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 x-media-volume:
   driver_opts: &media_driver_opts
@@ -84,6 +82,13 @@ services:
       - 9554:8554 # RTSP
       - 8555:8555/tcp # WebRTC
       - 8555:8555/udp # WebRTC
+    # verify on host: docker inspect frigate --format '{{json .State.Health}}'
+    healthcheck:
+      test: [CMD-SHELL, "curl -f http://localhost:5000/api/version || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     labels:
       traefik.enable: "true"
       traefik.http.routers.frigate.rule: Host(`video.${PRIVATE_DOMAIN}`)
@@ -128,6 +133,13 @@ services:
       - "${CONFIG_DIR}/plex:/config"
       - media_library:/data/library
       - /var/lib/plex-transcode:/transcode
+    # verify on host: docker inspect plex --format '{{json .State.Health}}'
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsL http://localhost:32400/identity || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     labels:
       traefik.enable: "true"
       traefik.http.routers.plex.rule: Host(`plex.${PUBLIC_DOMAIN}`)
@@ -139,6 +151,14 @@ services:
     container_name: seerr
     volumes:
       - "${CONFIG_DIR}/seerr:/app/config"
+    # verify on host: docker inspect seerr --format '{{json .State.Health}}'
+    healthcheck:
+      test:
+        [CMD-SHELL, "wget -q -O- http://localhost:5055/api/v1/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
     labels:
       traefik.enable: "true"
       traefik.http.routers.overseer.rule: Host(`request.${PUBLIC_DOMAIN}`)
@@ -155,6 +175,13 @@ services:
       PGID: "${PGID}"
     volumes:
       - "${CONFIG_DIR}/tautulli:/config"
+    # verify on host: docker inspect tautulli --format '{{json .State.Health}}'
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsL http://localhost:8181/status || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     labels:
       traefik.enable: "true"
       traefik.http.routers.tautulli.rule: Host(`tautulli.${PRIVATE_DOMAIN}`)
@@ -173,7 +200,14 @@ services:
       - "${CONFIG_DIR}/sabnzbd:/config"
       - usenet_complete:/data/usenet/complete
       - usenet_incomplete:/data/usenet/incomplete
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsL http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.sabnzbd.rule: Host(`nzb.${PRIVATE_DOMAIN}`)
       traefik.http.services.sabnzbd.loadbalancer.server.port: 8080
@@ -193,6 +227,13 @@ services:
       - "${CONFIG_DIR}/nzbget:/config"
       - usenet_complete:/downloads/complete
       - usenet_incomplete:/downloads/incomplete
+    # verify on host: docker inspect nzbget --format '{{json .State.Health}}'
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsL http://localhost:6789/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     labels:
       traefik.enable: "true"
       traefik.http.routers.nzbget.rule: Host(`nzbget.${PRIVATE_DOMAIN}`)
@@ -209,7 +250,14 @@ services:
       PGID: "${PGID}"
     volumes:
       - "${CONFIG_DIR}/prowlarr:/config"
+    healthcheck:
+      test: [CMD-SHELL, "curl -f http://localhost:9696/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.prowlarr.rule: Host(`prowlarr.${PRIVATE_DOMAIN}`)
       traefik.http.services.prowlarr.loadbalancer.server.port: 9696
@@ -226,7 +274,14 @@ services:
     volumes:
       - "${CONFIG_DIR}/radarr:/config"
       - media:/data
+    healthcheck:
+      test: [CMD-SHELL, "curl -f http://localhost:7878/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.radarr.rule: Host(`radarr.${PRIVATE_DOMAIN}`)
       traefik.http.services.radarr.loadbalancer.server.port: 7878
@@ -243,7 +298,14 @@ services:
     volumes:
       - "${CONFIG_DIR}/sonarr:/config"
       - media:/data
+    healthcheck:
+      test: [CMD-SHELL, "curl -f http://localhost:8989/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.sonarr.rule: Host(`sonarr.${PRIVATE_DOMAIN}`)
       traefik.http.services.sonarr.loadbalancer.server.port: 8989
@@ -288,7 +350,14 @@ services:
     volumes:
       - "${CONFIG_DIR}/calibre-web:/config"
       - books:/data
+    healthcheck:
+      test: [CMD-SHELL, "curl -fsL http://localhost:8083/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
     labels:
+      autoheal: "true"
       traefik.enable: "true"
       traefik.http.routers.calibre-web.rule: Host(`books.${PUBLIC_DOMAIN}`)
       traefik.http.services.calibre-web.loadbalancer.server.port: 8083

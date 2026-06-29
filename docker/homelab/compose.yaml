@@ -4,9 +4,7 @@ x-service: &service
   networks: [default]
   environment: &environment
     TZ: "${TIMEZONE}"
-  deploy:
-    restart_policy:
-      condition: unless-stopped
+  restart: unless-stopped
 
 networks:
   default:
@@ -35,6 +33,12 @@ services:
       DIUN_NOTIF_PUSHOVER_RECIPIENT: "${PUSHOVER_USER_KEY}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: [CMD, diun, healthcheck]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   cloudflared-tunnel:
     <<: *service
@@ -49,7 +53,15 @@ services:
       TUNNEL_TOKEN: "${CLOUDFLARE_TUNNEL_TOKEN:?err}"
       TUNNEL_URL: https://traefik
       TUNNEL_ID: "${CLOUDFLARE_TUNNEL_ID}"
+      TUNNEL_METRICS: 0.0.0.0:60123
     command: [tunnel, run]
+    # cloudflared is distroless: exec form only, uses its own binary
+    healthcheck:
+      test: [CMD, cloudflared, tunnel, ready]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
   # TODO: add anubis https://anubis.techaro.lol/docs/admin/environments/traefik
   traefik:
@@ -78,6 +90,7 @@ services:
       - --accesslog.filepath=/var/log/access.log
       - --accesslog.filters.statuscodes=400-499
       - --api=true
+      - --ping=true
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --providers.file.directory=/etc/traefik
@@ -102,6 +115,12 @@ services:
       - --certificatesresolvers.leresolver.acme.email=${ACME_EMAIL}
       # - --certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --serverstransport.insecureskipverify=true
+    healthcheck:
+      test: [CMD, traefik, healthcheck, --ping]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     labels:
       traefik.enable: "true"
       traefik.http.middlewares.basicAuth.basicauth.users: "${BASIC_AUTH_USERS}"
