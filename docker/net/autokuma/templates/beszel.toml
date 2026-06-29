@@ -1,0 +1,6 @@
+type = "http"
+name = "Beszel"
+url = "https://beszel.@@PRIVATE_DOMAIN@@"
+parent_name = "group-infra"
+interval = 60
+max_retries = 3

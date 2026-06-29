@@ -1,0 +1,6 @@
+type = "http"
+name = "Atuin"
+url = "https://sh.@@PRIVATE_DOMAIN@@"
+parent_name = "group-apps"
+interval = 60
+max_retries = 3

@@ -1,0 +1,6 @@
+type = "http"
+name = "Miniflux"
+url = "https://rss.@@PUBLIC_DOMAIN@@"
+parent_name = "group-apps"
+interval = 60
+max_retries = 3

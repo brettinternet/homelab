@@ -1,0 +1,6 @@
+type = "http"
+name = "SmokePing"
+url = "https://ping.@@PRIVATE_DOMAIN@@"
+parent_name = "group-infra"
+interval = 60
+max_retries = 3

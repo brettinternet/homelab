@@ -1,0 +1,6 @@
+type = "http"
+name = "Radarr"
+url = "https://radarr.@@PRIVATE_DOMAIN@@"
+parent_name = "group-media"
+interval = 60
+max_retries = 3
