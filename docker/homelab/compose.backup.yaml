@@ -87,6 +87,7 @@ services:
       - "${CONFIG_DIR}/radarr/Backups/scheduled:/data/radarr-backups"
       - "${CONFIG_DIR}/sonarr/Backups/scheduled:/data/sonarr-backups"
       - "${CONFIG_DIR}/traefik/conf:/data/traefik-conf"
+      - "${CONFIG_DIR}/larapaper:/data/larapaper"
 
   restic-remote-prune:
     <<: *options
