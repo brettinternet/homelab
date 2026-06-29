@@ -1,6 +1,6 @@
 type = "http"
 name = "Frigate"
-url = "https://video.@@PRIVATE_DOMAIN@@"
+url = "https://video.@@HOMELAB_PRIVATE_DOMAIN@@"
 parent_name = "group-media"
 interval = 60
 max_retries = 3

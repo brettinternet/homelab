@@ -1,6 +1,6 @@
 type = "http"
 name = "TRMNL"
-url = "https://trmnl.@@PRIVATE_DOMAIN@@"
+url = "https://trmnl.@@HOMELAB_PRIVATE_DOMAIN@@"
 parent_name = "group-apps"
 interval = 60
 max_retries = 3

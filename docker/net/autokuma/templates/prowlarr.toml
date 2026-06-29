@@ -1,6 +1,6 @@
 type = "http"
 name = "Prowlarr"
-url = "https://prowlarr.@@PRIVATE_DOMAIN@@"
+url = "https://prowlarr.@@HOMELAB_PRIVATE_DOMAIN@@"
 parent_name = "group-media"
 interval = 60
 max_retries = 3

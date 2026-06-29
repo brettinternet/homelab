@@ -1,6 +1,6 @@
 type = "http"
 name = "Calibre-Web"
-url = "https://books.@@PUBLIC_DOMAIN@@"
+url = "https://books.@@HOMELAB_PUBLIC_DOMAIN@@"
 parent_name = "group-apps"
 interval = 60
 max_retries = 3

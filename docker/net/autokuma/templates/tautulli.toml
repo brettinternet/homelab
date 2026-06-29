@@ -1,6 +1,6 @@
 type = "http"
 name = "Tautulli"
-url = "https://tautulli.@@PRIVATE_DOMAIN@@"
+url = "https://tautulli.@@HOMELAB_PRIVATE_DOMAIN@@"
 parent_name = "group-media"
 interval = 60
 max_retries = 3
