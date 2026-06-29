@@ -227,9 +227,10 @@ services:
       - "${CONFIG_DIR}/nzbget:/config"
       - usenet_complete:/downloads/complete
       - usenet_incomplete:/downloads/incomplete
-    # verify on host: docker inspect nzbget --format '{{json .State.Health}}'
+    # no curl in image + web needs auth; nc liveness on the listener.
+    # 127.0.0.1 not localhost: localhost resolves to ::1 but nzbget binds IPv4.
     healthcheck:
-      test: [CMD-SHELL, "curl -fsL http://localhost:6789/ || exit 1"]
+      test: [CMD-SHELL, "nc -z 127.0.0.1 6789 || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3

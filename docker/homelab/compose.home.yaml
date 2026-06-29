@@ -71,13 +71,12 @@ services:
       - "${CONFIG_DIR}/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf"
       - "${CONFIG_DIR}/mosquitto/data:/mosquitto/data"
       - "${CONFIG_DIR}/mosquitto/log:/mosquitto/log"
-    # no autoheal: probe fails if the broker requires auth — verify on host first
+    # broker requires auth; a CONNACK (rc 0 = ok, rc 5 = "not authorised") proves
+    # it's alive — only a real connection failure (broker down) returns non-0/5.
     healthcheck:
       test:
-        [
-          CMD-SHELL,
-          "mosquitto_sub -h localhost -p 1883 -t '$$SYS/#' -E -C 1 -W 3 || exit 1",
-        ]
+        - CMD-SHELL
+        - "mosquitto_sub -h 127.0.0.1 -p 1883 -t healthcheck -E -W 3 >/dev/null 2>&1; rc=$$?; [ $$rc -eq 0 ] || [ $$rc -eq 5 ]"
       interval: 30s
       timeout: 10s
       retries: 3
