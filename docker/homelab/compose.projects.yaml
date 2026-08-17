@@ -22,6 +22,7 @@ services:
       SLACK_SIGNING_SECRET: "${SLACKBOT_SLACK_SIGNING_SECRET}"
       SLACK_PREFERRED_USERS: "${SLACKBOT_SLACK_PREFERRED_USERS}"
       OPENAI_API_KEY: "${OPENAI_API_KEY}"
+      OPENAI_MODEL: gpt-5.6-luna
     volumes:
       - "${CONFIG_DIR}/slackbot:/app/data"
     labels:
