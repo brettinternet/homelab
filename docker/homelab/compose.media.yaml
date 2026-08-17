@@ -188,31 +188,6 @@ services:
       traefik.http.services.tautulli.loadbalancer.server.port: 8181
       traefik.http.routers.tautulli.entrypoints: websecure
 
-  sabnzbd:
-    <<: *options
-    image: ghcr.io/linuxserver/sabnzbd:latest
-    container_name: sabnzbd
-    environment:
-      <<: *environment
-      PUID: "${PUID}"
-      PGID: "${PGID}"
-    volumes:
-      - "${CONFIG_DIR}/sabnzbd:/config"
-      - usenet_complete:/data/usenet/complete
-      - usenet_incomplete:/data/usenet/incomplete
-    healthcheck:
-      test: [CMD-SHELL, "curl -fsL http://localhost:8080/ || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 60s
-    labels:
-      autoheal: "true"
-      traefik.enable: "true"
-      traefik.http.routers.sabnzbd.rule: Host(`nzb.${PRIVATE_DOMAIN}`)
-      traefik.http.services.sabnzbd.loadbalancer.server.port: 8080
-      traefik.http.routers.sabnzbd.entrypoints: websecure
-
   nzbget:
     <<: *options
     image: nzbgetcom/nzbget:latest
