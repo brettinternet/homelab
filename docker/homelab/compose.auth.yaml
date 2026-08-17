@@ -1,0 +1,60 @@
+---
+x-vaultwarden-options: &vaultwarden-options
+  profiles: [auth]
+  networks: [default]
+  environment: &vaultwarden-environment
+    TZ: "${TIMEZONE}"
+  restart: unless-stopped
+
+services:
+  vaultwarden:
+    <<: *vaultwarden-options
+    image: vaultwarden/server:1.37.1
+    container_name: vaultwarden
+    environment:
+      <<: *vaultwarden-environment
+      ADMIN_TOKEN: "${VAULTWARDEN_ADMIN_TOKEN:?err}"
+      DOMAIN: "https://vault.${PUBLIC_DOMAIN}"
+      SIGNUPS_ALLOWED: "false"
+    volumes:
+      - "${CONFIG_DIR}/vaultwarden:/data"
+    labels:
+      autoheal: "true"
+      traefik.enable: "true"
+      traefik.http.routers.vaultwarden.rule: Host(`vault.${PUBLIC_DOMAIN}`)
+      traefik.http.routers.vaultwarden.entrypoints: websecure
+      traefik.http.services.vaultwarden.loadbalancer.server.port: 80
+
+  vaultwarden-backup:
+    profiles: [backup]
+    networks: [default]
+    image: ttionya/vaultwarden-backup:1.27.0
+    container_name: vaultwarden-backup
+    depends_on:
+      vaultwarden:
+        condition: service_healthy
+    environment:
+      TIMEZONE: "${TIMEZONE}"
+      DATA_DIR: /bitwarden/data
+      CRON: "15 3 * * *"
+      ZIP_ENABLE: "TRUE"
+      ZIP_TYPE: 7z
+      ZIP_PASSWORD: "${VAULTWARDEN_BACKUP_ZIP_PASSWORD:?err}"
+      BACKUP_FILE_SUFFIX: "%Y%m%d-%H%M%S"
+      BACKUP_KEEP_DAYS: 30
+      RCLONE_REMOTE_NAME: vaultwarden
+      RCLONE_REMOTE_DIR: "/${VAULTWARDEN_BACKUP_R2_BUCKET:?err}/"
+      RCLONE_CONFIG_VAULTWARDEN_TYPE: s3
+      RCLONE_CONFIG_VAULTWARDEN_PROVIDER: Cloudflare
+      RCLONE_CONFIG_VAULTWARDEN_ACCESS_KEY_ID: "${VAULTWARDEN_BACKUP_R2_ACCESS_KEY_ID:?err}"
+      RCLONE_CONFIG_VAULTWARDEN_SECRET_ACCESS_KEY: "${VAULTWARDEN_BACKUP_R2_SECRET_ACCESS_KEY:?err}"
+      RCLONE_CONFIG_VAULTWARDEN_REGION: auto
+      RCLONE_CONFIG_VAULTWARDEN_ENDPOINT: "https://${VAULTWARDEN_BACKUP_R2_ACCOUNT_ID:?err}.r2.cloudflarestorage.com"
+      RCLONE_CONFIG_VAULTWARDEN_ACL: private
+      RCLONE_CONFIG_VAULTWARDEN_NO_CHECK_BUCKET: "true"
+      PING_URL_WHEN_START: "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_VAULTWARDEN_BACKUP_UUID:?err}/start"
+      PING_URL_WHEN_SUCCESS: "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_VAULTWARDEN_BACKUP_UUID:?err}"
+      PING_URL_WHEN_FAILURE: "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_VAULTWARDEN_BACKUP_UUID:?err}/fail"
+    volumes:
+      - "${CONFIG_DIR}/vaultwarden:/bitwarden/data"
+    restart: unless-stopped
