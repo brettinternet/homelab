@@ -134,6 +134,69 @@ services:
       retries: 5
       start_period: 30s
 
+  sparkyfitness-db:
+    <<: *options
+    image: postgres:18.3-alpine
+    container_name: sparkyfitness-db
+    environment:
+      <<: *environment
+      POSTGRES_DB: sparkyfitness_db
+      POSTGRES_USER: sparky
+      POSTGRES_PASSWORD: "${SPARKY_FITNESS_DB_PASSWORD:?err}"
+    volumes:
+      - "${CONFIG_DIR}/sparkyfitness/postgresql:/var/lib/postgresql"
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  sparkyfitness-server:
+    <<: *options
+    image: codewithcj/sparkyfitness_server:latest
+    container_name: sparkyfitness-server
+    depends_on:
+      sparkyfitness-db:
+        condition: service_healthy
+    environment:
+      <<: *environment
+      SPARKY_FITNESS_LOG_LEVEL: ERROR
+      SPARKY_FITNESS_PUBLIC_API_DOCS: "false"
+      SPARKY_FITNESS_DB_USER: sparky
+      SPARKY_FITNESS_DB_HOST: sparkyfitness-db
+      SPARKY_FITNESS_DB_NAME: sparkyfitness_db
+      SPARKY_FITNESS_DB_PASSWORD: "${SPARKY_FITNESS_DB_PASSWORD:?err}"
+      SPARKY_FITNESS_APP_DB_USER: sparkyapp
+      SPARKY_FITNESS_APP_DB_PASSWORD: "${SPARKY_FITNESS_APP_DB_PASSWORD:?err}"
+      SPARKY_FITNESS_DB_PORT: 5432
+      SPARKY_FITNESS_API_ENCRYPTION_KEY: "${SPARKY_FITNESS_API_ENCRYPTION_KEY:?err}"
+      BETTER_AUTH_SECRET: "${SPARKY_FITNESS_BETTER_AUTH_SECRET:?err}"
+      SPARKY_FITNESS_FRONTEND_URL: "https://fit.${PRIVATE_DOMAIN}"
+      SPARKY_FITNESS_DISABLE_SIGNUP: "false"
+      SPARKY_FITNESS_ADMIN_EMAIL: "${SPARKY_FITNESS_ADMIN_EMAIL:?err}"
+      SPARKY_FITNESS_FORCE_EMAIL_LOGIN: "true"
+    volumes:
+      - "${CONFIG_DIR}/sparkyfitness/backup:/app/SparkyFitnessServer/backup"
+      - "${CONFIG_DIR}/sparkyfitness/uploads:/app/SparkyFitnessServer/uploads"
+
+  sparkyfitness-frontend:
+    <<: *options
+    image: codewithcj/sparkyfitness:latest
+    container_name: sparkyfitness-frontend
+    depends_on:
+      - sparkyfitness-server
+    environment:
+      <<: *environment
+      SPARKY_FITNESS_FRONTEND_URL: "https://fit.${PRIVATE_DOMAIN}"
+      SPARKY_FITNESS_SERVER_HOST: sparkyfitness-server
+      SPARKY_FITNESS_SERVER_PORT: 3010
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.sparkyfitness.rule: Host(`fit.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.sparkyfitness.entrypoints: websecure
+      traefik.http.services.sparkyfitness.loadbalancer.server.port: 80
+
   gickup:
     <<: *options
     image: buddyspencer/gickup:latest
