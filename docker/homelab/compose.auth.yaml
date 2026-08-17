@@ -1,6 +1,15 @@
 ---
+# Add these values with `sops docker/homelab/sops.env`:
+# - VAULTWARDEN_ADMIN_TOKEN: run `docker run --rm -it vaultwarden/server:1.37.1 /vaultwarden hash`;
+#   store the PHC output here and retain the entered token for /admin.
+# - VAULTWARDEN_BACKUP_ZIP_PASSWORD: run `openssl rand -base64 48` and retain it for restores.
+# - VAULTWARDEN_BACKUP_R2_ACCOUNT_ID, VAULTWARDEN_BACKUP_R2_BUCKET,
+#   VAULTWARDEN_BACKUP_R2_ACCESS_KEY_ID, VAULTWARDEN_BACKUP_R2_SECRET_ACCESS_KEY:
+#   create a private R2 bucket and an Object Read & Write token restricted to that bucket.
+# - HEALTHCHECKS_VAULTWARDEN_BACKUP_UUID: create a Healthchecks check and copy its ping UUID.
+#
 x-vaultwarden-options: &vaultwarden-options
-  profiles: [auth]
+  profiles: [auth, backup]
   networks: [default]
   environment: &vaultwarden-environment
     TZ: "${TIMEZONE}"
