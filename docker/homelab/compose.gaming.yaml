@@ -43,7 +43,7 @@ services:
 
   enshrouded1:
     <<: *options
-    image: mornedhels/enshrouded-server:dev-proton
+    image: mornedhels/enshrouded-server:latest
     stop_grace_period: 90s
     environment:
       <<: *environment
@@ -123,3 +123,35 @@ services:
   #     traefik.http.routers.valheim2.rule: Host(`brettheim.${PRIVATE_DOMAIN}`)
   #     traefik.http.services.valheim2.loadbalancer.server.port: 9001
   #     traefik.http.routers.valheim2.entrypoints: websecure
+
+  valheim3:
+    <<: *options
+    image: ghcr.io/community-valheim-tools/valheim-server:latest
+    environment:
+      <<: *environment
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+      SERVER_PORT: 2462
+      SERVER_PUBLIC: "false"
+      BACKUPS: "true"
+      BACKUPS_CRON: "*/20 * * * *"
+      BACKUPS_MAX_COUNT: 30
+      BACKUPS_IF_IDLE: "false"
+      SUPERVISOR_HTTP: "true"
+      SUPERVISOR_HTTP_PASS: "${VALHEIM_SUPERVISOR_HTTP_PASS}"
+      SERVER_NAME: swaziheim
+      WORLD_NAME: swaziheim
+      SERVER_PASS: "${VALHEIM_SERVER_3_PASSWORD}"
+      ADMINLIST_IDS: "${VALHEIM_ADMINLIST_IDS}"
+    volumes:
+      - "${CONFIG_DIR}/gaming/valheim-swaziheim/config:/config"
+      - "${CONFIG_DIR}/gaming/valheim-swaziheim/server:/opt/valheim"
+    ports:
+      - 2462:2462/udp
+      - 2463:2463/udp
+      - 2464:2464/udp
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.valheim3.rule: Host(`swaziheim.${PUBLIC_DOMAIN}`)
+      traefik.http.services.valheim3.loadbalancer.server.port: 9001
+      traefik.http.routers.valheim3.entrypoints: websecure
