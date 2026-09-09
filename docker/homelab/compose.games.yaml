@@ -126,7 +126,7 @@ services:
 
   valheim5:
     <<: *options
-    image: ghcr.io/community-valheim-tools/valheim-server:latest
+    image: ghcr.io/community-valheim-tools/valheim-server:1.2.0
     environment:
       <<: *environment
       PUID: "${PUID}"
@@ -141,6 +141,7 @@ services:
       SUPERVISOR_HTTP_PASS: "${VALHEIM_SUPERVISOR_HTTP_PASS}"
       SERVER_NAME: "${VALHEIM_SERVER_5_NAME}"
       WORLD_NAME: "${VALHEIM_SERVER_5_NAME}"
+      SERVER_ARGS: "-modifier deathpenalty casual -modifier resources most -modifier portals casual"
       SERVER_PASS: "${VALHEIM_SERVER_5_PASSWORD}"
       ADMINLIST_IDS: "${VALHEIM_ADMINLIST_IDS}"
     volumes:
