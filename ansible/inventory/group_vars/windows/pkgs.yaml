@@ -37,7 +37,7 @@ pkgs:
     - name: iperf3
     - name: python
     - name: sysinternals
-  gaming:
+  games:
     - name: nvidia-display-driver
     - name: nvidia-geforce-now
     - name: steam

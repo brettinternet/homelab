@@ -76,7 +76,7 @@ services:
     volumes: &backup-volumes
       - "${CONFIG_DIR}/esphome:/data/esphome"
       - "${CONFIG_DIR}/frigate:/data/frigate"
-      - "${CONFIG_DIR}/gaming:/data/gaming"
+      - "${CONFIG_DIR}/games:/data/games"
       - "${CONFIG_DIR}/gickup:/data/gickup"
       - "${CONFIG_DIR}/gickup-priv:/data/gickup-priv"
       - "${CONFIG_DIR}/homeassistant:/data/homeassistant"
@@ -134,7 +134,7 @@ services:
     volumes:
       - "${CONFIG_DIR}/esphome:/data/esphome"
       - "${CONFIG_DIR}/frigate:/data/frigate"
-      - "${CONFIG_DIR}/gaming:/data/gaming"
+      - "${CONFIG_DIR}/games:/data/games"
       - "${CONFIG_DIR}/gickup:/data/gickup"
       - "${CONFIG_DIR}/gickup-priv:/data/gickup-priv"
       - "${CONFIG_DIR}/homeassistant:/data/homeassistant"

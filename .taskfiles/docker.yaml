@@ -52,8 +52,8 @@ tasks:
         vars:
           PROJECT: homelab
           HOSTNAME: harambe
-          PROFILES: base,utils,home,auth,projects,backup,media
-          # PROFILES: base,utils,home,auth,projects,media-lite
+          PROFILES: base,utils,home,auth,projects,backup,media,games,monitoring
+          # PROFILES: base,utils,home,auth,projects,media-lite,monitoring
     requires: *docker-vars
     preconditions: *docker-preconditions
 
@@ -64,6 +64,6 @@ tasks:
         vars:
           PROJECT: net
           HOSTNAME: sienna
-          PROFILES: base,utils,network,backup
+          PROFILES: base,utils,network,backup,monitoring
     requires: *docker-vars
     preconditions: *docker-preconditions

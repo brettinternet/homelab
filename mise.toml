@@ -23,7 +23,7 @@ uv = "latest"
 disable_backends = ["asdf", "pipx"]
 pipx.uvx = true
 npm.package_manager = "bun"
-python.uv_venv_auto = true
+python.uv_venv_auto = "create|source"
 experimental = true
 
 [hooks]
