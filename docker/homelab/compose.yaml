@@ -42,7 +42,7 @@ services:
 
   cloudflared-tunnel:
     <<: *service
-    image: cloudflare/cloudflared:2026.9.0
+    image: cloudflare/cloudflared:2026.9.1
     container_name: cloudflared-tunnel
     environment:
       <<: *environment
