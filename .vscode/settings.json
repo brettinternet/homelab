@@ -4,8 +4,8 @@
     "**/ansible/**/*.yaml": "ansible",
     "*.env": "properties"
   },
-  "prettier.configPath": ".github/linters/.prettierrc.yaml",
-  "prettier.ignorePath": ".github/linters/.prettierignore",
+  "prettier.configPath": ".prettierrc.yaml",
+  "prettier.ignorePath": ".prettierignore",
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
   "ansible.python.interpreterPath": ".venv/bin/python"
