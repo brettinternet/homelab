@@ -126,7 +126,7 @@ services:
 
   valheim5:
     <<: *options
-    image: ghcr.io/community-valheim-tools/valheim-server:1.2.0
+    image: ghcr.io/community-valheim-tools/valheim-server:1.4.0
     container_name: valheim5
     environment:
       <<: *environment
