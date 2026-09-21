@@ -138,7 +138,7 @@ services:
 
   cloudflare-companion:
     <<: *service
-    image: tiredofit/traefik-cloudflare-companion:latest
+    image: ghcr.io/tiredofit/docker-traefik-cloudflare-companion:latest
     container_name: cloudflare-companion
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
