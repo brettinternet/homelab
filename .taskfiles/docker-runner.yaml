@@ -66,11 +66,10 @@ tasks:
     vars: *dynamic-vars
     desc: Stop compose containers on host
     cmds:
-      - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} down --remove-orphans'"
+      - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} stop'"
     requires:
       vars: [SECRETS_FILE]
-    preconditions:
-      - test -f sops.env
+    preconditions: *preconditions
 
   down:
     dir: "/{{.PROJECT_DIR}}"
