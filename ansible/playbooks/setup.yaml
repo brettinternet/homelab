@@ -8,7 +8,7 @@
         msg:
           - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
           - This role only supports Arch Linux
-      when: ansible_distribution | lower not in ['archlinux', 'debian']
+      when: ansible_facts['distribution'] | lower not in ['archlinux', 'debian']
 
     - name: Split packages
       ansible.builtin.set_fact:
@@ -31,7 +31,7 @@
         state: present
         packages: "{{ aur_packages }}"
       when:
-        - ansible_distribution | lower == 'archlinux'
+        - ansible_facts['distribution'] | lower == 'archlinux'
         - aur_packages | length > 0
 
     - name: Combine packages to remove
