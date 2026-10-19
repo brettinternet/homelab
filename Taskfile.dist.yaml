@@ -53,7 +53,7 @@ tasks:
         \( -name '*.sh' -o -name '*.bash' -o -name '*.ksh' -o -name '*.bashrc'
         -o -name '*.bash_profile' -o -name '*.bash_login' -o -name '*.bash_logout' \)
         -not -path "./.venv/*"
-        | xargs shellcheck
+        -print0 | xargs -0 shellcheck
       - prettier --check "**/*.{yaml,yml}"
 
   fix:
