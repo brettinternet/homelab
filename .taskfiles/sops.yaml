@@ -46,7 +46,7 @@ tasks:
       - sops --decrypt --in-place {{.CLI_ARGS}}
 
   decrypt-docker:
-    desc: decrypt sops file 'to use must include -- before path to file.'  eg "task sops:decrypt -- file.yaml"
+    desc: Decrypt the SOPS env files for both Docker contexts
     cmds:
       - sops --decrypt --in-place docker/net/sops.env docker/homelab/sops.env
 
@@ -56,7 +56,7 @@ tasks:
       - find . -name '*.sops.yaml' | while read -r file; do echo "${file}"; done
 
   encrypt-all:
-    desc: Encrypt all Kubernetes SOPS secrets that are not already encrypted
+    desc: Encrypt all unencrypted SOPS files in Ansible and Docker
     cmds:
       - for: { var: file }
         task: .encrypt-file
