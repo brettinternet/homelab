@@ -50,6 +50,11 @@ tasks:
     cmds:
       - sops --decrypt --in-place docker/net/sops.env docker/homelab/sops.env
 
+  rotate:
+    desc: Rotate the age key and re-encrypt all SOPS files
+    interactive: true
+    cmd: "{{.SCRIPTS_DIR}}/sops-rotate.sh"
+
   list:
     desc: List all sops files
     cmds:
