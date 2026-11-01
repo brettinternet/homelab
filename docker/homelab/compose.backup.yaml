@@ -60,9 +60,10 @@ services:
       RESTIC_BACKUP_SOURCES: /data
       RESTIC_BACKUP_ARGS: >-
         --tag restic
-        --exclude='.Trash*'
+        --exclude=.Trash*
         --verbose
       RESTIC_FORGET_ARGS: >-
+        --group-by paths
         --keep-last 10
         --keep-daily 7
         --keep-weekly 4
@@ -126,25 +127,11 @@ services:
     profiles: [restore]
     image: mazzolino/restic:latest
     container_name: restic-remote-restore
-    environment:
-      <<: *remote-environment
-      RUN_ON_STARTUP: "true"
-      RESTIC_RESTORE_TARGET: /data
-      # RESTIC_RESTORE_ARGS: "--snapshot latest" # Optional: defaults to latest
-    volumes:
-      - "${CONFIG_DIR}/esphome:/data/esphome"
-      - "${CONFIG_DIR}/frigate:/data/frigate"
-      - "${CONFIG_DIR}/games:/data/games"
-      - "${CONFIG_DIR}/gickup:/data/gickup"
-      - "${CONFIG_DIR}/gickup-priv:/data/gickup-priv"
-      - "${CONFIG_DIR}/homeassistant:/data/homeassistant"
-      - "${CONFIG_DIR}/linkding:/data/linkding"
-      - "${CONFIG_DIR}/mealie:/data/mealie"
-      - "${CONFIG_DIR}/mosquitto:/data/mosquitto"
-      - "${CONFIG_DIR}/prowlarr/Backups/scheduled:/data/prowlarr-backups"
-      - "${CONFIG_DIR}/radarr/Backups/scheduled:/data/radarr-backups"
-      - "${CONFIG_DIR}/sonarr/Backups/scheduled:/data/sonarr-backups"
-      - "${CONFIG_DIR}/traefik/conf:/data/traefik-conf"
+    environment: *remote-environment
+    # The image has no restore mode; args are passed straight to restic.
+    # Snapshot paths are /data/<name>, so target / lands them in the mounts below.
+    command: [restore, latest, --target, /]
+    volumes: *backup-volumes
     restart: "no"
 
   # restic-local-backup:
