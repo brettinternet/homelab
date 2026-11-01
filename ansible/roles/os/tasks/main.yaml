@@ -43,6 +43,13 @@
     regexp: "^#?ParallelDownloads"
     line: ParallelDownloads = 5
 
+# Arch doesn't support refreshing the package list without upgrading.
+- name: Upgrade packages
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
+  tags: [upgrade]
+
 - name: Install packages
   community.general.pacman:
     name: "{{ os__packages }}"
@@ -58,6 +65,22 @@
     name: aur
   vars:
     aur__packages: "{{ os__aur_packages }}"
+    aur__upgrade: true
+
+# NEEDRESTART-KSTA: 1 = running the installed kernel, 2+ = a newer kernel is installed.
+- name: Check running kernel
+  ansible.builtin.command: needrestart -b -k
+  register: os__needrestart_result
+  changed_when: false
+  check_mode: false
+  tags: [upgrade]
+
+- name: Warn about pending reboot
+  ansible.builtin.debug:
+    msg: A newer kernel is installed. Reboot to load it.
+  when: >-
+    os__needrestart_result.stdout | regex_search('NEEDRESTART-KSTA: (\\d)', '\\1') | first | int > 1
+  tags: [upgrade]
 
 # https://wiki.archlinux.org/title/Reflector
 - name: Configure reflector

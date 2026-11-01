@@ -39,37 +39,8 @@ tasks:
     cmds:
       - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --one-line -a 'uptime'
 
-  playbook:
-    desc: "Run a playbook, args after -- go to ansible-playbook. e.g. task ansible:run PLAYBOOK=setup -- --limit gresham --check --diff"
-    aliases: [run, play, p, r]
-    requires:
-      vars: [PLAYBOOK]
-    cmds:
-      - "{{.ANSIBLE_COMMAND}} {{.ANSIBLE_PLAYBOOK_DIR}}/{{.PLAYBOOK}}.yaml {{.CLI_ARGS}}"
-
   setup:
-    desc: "Configure hosts. e.g. task ansible:setup -- --tags docker --limit gresham"
+    desc: "Configure and upgrade hosts, args after -- go to ansible-playbook. e.g. task ansible:setup -- --limit gresham --skip-tags upgrade --check --diff"
     aliases: [s]
     cmds:
-      - task: playbook
-        vars: { PLAYBOOK: setup }
-
-  upgrade:
-    desc: "Upgrade packages. Reboot for a new kernel with: task ansible:upgrade -- -e upgrade__allow_reboot=true"
-    aliases: [update, u]
-    cmds:
-      - task: playbook
-        vars: { PLAYBOOK: upgrade }
-
-  status:
-    desc: Output some status fields from hosts
-    cmds:
-      - task: playbook
-        vars: { PLAYBOOK: status }
-
-  reboot:
-    desc: Reboot hosts (use -- --limit <host>)
-    prompt: Reboot the selected hosts?
-    cmds:
-      - task: playbook
-        vars: { PLAYBOOK: reboot }
+      - "{{.ANSIBLE_COMMAND}} {{.ANSIBLE_PLAYBOOK_DIR}}/setup.yaml {{.CLI_ARGS}}"

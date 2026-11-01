@@ -1,3 +1,0 @@
----
-# Reboot when the running kernel is older than the installed one.
-upgrade__allow_reboot: false

@@ -29,7 +29,7 @@
     name: "{{ aur__packages }}"
     use: yay
     aur_only: true
-    state: "{{ aur__state }}"
+    state: present
   when: aur__packages | length > 0
 
 - name: Upgrade AUR packages
@@ -39,4 +39,6 @@
     use: yay
     aur_only: true
     upgrade: true
-  when: aur__upgrade
+  # The module's check mode runs `yay -Qu`, which fails when nothing is upgradable.
+  when: aur__upgrade and not ansible_check_mode
+  tags: [upgrade]

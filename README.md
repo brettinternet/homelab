@@ -15,7 +15,7 @@ task init
 Run playbooks and commands:
 
 ```sh
-task ansible:{init,list,setup,upgrade,status}
+task ansible:{init,list,setup}
 ```
 
 Deploy docker-compose remotely to hosts:
