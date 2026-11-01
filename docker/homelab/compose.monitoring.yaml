@@ -1,0 +1,77 @@
+---
+x-options: &options
+  profiles: [monitoring]
+  networks: [default]
+  environment: &environment
+    TZ: "${TIMEZONE}"
+  restart: unless-stopped
+
+services:
+  scrutiny:
+    <<: *options
+    image: ghcr.io/analogj/scrutiny:v0.9.2-omnibus
+    container_name: scrutiny
+    cap_add:
+      - SYS_RAWIO
+      # - SYS_ADMIN # uncomment only if any monitored disk is NVMe
+    environment:
+      <<: *environment
+      COLLECTOR_CRON_SCHEDULE: "0 */6 * * *"
+    volumes:
+      - "${CONFIG_DIR}/scrutiny/config:/opt/scrutiny/config"
+      - "${CONFIG_DIR}/scrutiny/influxdb:/opt/scrutiny/influxdb"
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/disk/by-id/ata-ST10000NE0008-2JM101_ZPW0MSQL:/dev/sda # parity1
+      - /dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG5TJRM:/dev/sdb # parity2
+      - /dev/disk/by-id/ata-TOSHIBA_HDWT360_98R0A036FB1G:/dev/sdc # disk1
+      - /dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K44G5Y:/dev/sdd # disk2
+      - /dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M70Y:/dev/sde # disk3
+      - /dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M5SY:/dev/sdf # disk4
+      - /dev/disk/by-id/scsi-35000c50095513177:/dev/sdg # disk5
+      - /dev/disk/by-id/ata-HGST_HDN726060ALE610_NAGWMN6Y:/dev/sdh # disk6
+      - /dev/disk/by-id/scsi-35000c5009550f7d7:/dev/sdi # disk7
+      - /dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG887NM:/dev/sdj # disk8
+      - /dev/disk/by-id/scsi-35000c5009550f12f:/dev/sdk # disk9
+      - /dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R:/dev/sdl # disk10
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.scrutiny.rule: Host(`scrutiny.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.scrutiny.entrypoints: websecure
+      traefik.http.services.scrutiny.loadbalancer.server.port: 8080
+
+  # Beszel agent — reports this host's metrics to the hub on sienna.
+  # KEY (hub public key) + TOKEN (universal token) come from the hub UI; see sops.env.
+  # beszel-agent:
+  #   image: henrygd/beszel-agent:latest
+  #   container_name: beszel-agent
+  #   profiles: [monitoring]
+  #   restart: unless-stopped
+  #   network_mode: host # host NIC stats; agent dials the hub outbound
+  #   environment:
+  #     <<: *environment
+  #     LISTEN: 45876
+  #     HUB_URL: "https://beszel.${PRIVATE_DOMAIN}"
+  #     KEY: "${BESZEL_KEY}"
+  #     TOKEN: "${BESZEL_TOKEN}"
+  #     SYSTEM_NAME: harambe
+  #     DOCKER_HOST: tcp://127.0.0.1:2375 # publish socket-proxy on loopback, as in docker/net
+  #   volumes:
+  #     - "${CONFIG_DIR}/beszel-agent:/var/lib/beszel-agent"
+  #     # extra filesystems (usage shows in the hub); add more disk mountpoints as desired
+  #     - /mnt/storage:/extra-filesystems/storage:ro
+
+  # Restarts containers Docker marks `unhealthy`, opt-in via `autoheal=true` label.
+  # Socket is local-only, so this must run on each host.
+  autoheal:
+    <<: *options
+    image: willfarrell/autoheal:latest
+    container_name: autoheal
+    depends_on: [socket-proxy]
+    restart: always
+    environment:
+      <<: *environment
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: 10
+      AUTOHEAL_START_PERIOD: 300
+      DOCKER_SOCK: tcp://socket-proxy:2375

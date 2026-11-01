@@ -1,0 +1,132 @@
+---
+x-options: &options
+  profiles: [monitoring]
+  networks: [default]
+  environment: &environment
+    TZ: "${TIMEZONE}"
+  restart: unless-stopped
+
+volumes:
+  # rendered AutoKuma monitor files, shared from the render init container
+  autokuma-monitors:
+
+services:
+  uptime-kuma:
+    <<: *options
+    image: louislam/uptime-kuma:2 # :1 / :latest are the old major
+    container_name: uptime-kuma
+    volumes:
+      - "${CONFIG_DIR}/uptime-kuma:/app/data" # do not place on NFS
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.uptime-kuma.rule: Host(`uptime.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.uptime-kuma.entrypoints: websecure
+      traefik.http.services.uptime-kuma.loadbalancer.server.port: 3001
+
+  # Renders committed monitor templates (@@DOMAIN@@ placeholders) into a shared
+  # volume, substituting the real domains from sops env. Keeps plaintext domains
+  # out of git. Mirrors the larapaper-permissions init-container pattern.
+  # Templates live in this repo at docker/net/config/autokuma/templates and are
+  # shipped to ${CONFIG_DIR}/autokuma/templates by the `sync-config` task on `up`.
+  autokuma-render:
+    image: busybox
+    container_name: autokuma-render
+    profiles: [monitoring]
+    restart: "no"
+    environment:
+      <<: *environment
+      PRIVATE_DOMAIN: "${PRIVATE_DOMAIN}" # sienna's own private domain
+      HOMELAB_PUBLIC_DOMAIN: "${HOMELAB_PUBLIC_DOMAIN}" # harambe public services
+      HOMELAB_PRIVATE_DOMAIN: "${HOMELAB_PRIVATE_DOMAIN}" # harambe private services
+    volumes:
+      - "${CONFIG_DIR}/autokuma/templates:/templates:ro"
+      - autokuma-monitors:/out
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        n=0
+        for f in /templates/*.toml; do
+          [ -e "$$f" ] || continue
+          sed -e "s|@@PRIVATE_DOMAIN@@|$$PRIVATE_DOMAIN|g" \
+              -e "s|@@HOMELAB_PUBLIC_DOMAIN@@|$$HOMELAB_PUBLIC_DOMAIN|g" \
+              -e "s|@@HOMELAB_PRIVATE_DOMAIN@@|$$HOMELAB_PRIVATE_DOMAIN|g" \
+              "$$f" > "/out/$$(basename "$$f")"
+          n=$$((n + 1))
+        done
+        echo "rendered $$n monitor file(s)"
+
+  # Reconciles Uptime Kuma monitors from the rendered static files.
+  # Docker label discovery is off: services are remote + behind Traefik, so we
+  # probe public URLs instead of exposing the Docker API across the network.
+  autokuma:
+    <<: *options
+    image: ghcr.io/bigboot/autokuma:latest
+    container_name: autokuma
+    depends_on:
+      autokuma-render:
+        condition: service_completed_successfully
+      uptime-kuma:
+        condition: service_started
+    environment:
+      <<: *environment
+      AUTOKUMA__KUMA__URL: http://uptime-kuma:3001
+      AUTOKUMA__KUMA__USERNAME: "${UPTIME_KUMA_USERNAME}"
+      AUTOKUMA__KUMA__PASSWORD: "${UPTIME_KUMA_PASSWORD}"
+      AUTOKUMA__STATIC_MONITORS: /static-monitors
+      AUTOKUMA__DOCKER__ENABLED: "false"
+    volumes:
+      - autokuma-monitors:/static-monitors:ro
+      - "${CONFIG_DIR}/autokuma/data:/data"
+
+  # Beszel hub (web UI). First boot: create admin, then copy the hub public KEY
+  # and a universal TOKEN (/settings/tokens) into both hosts' sops.env so the
+  # agents can register.
+  beszel:
+    <<: *options
+    image: henrygd/beszel:latest
+    container_name: beszel
+    environment:
+      <<: *environment
+      APP_URL: "https://beszel.${PRIVATE_DOMAIN}"
+    volumes:
+      - "${CONFIG_DIR}/beszel:/beszel_data"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.beszel.rule: Host(`beszel.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.beszel.entrypoints: websecure
+      traefik.http.services.beszel.loadbalancer.server.port: 8090
+
+  # Beszel agent for this host (sienna).
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    profiles: [monitoring]
+    restart: unless-stopped
+    network_mode: host # host NIC stats; agent dials the hub outbound
+    environment:
+      <<: *environment
+      LISTEN: 45876
+      HUB_URL: "https://beszel.${PRIVATE_DOMAIN}"
+      KEY: "${BESZEL_KEY}"
+      TOKEN: "${BESZEL_TOKEN}"
+      SYSTEM_NAME: sienna
+      DOCKER_HOST: tcp://127.0.0.1:2375 # socket-proxy, published on loopback
+    volumes:
+      - "${CONFIG_DIR}/beszel-agent:/var/lib/beszel-agent"
+
+  # Restarts containers Docker marks `unhealthy`, opt-in via `autoheal=true` label.
+  # Socket is local-only, so this must run on each host.
+  autoheal:
+    <<: *options
+    image: willfarrell/autoheal:latest
+    container_name: autoheal
+    depends_on: [socket-proxy]
+    restart: always
+    environment:
+      <<: *environment
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: 10
+      AUTOHEAL_START_PERIOD: 300
+      DOCKER_SOCK: tcp://socket-proxy:2375
