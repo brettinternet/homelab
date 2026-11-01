@@ -1,0 +1,60 @@
+---
+# Secondary AdGuard Home so DNS survives either host going down.
+# The net stack's AdGuard is the source of truth; adguardhome-sync copies its
+# settings, filters and rewrites here. Make changes in the primary's UI only.
+x-options: &options
+  profiles: [dns]
+  networks: [default]
+  environment: &environment
+    TZ: "${TIMEZONE}"
+  restart: unless-stopped
+
+services:
+  adguard:
+    <<: *options
+    image: adguard/adguardhome:latest
+    container_name: adguard
+    hostname: adguard
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+    volumes:
+      - "${CONFIG_DIR}/adguard/work:/opt/adguardhome/work"
+      - "${CONFIG_DIR}/adguard/conf:/opt/adguardhome/conf"
+    # no autoheal: DNS is critical, prefer to investigate rather than auto-restart.
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "wget -q -O- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.adguard.rule: Host(`dns.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.adguard.entrypoints: websecure
+      traefik.http.services.adguard.loadbalancer.server.port: 3000
+
+  # First run auto-installs the empty replica with the same credentials.
+  adguardhome-sync:
+    <<: *options
+    image: ghcr.io/bakito/adguardhome-sync:latest
+    container_name: adguardhome-sync
+    depends_on: [adguard]
+    command: run
+    environment:
+      <<: *environment
+      ORIGIN_URL: "https://dns.${NET_DOMAIN}"
+      ORIGIN_USERNAME: "${ADGUARD_USERNAME:?err}"
+      ORIGIN_PASSWORD: "${ADGUARD_PASSWORD:?err}"
+      REPLICA1_URL: http://adguard:3000
+      REPLICA1_USERNAME: "${ADGUARD_USERNAME:?err}"
+      REPLICA1_PASSWORD: "${ADGUARD_PASSWORD:?err}"
+      REPLICA1_AUTO_SETUP: "true"
+      CRON: "*/15 * * * *"
+      RUN_ON_START: "true"
+      API_PORT: 0
+      # DHCP is served by UniFi
+      FEATURES_DHCP_SERVER_CONFIG: "false"
+      FEATURES_DHCP_STATIC_LEASES: "false"

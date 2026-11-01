@@ -1,0 +1,9 @@
+type = "dns"
+name = "DNS secondary (harambe)"
+hostname = "dns.@@PRIVATE_DOMAIN@@"
+dns_resolve_server = "10.1.2.4"
+dns_resolve_type = "A"
+port = 53
+parent_name = "group-infra"
+interval = 60
+max_retries = 3

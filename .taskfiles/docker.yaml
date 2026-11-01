@@ -52,7 +52,7 @@ tasks:
         vars:
           PROJECT: homelab
           HOSTNAME: harambe
-          PROFILES: base,utils,home,auth,projects,backup,media,games,monitoring
+          PROFILES: base,dns,utils,home,auth,projects,backup,media,games,monitoring
           # PROFILES: base,utils,home,auth,projects,media-lite,monitoring
     requires: *docker-vars
     preconditions: *docker-preconditions
