@@ -28,6 +28,7 @@ task check   # runs lint checks
 
 - Secrets are encrypted with SOPS; never commit plaintext secrets
 - Use `task` (go-task) to run operations, not raw `ansible-playbook` or `docker compose`
+- Static service config lives in `docker/<stack>/config/<service>/` and is copied to the host's `${CONFIG_DIR}/<service>/` on `up` (overwrites, never deletes). Only commit files the app doesn't write at runtime and that contain no secrets
 - Compose files follow the pattern `compose.<stack>.yaml`
 - Host vars live in `ansible/inventory/host_vars/<hostname>.sops.yaml`
 

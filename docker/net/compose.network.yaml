@@ -98,6 +98,7 @@ services:
       DEBUG: "False"
       REGISTRATION_OPEN: "False"
       SITE_ROOT: "https://hc.${PRIVATE_DOMAIN}"
+      ALLOWED_HOSTS: "hc.${PRIVATE_DOMAIN},localhost" # localhost for the healthcheck probe
       SITE_NAME: Healthchecks
       SITE_LOGO_URL: /static/img/logo.svg
       INTEGRATIONS_ALLOW_PRIVATE_IPS: "True"
