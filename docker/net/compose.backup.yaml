@@ -30,6 +30,7 @@ services:
         --exclude='.Trash*'
         --verbose
       RESTIC_FORGET_ARGS: >-
+        --group-by paths
         --keep-last 10
         --keep-daily 7
         --keep-weekly 5
