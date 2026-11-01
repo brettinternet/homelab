@@ -16,10 +16,29 @@ networks:
         - subnet: "${DOCKER_SUBNET}"
 
 services:
+  # Filtered Docker API for every socket consumer: read-only containers/images plus
+  # restarts (autoheal). Denies create/exec/archive, so a consumer can't get host root.
+  socket-proxy:
+    <<: *options
+    image: lscr.io/linuxserver/socket-proxy:latest
+    container_name: socket-proxy
+    environment:
+      <<: *environment
+      CONTAINERS: 1
+      IMAGES: 1 # diun
+      ALLOW_RESTARTS: 1 # autoheal
+    ports:
+      - 127.0.0.1:2375:2375 # beszel-agent runs on the host network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    read_only: true
+    tmpfs: [/run]
+
   diun:
     <<: *options
     image: crazymax/diun:latest
     container_name: diun
+    depends_on: [socket-proxy]
     command: serve
     environment:
       <<: *environment
@@ -31,10 +50,9 @@ services:
       DIUN_WATCH_RUNONSTARTUP: "true"
       DIUN_PROVIDERS_DOCKER: "true"
       DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT: "true"
+      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socket-proxy:2375
       DIUN_NOTIF_PUSHOVER_TOKEN: "${PUSHOVER_DIUN_TOKEN}"
       DIUN_NOTIF_PUSHOVER_RECIPIENT: "${PUSHOVER_USER_KEY}"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: [CMD, diun, healthcheck]
       interval: 30s
@@ -46,6 +64,7 @@ services:
     <<: *options
     image: traefik:v3.7
     container_name: traefik
+    depends_on: [socket-proxy]
     environment:
       <<: *environment
       CF_DNS_API_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
@@ -59,7 +78,6 @@ services:
       - 443:443
       - 853:853
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - "${CONFIG_DIR}/traefik/conf:/etc/traefik"
       - "${CONFIG_DIR}/traefik/log:/var/log"
     command:
@@ -69,6 +87,7 @@ services:
       - --api=true
       - --ping=true
       - --providers.docker=true
+      - --providers.docker.endpoint=tcp://socket-proxy:2375
       - --providers.docker.exposedbydefault=false
       - --providers.file.directory=/etc/traefik
       - --providers.file.watch=true

@@ -30,7 +30,6 @@ services:
       HOMEPAGE_ALLOWED_HOSTS: "dashboard.${PRIVATE_DOMAIN}"
     volumes:
       - "${CONFIG_DIR}/homepage:/app/config"
-      - /var/run/docker.sock:/var/run/docker.sock:ro
     # homepage ships its own HEALTHCHECK (wget /api/healthcheck); just enable autoheal
     labels:
       autoheal: "true"

@@ -14,10 +14,27 @@ networks:
         - subnet: "${DOCKER_SUBNET}"
 
 services:
+  # Filtered Docker API for every socket consumer: read-only containers/images plus
+  # restarts (autoheal). Denies create/exec/archive, so a consumer can't get host root.
+  socket-proxy:
+    <<: *service
+    image: lscr.io/linuxserver/socket-proxy:latest
+    container_name: socket-proxy
+    environment:
+      <<: *environment
+      CONTAINERS: 1
+      IMAGES: 1 # diun
+      ALLOW_RESTARTS: 1 # autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    read_only: true
+    tmpfs: [/run]
+
   diun:
     <<: *service
     image: crazymax/diun:latest
     container_name: diun
+    depends_on: [socket-proxy]
     command: serve
     environment:
       <<: *environment
@@ -29,10 +46,9 @@ services:
       DIUN_WATCH_RUNONSTARTUP: "true"
       DIUN_PROVIDERS_DOCKER: "true"
       DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT: "true"
+      DIUN_PROVIDERS_DOCKER_ENDPOINT: tcp://socket-proxy:2375
       DIUN_NOTIF_PUSHOVER_TOKEN: "${PUSHOVER_DIUN_TOKEN}"
       DIUN_NOTIF_PUSHOVER_RECIPIENT: "${PUSHOVER_USER_KEY}"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: [CMD, diun, healthcheck]
       interval: 30s
@@ -68,6 +84,7 @@ services:
     <<: *service
     image: traefik:v3.7
     container_name: traefik
+    depends_on: [socket-proxy]
     environment:
       <<: *environment
       CF_DNS_API_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
@@ -82,7 +99,6 @@ services:
       - 443:443
       - 7687:7687
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - "${CONFIG_DIR}/traefik/conf:/etc/traefik"
       - "${CONFIG_DIR}/traefik/log:/var/log"
     command:
@@ -92,6 +108,7 @@ services:
       - --api=true
       - --ping=true
       - --providers.docker=true
+      - --providers.docker.endpoint=tcp://socket-proxy:2375
       - --providers.docker.exposedbydefault=false
       - --providers.file.directory=/etc/traefik
       - --providers.file.watch=true
@@ -140,10 +157,10 @@ services:
     <<: *service
     image: ghcr.io/tiredofit/docker-traefik-cloudflare-companion:latest
     container_name: cloudflare-companion
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on: [socket-proxy]
     environment:
       <<: *environment
+      DOCKER_HOST: tcp://socket-proxy:2375
       TIMEZONE: "${TIMEZONE}"
       TRAEFIK_VERSION: 2
       CF_TOKEN: "${CLOUDFLARE_API_TOKEN:?err}"
