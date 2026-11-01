@@ -1,63 +1,40 @@
 ---
-- name: Check supported distribution
-  ansible.builtin.fail:
-    msg:
-      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
-      - "Supported role distributions are {{ nfs__supported_distributions }}"
-  when: ansible_facts['distribution'] | lower not in nfs__supported_distributions
+- name: Install nfs-utils
+  community.general.pacman:
+    name: nfs-utils
+    state: present
 
-- name: Setup NFS
-  ansible.builtin.include_tasks: "setup_{{ ansible_facts['distribution'] | lower }}.yaml"
+- name: Copy exports file
+  ansible.builtin.template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload exports
 
-- name: Ensure common nfs root directory exists
+- name: Create NFS systemd override directory
   ansible.builtin.file:
-    path: "{{ nfs__root_dir }}"
+    path: /etc/systemd/system/nfs-server.service.d
     state: directory
     owner: root
     group: root
-    mode: "0751"
+    mode: "0755"
 
-- name: Configure NFS exports
-  when: nfs__exports | length
-  block:
-    - name: Ensure exported directories exist
-      ansible.builtin.file: # noqa 208
-        path: "{{ item.strip().split()[0] }}"
-        state: directory
-      with_items: "{{ nfs__exports }}"
+# Otherwise NFS can start at boot before the pool mounts and export empty mountpoints.
+- name: Start NFS after exported filesystems mount
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      RequiresMountsFor={{ nfs__exports | map('split') | map('first') | join(' ') }}
+    dest: /etc/systemd/system/nfs-server.service.d/override.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
 
-    - name: Copy exports file
-      ansible.builtin.template:
-        src: exports.j2
-        dest: /etc/exports
-        owner: root
-        group: root
-        mode: "0644"
-      notify: Reload nfs
-
-    - name: Enable and start NFS server
-      ansible.builtin.service:
-        name: "{{ nfs__server_daemon }}"
-        state: started
-        enabled: true
-
-- name: Make services required for NFS
-  when: nfs__required_services | length
-  block:
-    - name: Create NFS systemd override directory
-      ansible.builtin.file:
-        path: /etc/systemd/system/nfs-server.service.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-
-    - name: Create NFS systemd override
-      ansible.builtin.copy:
-        # /srv/nfs/media would become `srv-nfs-media.mount`
-        content: "Requires=network.target proc-fs-nfsd.mount {{ nfs__required_services.strip().join(' ') }}"
-        dest: /etc/systemd/system/nfs-server.service.d/override.conf
-        owner: root
-        group: root
-        mode: "0644"
-      notify: Reload systemd
+- name: Enable NFS server
+  ansible.builtin.systemd:
+    name: nfs-server.service
+    state: started
+    enabled: true

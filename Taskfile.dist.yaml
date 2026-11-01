@@ -55,6 +55,7 @@ tasks:
         -not -path "./.venv/*"
         -print0 | xargs -0 shellcheck
       - prettier --check "**/*.{yaml,yml}"
+      - task: ansible:lint
 
   fix:
     desc: Run fixes

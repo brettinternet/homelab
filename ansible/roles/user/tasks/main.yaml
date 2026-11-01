@@ -1,17 +1,14 @@
 ---
 - name: Install essential user packages
-  ansible.builtin.package:
+  community.general.pacman:
+    name: [git, sudo, zsh]
     state: present
-    name:
-      - git
-      - zsh
-      - sudo
 
 - name: Set git pull strategy to rebase
   community.general.git_config:
     name: pull.rebase
     scope: system
-    value: true
+    value: "true"
 
 - name: Set git user
   community.general.git_config:
@@ -19,22 +16,15 @@
     scope: system
     value: "{{ ansible_user }}"
 
-- name: Ensure group 'sudo' exists
+- name: Ensure groups exist
   ansible.builtin.group:
-    name: sudo
+    name: "{{ item }}"
     state: present
+  loop: [sudo, ssh]
 
-- name: Ensure group 'ssh' exists
-  ansible.builtin.group:
-    name: ssh
-    state: present
-
-- name: "Setup user groups, set user shell to {{ user__shell }}"
-  become: true
+# Shell is set by the dotfiles role.
+- name: Add user to groups
   ansible.builtin.user:
     name: "{{ ansible_user }}"
-    shell: "{{ user__shell }}"
     append: true
-    groups:
-      - sudo
-      - ssh
+    groups: [sudo, ssh]

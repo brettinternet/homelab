@@ -1,0 +1,43 @@
+---
+mergerfs__mounts:
+  "/dev/disk/by-id/ata-ST10000NE0008-2JM101_ZPW0MSQL-part1": /mnt/parity1
+  "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG5TJRM-part1": /mnt/parity2
+  "/dev/disk/by-id/ata-TOSHIBA_HDWT360_98R0A036FB1G-part1": /mnt/disk1
+  "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K44G5Y-part1": /mnt/disk2
+  "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M70Y-part1": /mnt/disk3
+  "/dev/disk/by-id/ata-HGST_HDN724030ALE640_PK2234P9K4M5SY-part1": /mnt/disk4
+  "/dev/disk/by-id/scsi-35000c50095513177-part1": /mnt/disk5
+  "/dev/disk/by-id/ata-HGST_HDN726060ALE610_NAGWMN6Y-part1": /mnt/disk6
+  "/dev/disk/by-id/scsi-35000c5009550f7d7-part1": /mnt/disk7
+  "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG887NM-part1": /mnt/disk8
+  "/dev/disk/by-id/scsi-35000c5009550f12f-part1": /mnt/disk9
+  "/dev/disk/by-id/ata-HGST_HUH728060ALE600_2QG15S0R-part1": /mnt/disk10
+
+# List order is the parity level and must not change without a full `snapraid sync`.
+snapraid__parity:
+  - /mnt/parity2/snapraid.parity
+  - /mnt/parity1/snapraid.parity
+snapraid__content:
+  - /var/snapraid/snapraid.content
+  - /mnt/disk1/.snapraid.content
+  - /mnt/disk2/.snapraid.content
+  - /mnt/disk3/.snapraid.content
+snapraid__data:
+  d1: /mnt/disk1
+  d2: /mnt/disk2
+  d3: /mnt/disk3
+  d4: /mnt/disk4
+  d5: /mnt/disk5
+  d6: /mnt/disk6
+  d7: /mnt/disk7
+  d8: /mnt/disk8
+  d9: /mnt/disk9
+  d10: /mnt/disk10
+
+snapraid__daemon_net_enabled: 1
+snapraid__daemon_net_port: 10.1.2.4:7627
+# Homepage on the net stack (sienna); switch to gresham's IP after the migration.
+snapraid__daemon_net_acl: +10.1.0.5
+
+# nfs__exports:
+#   - /mnt/storage/media *(rw,sync,fsid=10,no_subtree_check,all_squash,anonuid=1000,anongid=1000)

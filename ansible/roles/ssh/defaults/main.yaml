@@ -1,4 +1,3 @@
 ---
+# Only the first key listed is authorized.
 ssh__keys_url: https://github.com/brettinternet.keys
-# exclude all but the first line
-ssh__keys_sed_arg: 1!d

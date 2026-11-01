@@ -1,7 +1,7 @@
 ---
-- name: Reload nfs
-  ansible.builtin.command: "exportfs -ra"
-
 - name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
+
+- name: Reload exports # noqa no-changed-when
+  ansible.builtin.command: exportfs -ra

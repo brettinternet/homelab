@@ -1,7 +1,4 @@
 ---
-dotfiles__supported_distributions:
-  - archlinux
-  - debian
 dotfiles__shell: /usr/bin/zsh
 dotfiles__dir: "$HOME/.dotfiles"
 dotfiles__install_cmd: ./install

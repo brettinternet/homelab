@@ -1,19 +1,23 @@
 ---
-- name: Check supported distribution
-  ansible.builtin.fail:
-    msg:
-      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
-      - "Supported role distributions are {{ snapraid__supported_distributions }}"
-  when: ansible_facts['distribution'] | lower not in snapraid__supported_distributions
+- name: Install snapraid
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    aur__packages: [snapraid, snapraid-daemon]
 
-- name: Install Snapraid
-  ansible.builtin.include_tasks: "install_{{ ansible_facts['distribution'] | lower }}.yaml"
+# An unmounted path would put parity or data on the root filesystem.
+- name: Check snapraid disks are mounted
+  ansible.builtin.command: mountpoint -q {{ item }}
+  changed_when: false
+  check_mode: false
+  loop: "{{ snapraid__data.values() | list + snapraid__parity | map('dirname') | list }}"
 
-- name: Create host snapraid content directory for 'snapraid.content'
+- name: Create content file directories
   ansible.builtin.file:
-    path: "{{ snapraid__content_dir }}"
+    path: "{{ item | dirname }}"
     state: directory
     mode: "0755"
+  loop: "{{ snapraid__content }}"
 
 - name: Copy snapraid.conf
   ansible.builtin.template:
@@ -23,6 +27,25 @@
     group: root
     mode: "0644"
 
-- name: Setup Snapraid daemon
-  ansible.builtin.include_tasks: daemon.yaml
-  when: ansible_facts['distribution'] | lower == 'archlinux'
+- name: Create log directory
+  ansible.builtin.file:
+    path: "{{ snapraid__log_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy snapraidd.conf
+  ansible.builtin.template:
+    src: snapraidd.conf.j2
+    dest: "{{ snapraid__daemon_conf_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload snapraidd
+
+- name: Enable snapraidd
+  ansible.builtin.systemd:
+    name: snapraidd.service
+    state: started
+    enabled: true

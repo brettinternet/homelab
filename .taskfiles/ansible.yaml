@@ -3,7 +3,7 @@
 version: "3"
 
 env:
-  ANSIBLE_CONFIG: "{{.PROJECT_DIR}}/ansible.cfg"
+  ANSIBLE_CONFIG: "{{.ROOT_DIR}}/ansible.cfg"
 
 vars:
   ANSIBLE_PLAYBOOK_DIR: "{{.ANSIBLE_DIR}}/playbooks"
@@ -16,6 +16,11 @@ tasks:
     desc: Install / Upgrade Ansible galaxy deps
     cmds:
       - ansible-galaxy install -r requirements.yaml -f
+
+  lint:
+    desc: Lint playbooks and roles
+    cmds:
+      - ansible-lint --offline
 
   list:
     desc: List all the hosts
@@ -35,37 +40,36 @@ tasks:
       - ansible all -i {{.ANSIBLE_INVENTORY_DIR}}/hosts.yaml --one-line -a 'uptime'
 
   playbook:
-    desc: Run a playbook by name (without the .yaml extension)
+    desc: "Run a playbook, args after -- go to ansible-playbook. e.g. task ansible:run PLAYBOOK=setup -- --limit gresham --check --diff"
     aliases: [run, play, p, r]
+    requires:
+      vars: [PLAYBOOK]
     cmds:
-      - '{{ .ANSIBLE_COMMAND }} {{ .ANSIBLE_PLAYBOOK_DIR }}/{{ default .PLAYBOOK .CLI_ARGS }}.yaml {{ default "" .ANSIBLE_ARGS }}'
+      - "{{.ANSIBLE_COMMAND}} {{.ANSIBLE_PLAYBOOK_DIR}}/{{.PLAYBOOK}}.yaml {{.CLI_ARGS}}"
 
   setup:
-    desc: Configure all hosts
-    aliases: [setup, s]
+    desc: "Configure hosts. e.g. task ansible:setup -- --tags docker --limit gresham"
+    aliases: [s]
     cmds:
       - task: playbook
-        vars:
-          PLAYBOOK: setup
+        vars: { PLAYBOOK: setup }
 
   upgrade:
-    desc: Update dependencies
+    desc: "Upgrade packages. Reboot for a new kernel with: task ansible:upgrade -- -e upgrade__allow_reboot=true"
     aliases: [update, u]
     cmds:
       - task: playbook
-        vars:
-          PLAYBOOK: upgrade
+        vars: { PLAYBOOK: upgrade }
 
   status:
     desc: Output some status fields from hosts
     cmds:
       - task: playbook
-        vars:
-          PLAYBOOK: status
+        vars: { PLAYBOOK: status }
 
-  nfs:
-    desc: Configure NFS server
+  reboot:
+    desc: Reboot hosts (use -- --limit <host>)
+    prompt: Reboot the selected hosts?
     cmds:
       - task: playbook
-        vars:
-          PLAYBOOK: nfs
+        vars: { PLAYBOOK: reboot }

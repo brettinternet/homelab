@@ -1,10 +1,20 @@
 ---
-- name: Check supported distribution
-  ansible.builtin.fail:
-    msg:
-      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
-      - "Supported role distributions are {{ supported_distributions }}"
-  when: ansible_facts['distribution'] | lower not in supported_distributions
+- name: Upgrade official packages
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
 
-- name: Upgrade packages
-  ansible.builtin.include_tasks: "upgrade_{{ ansible_facts['distribution'] | lower }}.yaml"
+- name: Upgrade AUR packages
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    aur__upgrade: true
+
+- name: Check for pending kernel reboot
+  ansible.builtin.include_tasks: reboot_required.yaml
+
+- name: Reboot
+  ansible.builtin.reboot:
+  when:
+    - upgrade__allow_reboot | bool
+    - upgrade__reboot_required

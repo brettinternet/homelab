@@ -1,9 +1,3 @@
 ---
-supported_distributions:
-  - archlinux
-  - debian
-
-allow_reboot: false
-
-# debian/ubuntu
-allow_dist_upgrade: false
+# Reboot when the running kernel is older than the installed one.
+upgrade__allow_reboot: false

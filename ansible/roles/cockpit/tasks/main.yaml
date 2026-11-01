@@ -1,45 +1,29 @@
 ---
-- name: Check supported distribution
-  fail:
-    msg:
-      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
-      - This role only supports Arch Linux
-  when:
-    - ansible_facts['distribution'] | lower != 'archlinux'
-
-- name: Install dependencies
-  ansible.builtin.package:
-    state: latest
+- name: Install cockpit
+  community.general.pacman:
     name:
       - cockpit
+      - cockpit-docker
+      - cockpit-files
+      - cockpit-storaged
       # https://cockpit-project.org/blog/pcp-grafana.html
       - pcp
-      - cockpit-files
+    state: present
 
-- name: Remove Cockpit motd
+- name: Remove cockpit MOTD
   ansible.builtin.file:
     path: /etc/motd.d/cockpit
     state: absent
 
-- name: Enable pmlogger (cockpit metrics)
+- name: Enable cockpit metrics
   ansible.builtin.systemd:
-    name: pmlogger
+    name: "{{ item }}"
     enabled: true
     state: started
-
-- name: Enable pmcd (cockpit metrics)
-  ansible.builtin.systemd:
-    name: pmcd
-    enabled: true
-    state: started
+  loop: [pmcd, pmlogger]
 
 - name: Enable cockpit.socket
   ansible.builtin.systemd:
     name: cockpit.socket
-    enabled: true
-
-- name: Enable cockpit.service
-  ansible.builtin.systemd:
-    name: cockpit.service
     enabled: true
     state: started

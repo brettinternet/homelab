@@ -1,0 +1,45 @@
+---
+os__packages:
+  # Setup
+  - base
+  - base-devel
+  - linux
+  - linux-headers
+  - linux-firmware
+  - mesa
+  # Net
+  - dhcpcd
+  - networkmanager
+  - openssh
+  - speedtest-cli
+  # Utility
+  - git
+  - neovim
+  - btop
+  - curl
+  - reflector
+  - rsync
+  - smartmontools
+  - gdu
+  - tmux
+  - trash-cli
+  - unzip
+  - usbutils
+  - zsh
+  - wget
+  - less
+  - broot
+  - fd
+  - etckeeper
+  - hwinfo
+  - man-db
+  - tldr
+  - rustup
+  # Fonts
+  - ttf-liberation
+
+os__aur_packages:
+  - downgrade
+  - makedep
+  - needrestart
+  - vim-plug

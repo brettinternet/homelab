@@ -1,51 +1,39 @@
----
 # TODO: secure `authorized_keys` https://wiki.archlinux.org/index.php/OpenSSH#Securing_the_authorized_keys_file
-
-- name: Setup ssh keys
-  ansible.builtin.include_tasks: keys.yaml
-  when: ssh__keys_sed_arg is defined
+---
+- name: Authorize SSH key
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ lookup('ansible.builtin.url', ssh__keys_url, wantlist=True) | first }}"
+    state: present
 
 - name: Copy sudoers defaults
-  become: true
   ansible.builtin.copy:
     src: sudoers-defaults
     dest: /etc/sudoers.d/defaults
-    validate: "visudo -cf %s"
-    mode: 0644
+    owner: root
+    group: root
+    mode: "0440"
+    validate: visudo -cf %s
 
-- name: Disable password tunneling
-  become: true
+# sshd uses the first value it reads, and drop-ins are included before the main config.
+- name: Configure sshd
+  ansible.builtin.copy:
+    content: |
+      # Managed by Ansible
+      PasswordAuthentication no
+      AllowGroups ssh
+      AllowUsers {{ ansible_user }}
+    dest: /etc/ssh/sshd_config.d/10-ansible.conf
+    owner: root
+    group: root
+    mode: "0644"
+    validate: /usr/bin/sshd -t -f %s
+  notify: Reload sshd
+
+# These were previously appended to sshd_config; drop-ins own them now.
+- name: Remove settings appended to sshd_config
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
-    line: PasswordAuthentication no
-
-- name: Disable SSH password tunneling
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    line: PasswordAuthentication no
-
-- name: Ensure group 'ssh' exists
-  become: true
-  ansible.builtin.group:
-    name: ssh
-    state: present
-
-- name: Add user to ssh group
-  ansible.builtin.user:
-    name: "{{ ansible_user }}"
-    groups:
-      - ssh
-    append: true
-
-- name: Only allow SSH from group
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    line: "AllowGroups ssh"
-
-- name: Only allow SSH from current user
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    line: "AllowUsers {{ ansible_user }}"
+    regexp: '^(PasswordAuthentication|AllowGroups|AllowUsers|MaxStartups|MaxSessions)\s'
+    state: absent
+  notify: Reload sshd

@@ -1,25 +1,11 @@
 ---
-- name: Upgrade Linux
-  hosts: linux
+- name: Upgrade
+  hosts: all
   become: true
-  vars:
-    allow_reboot: false
+  pre_tasks:
+    - name: Check distribution
+      ansible.builtin.assert:
+        that: ansible_facts['distribution'] == 'Archlinux'
+        fail_msg: "Only Arch Linux is supported, found {{ ansible_facts['distribution'] }}"
   roles:
     - upgrade
-
-- name: Upgrade Windows
-  hosts: windows
-  become: true
-  vars:
-    allow_reboot: false
-  tasks:
-    # TODO: switch to scoop https://docs.ansible.com/ansible/latest/collections/community/windows/win_scoop_module.html
-    - name: Upgrade installed packages
-      chocolatey.chocolatey.win_chocolatey:
-        name: all
-        state: latest
-
-    - name: Install system updates
-      ansible.windows.win_updates:
-        category_names: "*"
-        reboot: "{{ allow_reboot }}"

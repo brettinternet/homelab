@@ -1,6 +1,4 @@
 ansible
 ansible-dev-tools
 jsonpatch
-netaddr
 pyyaml
-pywinrm

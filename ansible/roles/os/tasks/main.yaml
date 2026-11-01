@@ -2,29 +2,74 @@
 # - https://github.com/konstruktoid/ansible-role-hardening
 # - https://github.com/dev-sec/ansible-collection-hardening
 ---
-- name: Check supported distribution
-  ansible.builtin.fail:
-    msg:
-      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
-      - "Supported role distributions are {{ os__supported_distributions }}"
-  when: ansible_facts['distribution'] | lower not in os__supported_distributions
+- name: Set hostname to inventory hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
 
 - name: "Set timezone {{ os__timezone }}"
   community.general.timezone:
     name: "{{ os__timezone }}"
 
+# https://wiki.archlinux.org/title/systemd-timesyncd
+- name: Enable systemd-timesyncd
+  ansible.builtin.systemd:
+    name: systemd-timesyncd.service
+    enabled: true
+    state: started
+
 - name: Clear MOTD
   ansible.builtin.copy:
     content: ""
     dest: /etc/motd
-    force: true
-    group: root
     owner: root
-    mode: "0544"
+    group: root
+    mode: "0644"
 
-- name: Set hostname to inventory hostname
-  ansible.builtin.hostname:
-    name: "{{ inventory_hostname }}"
+- name: Enable pacman color
+  ansible.builtin.lineinfile:
+    path: /etc/pacman.conf
+    regexp: "^#?Color$"
+    line: Color
 
-- name: Setup hosts
-  ansible.builtin.include_tasks: "{{ ansible_facts['distribution'] | lower }}.yaml"
+- name: Enable pacman candy
+  ansible.builtin.lineinfile:
+    path: /etc/pacman.conf
+    insertafter: "^Color$"
+    line: ILoveCandy
+
+- name: Enable pacman parallel downloads
+  ansible.builtin.lineinfile:
+    path: /etc/pacman.conf
+    regexp: "^#?ParallelDownloads"
+    line: ParallelDownloads = 5
+
+- name: Install packages
+  community.general.pacman:
+    name: "{{ os__packages }}"
+    state: present
+
+- name: Install CPU microcode
+  community.general.pacman:
+    name: "{{ 'amd-ucode' if 'AuthenticAMD' in ansible_facts['processor'] else 'intel-ucode' }}"
+    state: present
+
+- name: Install AUR packages
+  ansible.builtin.include_role:
+    name: aur
+  vars:
+    aur__packages: "{{ os__aur_packages }}"
+
+# https://wiki.archlinux.org/title/Reflector
+- name: Configure reflector
+  ansible.builtin.copy:
+    src: reflector.conf
+    dest: /etc/xdg/reflector/reflector.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable reflector timer
+  ansible.builtin.systemd:
+    name: reflector.timer
+    enabled: true
+    state: started

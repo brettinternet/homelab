@@ -1,7 +1,4 @@
 ---
-os__supported_distributions:
-  - archlinux
-  - debian
 os__timezone: "{{ lookup('ansible.builtin.env', 'TIMEZONE') | default('America/Denver', true) }}"
-# Additional ssh public keys to add to the nodes
-# os__ssh_authorized_keys:
+os__packages: []
+os__aur_packages: []

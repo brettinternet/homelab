@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# Source: https://aur.archlinux.org/packages/zoom-firejail/
-# `--shell=none` is a workaround for https://github.com/netblue30/firejail/issues/3434
-/usr/bin/firejail --shell=none -- zoom "$@"

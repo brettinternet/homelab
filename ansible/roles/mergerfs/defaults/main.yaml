@@ -1,6 +1,17 @@
 ---
-mergerfs__supported_distributions:
-  - archlinux
+# Disks to mount, by device => mountpoint. /mnt/disk* are pooled.
+mergerfs__mounts: {}
 mergerfs__storage_dir: /mnt/storage
-nfs__root_dir: /srv/nfs
-# mergerfs__mounts:
+mergerfs__branches: /mnt/disk*
+# NFS-compatible options: https://github.com/trapexit/mergerfs?tab=readme-ov-file#nfs
+mergerfs__options:
+  - allow_other
+  - use_ino
+  - noforget
+  - inodecalc=path-hash
+  - security_capability=false
+  - cache.files=partial
+  - dropcacheonclose=true
+  - category.create=mfs
+  - fsname=mergerfs
+  - minfreespace=10G

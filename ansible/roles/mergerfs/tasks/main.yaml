@@ -1,87 +1,61 @@
 # https://github.com/trapexit/mergerfs
-# https://aur.archlinux.org/packages/mergerfs
-
 # Maintenance: https://github.com/trapexit/backup-and-recovery-howtos/blob/master/docs/maintenance_(mergerfs).md
 # Recovery: https://github.com/trapexit/backup-and-recovery-howtos/blob/master/docs/recovery_(mergerfs,snapraid).md
 ---
-- name: Check supported distribution
-  ansible.builtin.fail:
-    msg:
-      - "Unsupported distribution: {{ ansible_facts['distribution'] | lower }}"
-      - "Supported role distributions are {{ mergerfs__supported_distributions }}"
-  when: ansible_facts['distribution'] | lower not in mergerfs__supported_distributions
-
-- name: Verify 'mergerfs__mounts' is defined
-  ansible.builtin.fail:
-    msg:
-      - "'mergerfs__mounts' must be defined as an fstab mounts dictionary with 'src': 'path' pairs"
-  when:
-    - mergerfs__mounts is not defined
-    - mergerfs__mounts.keys() | list | length == 0
-
-- name: Install mergerfs dependencies
+- name: Install mergerfs
   ansible.builtin.include_role:
     name: aur
   vars:
-    state: present
-    packages:
-      - mergerfs
+    aur__packages: [mergerfs]
 
 - name: Install fuse2 for fstab support
-  ansible.builtin.package:
+  community.general.pacman:
+    name: fuse2
     state: present
-    name:
-      - fuse2
-
-- name: Ensure mount targets exist
-  ansible.builtin.file:
-    path: "{{ item.value }}"
-    state: directory
-    mode: "0755"
-  with_dict: "{{ mergerfs__mounts }}"
-
-- name: Ensure mergerfs target exists
-  ansible.builtin.file:
-    path: /mnt/storage
-    state: directory
-    mode: "0755"
 
 # https://github.com/trapexit/backup-and-recovery-howtos/blob/master/docs/setup_(fstab).md
-- name: Mount JBOD drives
+- name: Mount disks
   ansible.posix.mount:
     src: "{{ item.key }}"
     path: "{{ item.value }}"
     fstype: xfs
     opts: defaults
     state: mounted
-  with_dict: "{{ mergerfs__mounts }}"
+  loop: "{{ mergerfs__mounts | dict2items }}"
+  loop_control:
+    label: "{{ item.value }}"
 
-# Ensure options for NFS compatibility
-# https://github.com/trapexit/mergerfs?tab=readme-ov-file#nfs
-- name: Mount mergerfs fuse
-  vars:
-    _mergerfs_opts:
-      - allow_other
-      - use_ino
-      - noforget
-      - inodecalc=path-hash
-      - security_capability=false
-      - cache.files=partial
-      - dropcacheonclose=true
-      - category.create=mfs
-      - fsname=mergerfs
-      - minfreespace=10G
+- name: Ensure pool mountpoint exists
+  ansible.builtin.file:
+    path: "{{ mergerfs__storage_dir }}"
+    state: directory
+    mode: "0755"
+
+# `state: mounted` would remount on option changes, and remounting FUSE stacks
+# another mergerfs instance instead of applying the options.
+- name: Add pool to fstab
   ansible.posix.mount:
-    src: /mnt/disk*
+    src: "{{ mergerfs__branches }}"
     path: "{{ mergerfs__storage_dir }}"
     fstype: fuse.mergerfs
-    opts: "{{ _mergerfs_opts | join(',') }}"
-    state: mounted
+    opts: "{{ mergerfs__options | join(',') }}"
+    state: present
+  register: mergerfs__fstab_result
 
-- name: Bind mount media to nfs root
-  ansible.posix.mount:
-    src: "{{ mergerfs__storage_dir }}/media"
-    path: "{{ nfs__root_dir }}/media"
-    fstype: none
-    opts: x-systemd.requires=/mnt/storage,x-systemd.automount,bind
-    state: mounted
+- name: Check pool is mounted
+  ansible.builtin.command: mountpoint -q {{ mergerfs__storage_dir }}
+  register: mergerfs__mountpoint_result
+  changed_when: false
+  check_mode: false
+  failed_when: mergerfs__mountpoint_result.rc not in [0, 32]
+
+- name: Mount pool # noqa no-changed-when command-instead-of-module
+  ansible.builtin.command: mount {{ mergerfs__storage_dir }}
+  when: mergerfs__mountpoint_result.rc != 0
+
+- name: Warn that pool options need a remount
+  ansible.builtin.debug:
+    msg: "mergerfs options changed. Apply with `umount {{ mergerfs__storage_dir }} && mount {{ mergerfs__storage_dir }}` (stop containers first) or reboot."
+  when:
+    - mergerfs__fstab_result is changed
+    - mergerfs__mountpoint_result.rc == 0
