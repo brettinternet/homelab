@@ -1,0 +1,2 @@
+# sudoers NOPASSWD rule, not a password
+26d12f4188d940cd19fe1fc19a02d304454e521b:ansible/roles/aur/tasks/main.yaml:generic-password:10

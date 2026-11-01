@@ -7,4 +7,4 @@ pre-commit:
     - name: Run checks
       run: task check
     - name: Check for secret leaks
-      run: gitleaks git --pre-commit --redact --staged --verbose --no-banner
+      run: betterleaks git --pre-commit --redact --staged --verbose --no-banner
