@@ -45,17 +45,3 @@
     sysctl_file: /etc/sysctl.d/99-sysctl.conf
     reload: true
   loop: "{{ {'net.core.rmem_max': 2500000, 'net.core.wmem_max': 2500000} | dict2items }}"
-
-# Remote `docker compose` over DOCKER_HOST=ssh:// opens many sessions at once.
-- name: Raise sshd session limits
-  ansible.builtin.copy:
-    content: |
-      # Managed by Ansible
-      MaxStartups 50
-      MaxSessions 100
-    dest: /etc/ssh/sshd_config.d/20-docker.conf
-    owner: root
-    group: root
-    mode: "0644"
-    validate: /usr/bin/sshd -t -f %s
-  notify: Reload sshd

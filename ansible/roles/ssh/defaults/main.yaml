@@ -1,3 +1,5 @@
 ---
 # Only the first key listed is authorized.
 ssh__keys_url: https://github.com/brettinternet.keys
+# Extra sshd_config options, e.g. {MaxSessions: 100}.
+ssh__options: {}

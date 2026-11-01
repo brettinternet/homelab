@@ -1,7 +1,7 @@
 ---
 # Disks to mount, by device => mountpoint. /mnt/disk* are pooled.
-mergerfs__mounts: {}
-mergerfs__storage_dir: /mnt/storage
+mergerfs__disks: {}
+mergerfs__pool_dir: /mnt/storage
 mergerfs__branches: /mnt/disk*
 # NFS-compatible options: https://github.com/trapexit/mergerfs?tab=readme-ov-file#nfs
 mergerfs__options:

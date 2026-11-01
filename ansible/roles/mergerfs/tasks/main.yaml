@@ -21,13 +21,13 @@
     fstype: xfs
     opts: defaults
     state: mounted
-  loop: "{{ mergerfs__mounts | dict2items }}"
+  loop: "{{ mergerfs__disks | dict2items }}"
   loop_control:
     label: "{{ item.value }}"
 
 - name: Ensure pool mountpoint exists
   ansible.builtin.file:
-    path: "{{ mergerfs__storage_dir }}"
+    path: "{{ mergerfs__pool_dir }}"
     state: directory
     mode: "0755"
 
@@ -36,26 +36,27 @@
 - name: Add pool to fstab
   ansible.posix.mount:
     src: "{{ mergerfs__branches }}"
-    path: "{{ mergerfs__storage_dir }}"
+    path: "{{ mergerfs__pool_dir }}"
     fstype: fuse.mergerfs
     opts: "{{ mergerfs__options | join(',') }}"
     state: present
   register: mergerfs__fstab_result
 
 - name: Check pool is mounted
-  ansible.builtin.command: mountpoint -q {{ mergerfs__storage_dir }}
+  ansible.builtin.command: mountpoint -q {{ mergerfs__pool_dir }}
   register: mergerfs__mountpoint_result
   changed_when: false
   check_mode: false
   failed_when: mergerfs__mountpoint_result.rc not in [0, 32]
 
-- name: Mount pool # noqa no-changed-when command-instead-of-module
-  ansible.builtin.command: mount {{ mergerfs__storage_dir }}
+- name: Mount pool # noqa command-instead-of-module
+  ansible.builtin.command: mount {{ mergerfs__pool_dir }}
+  changed_when: true
   when: mergerfs__mountpoint_result.rc != 0
 
 - name: Warn that pool options need a remount
   ansible.builtin.debug:
-    msg: "mergerfs options changed. Apply with `umount {{ mergerfs__storage_dir }} && mount {{ mergerfs__storage_dir }}` (stop containers first) or reboot."
+    msg: "mergerfs options changed. Apply with `umount {{ mergerfs__pool_dir }} && mount {{ mergerfs__pool_dir }}` (stop containers first) or reboot."
   when:
     - mergerfs__fstab_result is changed
     - mergerfs__mountpoint_result.rc == 0

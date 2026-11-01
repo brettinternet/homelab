@@ -3,5 +3,6 @@
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: Reload exports # noqa no-changed-when
+- name: Reload exports
   ansible.builtin.command: exportfs -ra
+  changed_when: true

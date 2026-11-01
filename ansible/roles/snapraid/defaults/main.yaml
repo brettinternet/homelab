@@ -28,3 +28,5 @@ snapraid__daemon_net_allowed_origin: self
 snapraid__daemon_net_config_full_access: 0
 snapraid__daemon_net_web_root: commander.zip
 snapraid__daemon_net_auth_credential:
+# Healthchecks check URL pinged after maintenance runs; empty disables it.
+snapraid__daemon_healthcheck_url:

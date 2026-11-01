@@ -1,0 +1,5 @@
+---
+# Remote `docker compose` over DOCKER_HOST=ssh:// opens many sessions at once.
+ssh__options:
+  MaxStartups: 50
+  MaxSessions: 100

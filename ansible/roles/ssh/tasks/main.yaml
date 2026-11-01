@@ -23,6 +23,9 @@
       PasswordAuthentication no
       AllowGroups ssh
       AllowUsers {{ ansible_user }}
+      {% for key, value in ssh__options.items() %}
+      {{ key }} {{ value }}
+      {% endfor %}
     dest: /etc/ssh/sshd_config.d/10-ansible.conf
     owner: root
     group: root

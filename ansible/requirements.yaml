@@ -8,3 +8,4 @@ collections:
     version: 2.5.0
   # https://github.com/kewlfft/ansible-aur
   - name: kewlfft.aur
+    version: 0.13.0

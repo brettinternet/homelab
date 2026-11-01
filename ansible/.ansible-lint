@@ -1,3 +1,4 @@
 ---
+profile: production
 exclude_paths:
   - inventory/host_vars/*.sops.yaml

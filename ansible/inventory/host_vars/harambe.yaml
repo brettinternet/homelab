@@ -1,5 +1,5 @@
 ---
-mergerfs__mounts:
+mergerfs__disks:
   "/dev/disk/by-id/ata-ST10000NE0008-2JM101_ZPW0MSQL-part1": /mnt/parity1
   "/dev/disk/by-id/ata-WDC_WD101EFBX-68B0AN0_VHG5TJRM-part1": /mnt/parity2
   "/dev/disk/by-id/ata-TOSHIBA_HDWT360_98R0A036FB1G-part1": /mnt/disk1
@@ -36,6 +36,7 @@ snapraid__data:
 
 snapraid__daemon_net_enabled: 1
 snapraid__daemon_net_port: 10.1.2.4:7627
+snapraid__daemon_healthcheck_url: "{{ healthchecks__ping_url }}/{{ healthchecks__snapraid_runner_uuid }}"
 # Homepage on the net stack (sienna); switch to gresham's IP after the migration.
 snapraid__daemon_net_acl: +10.1.0.5
 

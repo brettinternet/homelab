@@ -35,7 +35,9 @@ spindown_idle_minutes = {{ snapraid__daemon_spindown_idle_minutes }}
 ### Notifications
 notify_syslog_enabled = 1
 notify_syslog_level = info
-notify_heartbeat = curl -fsS --max-time 30 --retry 3 {{ healthchecks__ping_url }}/{{ healthchecks__snapraid_runner_uuid }}
-notify_result = curl --narrow -fsS --max-time 30 --retry 3 --data-binary @- {{ healthchecks__ping_url }}/{{ healthchecks__snapraid_runner_uuid }}/fail
+{% if snapraid__daemon_healthcheck_url %}
+notify_heartbeat = curl -fsS --max-time 30 --retry 3 {{ snapraid__daemon_healthcheck_url }}
+notify_result = curl --narrow -fsS --max-time 30 --retry 3 --data-binary @- {{ snapraid__daemon_healthcheck_url }}/fail
+{% endif %}
 notify_result_level = {{ snapraid__daemon_notify_result_level }}
 notify_differences = {{ snapraid__daemon_notify_differences }}
