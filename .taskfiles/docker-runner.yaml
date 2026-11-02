@@ -44,7 +44,7 @@ tasks:
     vars: *dynamic-vars
     desc: Pull images on docker host
     cmds:
-      - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} pull'"
+      - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} pull --ignore-pull-failures'"
     requires:
       vars: [SECRETS_FILE]
     preconditions: *preconditions
