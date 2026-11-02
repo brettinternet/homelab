@@ -5,6 +5,7 @@ _.python.venv = { path = ".venv", create = true }
 
 [tools]
 age = "latest"
+age-plugin-yubikey = "latest"
 betterleaks = "latest"
 bun = "latest"
 direnv = "latest"
