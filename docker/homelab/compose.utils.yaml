@@ -58,7 +58,7 @@ services:
 
   atuin-postgres:
     <<: *options
-    image: postgres:17
+    image: postgres:18.6-alpine
     container_name: atuin-postgres
     environment:
       <<: *environment
@@ -66,7 +66,7 @@ services:
       POSTGRES_PASSWORD: ${ATUIN_DB_PASSWORD}
       POSTGRES_DB: atuin
     volumes:
-      - "${CONFIG_DIR}/atuin-postgres:/var/lib/postgresql/data/"
+      - "${CONFIG_DIR}/atuin-postgres18:/var/lib/postgresql"
     healthcheck:
       test: [CMD-SHELL, "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -118,7 +118,7 @@ services:
 
   miniflux-postgres:
     <<: *options
-    image: postgres:17-alpine
+    image: postgres:18.6-alpine
     container_name: miniflux-postgres
     environment:
       <<: *environment
@@ -126,7 +126,7 @@ services:
       POSTGRES_PASSWORD: ${MINIFLUX_DB_PASSWORD}
       POSTGRES_DB: miniflux
     volumes:
-      - "${CONFIG_DIR}/miniflux-postgres:/var/lib/postgresql/data/"
+      - "${CONFIG_DIR}/miniflux-postgres18:/var/lib/postgresql"
     healthcheck:
       test: [CMD-SHELL, "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
