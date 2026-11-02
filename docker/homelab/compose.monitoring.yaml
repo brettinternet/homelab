@@ -42,24 +42,24 @@ services:
 
   # Beszel agent — reports this host's metrics to the hub on sienna.
   # KEY (hub public key) + TOKEN (universal token) come from the hub UI; see sops.env.
-  # beszel-agent:
-  #   image: henrygd/beszel-agent:latest
-  #   container_name: beszel-agent
-  #   profiles: [monitoring]
-  #   restart: unless-stopped
-  #   network_mode: host # host NIC stats; agent dials the hub outbound
-  #   environment:
-  #     <<: *environment
-  #     LISTEN: 45876
-  #     HUB_URL: "https://beszel.${PRIVATE_DOMAIN}"
-  #     KEY: "${BESZEL_KEY}"
-  #     TOKEN: "${BESZEL_TOKEN}"
-  #     SYSTEM_NAME: harambe
-  #     DOCKER_HOST: tcp://127.0.0.1:2375 # publish socket-proxy on loopback, as in docker/net
-  #   volumes:
-  #     - "${CONFIG_DIR}/beszel-agent:/var/lib/beszel-agent"
-  #     # extra filesystems (usage shows in the hub); add more disk mountpoints as desired
-  #     - /mnt/storage:/extra-filesystems/storage:ro
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    profiles: [monitoring]
+    restart: unless-stopped
+    network_mode: host # host NIC stats; agent dials the hub outbound
+    environment:
+      <<: *environment
+      LISTEN: 45876
+      HUB_URL: "https://beszel.${NET_DOMAIN}"
+      KEY: "${BESZEL_KEY}"
+      TOKEN: "${BESZEL_TOKEN}"
+      SYSTEM_NAME: harambe
+      DOCKER_HOST: tcp://127.0.0.1:2375 # publish socket-proxy on loopback, as in docker/net
+    volumes:
+      - "${CONFIG_DIR}/beszel-agent:/var/lib/beszel-agent"
+      # extra filesystems (usage shows in the hub); add more disk mountpoints as desired
+      - /mnt/storage:/extra-filesystems/storage:ro
 
   # Restarts containers Docker marks `unhealthy`, opt-in via `autoheal=true` label.
   # Socket is local-only, so this must run on each host.

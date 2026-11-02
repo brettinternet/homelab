@@ -212,32 +212,32 @@ services:
       - "${CONFIG_DIR}/gickup/conf.yaml:/gickup/conf.yaml"
       - "${CONFIG_DIR}/git:/destination"
 
-  cgit:
-    image: ghcr.io/brettinternet/cgit:latest
-    container_name: cgit
-    restart: unless-stopped
-    environment:
-      <<: *environment
-      ROOT_TITLE: "git.${PUBLIC_DOMAIN}"
-      ROOT_DESC: Mirrors of various public projects
-      ROOT_README: /srv/git/README.md
-      SECTION_FROM_STARTPATH: 1
-      NOPLAINEMAIL: 1
-      MAX_REPO_COUNT: 50 # per page
-    volumes:
-      - "${CONFIG_DIR}/git/github.com:/srv/git"
-    # verify on host: image's http client (curl/wget) may differ
-    healthcheck:
-      test: [CMD-SHELL, "curl -fsS http://localhost:80/ >/dev/null || exit 1"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.cgit.rule: Host(`git.${PUBLIC_DOMAIN}`)
-      traefik.http.routers.cgit.entrypoints: websecure
-      traefik.http.services.cgit.loadbalancer.server.port: 80
+  # cgit:
+  #   image: ghcr.io/brettinternet/cgit:latest
+  #   container_name: cgit
+  #   restart: unless-stopped
+  #   environment:
+  #     <<: *environment
+  #     ROOT_TITLE: "git.${PUBLIC_DOMAIN}"
+  #     ROOT_DESC: Mirrors of various public projects
+  #     ROOT_README: /srv/git/README.md
+  #     SECTION_FROM_STARTPATH: 1
+  #     NOPLAINEMAIL: 1
+  #     MAX_REPO_COUNT: 50 # per page
+  #   volumes:
+  #     - "${CONFIG_DIR}/git/github.com:/srv/git"
+  #   # verify on host: image's http client (curl/wget) may differ
+  #   healthcheck:
+  #     test: [CMD-SHELL, "curl -fsS http://localhost:80/ >/dev/null || exit 1"]
+  #     interval: 60s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 20s
+  #   labels:
+  #     traefik.enable: "true"
+  #     traefik.http.routers.cgit.rule: Host(`git.${PUBLIC_DOMAIN}`)
+  #     traefik.http.routers.cgit.entrypoints: websecure
+  #     traefik.http.services.cgit.loadbalancer.server.port: 80
 
   gickup-priv:
     <<: *options
@@ -254,17 +254,28 @@ services:
       - "${CONFIG_DIR}/gickup-priv/conf.yaml:/gickup/conf.yaml"
       - "${CONFIG_DIR}/git-priv:/destination"
 
-  # https://github.com/mguessan/davmail/blob/master/src/docker/README.md
-  # davmail:
+  # keeper:
   #   <<: *options
-  #   image: ghcr.io/mguessan/davmail:latest
-  #   container_name: davmail
+  #   image: ghcr.io/ridafkih/keeper-standalone:2.24.6
+  #   container_name: keeper
   #   environment:
   #     <<: *environment
+  #     BETTER_AUTH_URL: "https://calendar.${PRIVATE_DOMAIN}"
+  #     BETTER_AUTH_SECRET: "${KEEPER_BETTER_AUTH_SECRET:?err}"
+  #     ENCRYPTION_KEY: "${KEEPER_ENCRYPTION_KEY:?err}"
+  #     TRUSTED_ORIGINS: "https://calendar.${PRIVATE_DOMAIN}"
+  #     MICROSOFT_CLIENT_ID: "${KEEPER_MICROSOFT_CLIENT_ID:?err}"
+  #     MICROSOFT_CLIENT_SECRET: "${KEEPER_MICROSOFT_CLIENT_SECRET:?err}"
+  #     POSTGRES_PASSWORD: "${KEEPER_POSTGRES_PASSWORD:?err}"
+  #     COMMERCIAL_MODE: "false"
+  #     WORKER_JOB_QUEUE_ENABLED: "false"
+  #     BLOCK_PRIVATE_RESOLUTION: "true"
   #   volumes:
-  #     - "${CONFIG_DIR}/davmail:/config"
+  #     - "${CONFIG_DIR}/keeper:/var/lib/postgresql/data"
+  #   # keeper ships its own HEALTHCHECK; just enable autoheal
   #   labels:
+  #     autoheal: "true"
   #     traefik.enable: "true"
-  #     traefik.http.routers.davmail-calendar.rule: Host(`calendar.${PUBLIC_DOMAIN}`)
-  #     traefik.http.routers.davmail-calendar.entrypoints: websecure
-  #     traefik.http.services.davmail-calendar.loadbalancer.server.port: 1080
+  #     traefik.http.routers.keeper.rule: Host(`calendar.${PRIVATE_DOMAIN}`)
+  #     traefik.http.routers.keeper.entrypoints: websecure
+  #     traefik.http.services.keeper.loadbalancer.server.port: 80
