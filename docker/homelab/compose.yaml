@@ -105,6 +105,7 @@ services:
       - --log.level=INFO
       - --accesslog.filepath=/var/log/access.log
       - --accesslog.filters.statuscodes=400-499
+      - --global.aliasheadersstrategy=delete
       - --api=true
       - --ping=true
       - --providers.docker=true
@@ -125,7 +126,7 @@ services:
       - --entrypoints.websecure.http.tls.domains[1].sans=*.${PRIVATE_DOMAIN}
       - --entrypoints.websecure.http.middlewares=default-headers@docker
       - --certificatesresolvers.leresolver.acme.dnschallenge=true
-      - --certificatesresolvers.leresolver.acme.dnschallenge.disablepropagationcheck=true # for internal domain
+      - --certificatesresolvers.leresolver.acme.dnschallenge.propagation.disablechecks=true # for internal domain
       - --certificatesresolvers.leresolver.acme.dnschallenge.provider=cloudflare
       - --certificatesresolvers.leresolver.acme.dnschallenge.resolvers=1.1.1.1:53
       - --certificatesresolvers.leresolver.acme.storage=/etc/traefik/acme.json
