@@ -44,10 +44,13 @@ services:
     labels:
       traefik.enable: "true"
       traefik.http.routers.frigate.rule: Host(`video.${PRIVATE_DOMAIN}`)
-      traefik.http.services.frigate.loadbalancer.server.port: 5000
+      # 8971 is Frigate's authenticated port (self-signed TLS); 5000 stays localhost-only for Home Assistant
+      traefik.http.services.frigate.loadbalancer.server.port: 8971
+      traefik.http.services.frigate.loadbalancer.server.scheme: https
       traefik.http.routers.frigate.entrypoints: websecure
       traefik.http.routers.frigate.service: frigate
       traefik.http.routers.go2rtc.rule: Host(`rtc.${PRIVATE_DOMAIN}`)
       traefik.http.services.go2rtc.loadbalancer.server.port: 1984
       traefik.http.routers.go2rtc.entrypoints: websecure
       traefik.http.routers.go2rtc.service: go2rtc
+      traefik.http.routers.go2rtc.middlewares: basicAuth
