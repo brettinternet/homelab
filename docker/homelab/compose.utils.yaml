@@ -9,17 +9,14 @@ x-options: &options
 services:
   mealie:
     <<: *options
-    image: ghcr.io/mealie-recipes/mealie:v1.0.0-RC1.1
+    image: ghcr.io/mealie-recipes/mealie:v3.30.0
     container_name: mealie
     environment:
       <<: *environment
-      WEB_CONCURRENCY: 1
-      MAX_WORKERS: 1
       PUID: "${PUID}"
       PGID: "${PGID}"
       TOKEN_TIME: 720 # 24 hours * 30 days
       BASE_URL: "https://recipes.${PUBLIC_DOMAIN}"
-      AUTO_BACKUP_ENABLED: "true"
       ALLOW_SIGNUP: "false"
     volumes:
       - "${CONFIG_DIR}/mealie:/app/data"
