@@ -28,13 +28,11 @@ os__packages:
   - zsh
   - wget
   - less
-  - broot
   - fd
   - etckeeper
   - hwinfo
   - man-db
   - tldr
-  - rustup
   # Fonts
   - ttf-liberation
 
