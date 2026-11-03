@@ -152,7 +152,8 @@ services:
       traefik.http.middlewares.default-headers.headers.forceSTSHeader: "true"
       traefik.http.middlewares.default-headers.headers.contentTypeNosniff: "true"
       traefik.http.middlewares.default-headers.headers.browserXssFilter: "true"
-      traefik.http.middlewares.default-headers.headers.frameDeny: "true"
+      # SAMEORIGIN, not frameDeny: Vaultwarden's WebAuthn 2FA login runs in a same-origin iframe
+      traefik.http.middlewares.default-headers.headers.customFrameOptionsValue: SAMEORIGIN
 
   cloudflare-companion:
     <<: *service
