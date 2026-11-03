@@ -6,16 +6,58 @@ tasks:
   init:
     desc: Setup SOPS
     cmds:
-      - task: age-setup
+      - task: se
 
-  age-setup:
+  se:
+    desc: Add a Secure Enclave age identity for this Mac
+    platforms: [darwin]
     cmds:
-      - age-keygen -o age.agekey
-      - "mkdir -p {{.AGE_DIR}}"
-      - "mv age.agekey {{.AGE_FILE}}"
-      - "echo 'Source from .profile: \n\nexport SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt'"
+      - mkdir -p {{.AGE_DIR}}
+      - (umask 077; age-plugin-se keygen --access-control=any-biometry-or-passcode >> {{.AGE_FILE}})
+      - echo "Add to .sops.yaml, then run task sops:rekey:"
+      - grep '^AGE-PLUGIN-SE-' {{.AGE_FILE}} | age-plugin-se recipients
     status:
-      - "test -f {{.AGE_FILE}}"
+      - grep -q '^AGE-PLUGIN-SE-' {{.AGE_FILE}}
+
+  yubikey:
+    desc: Add the connected YubiKey's age identity, generating one if needed (one YubiKey at a time)
+    interactive: true
+    cmds:
+      - mkdir -p {{.AGE_DIR}}
+      - |-
+        if [ -z "$(age-plugin-yubikey --list)" ]; then
+          age-plugin-yubikey --generate --pin-policy once --touch-policy cached
+        fi
+      - |-
+        umask 077
+        age-plugin-yubikey --identity | grep '^AGE-PLUGIN-YUBIKEY-' | while read -r id; do
+          grep -qxF "$id" {{.AGE_FILE}} 2>/dev/null || echo "$id" >> {{.AGE_FILE}}
+        done
+      - echo "Add to .sops.yaml if new, then run task sops:rekey:"
+      - age-plugin-yubikey --list | grep '^age1'
+    preconditions:
+      - sh: '[ "$(age-plugin-yubikey --list-all | grep -c "Serial:")" -eq 1 ]'
+        msg: Connect exactly one YubiKey
+
+  recovery:
+    desc: Generate an offline recovery age key, eg "task sops:recovery file=/Volumes/USB/homelab-age.txt"
+    cmds:
+      - (umask 077; age-keygen -o {{.file}})
+      - echo "Add the public key to .sops.yaml, then run task sops:rekey"
+    requires:
+      vars: [file]
+    preconditions:
+      - sh: test ! -e {{.file}}
+        msg: "{{.file}} already exists"
+
+  verify:
+    desc: Check every SOPS file decrypts with the local identities
+    cmds:
+      - |-
+        git ls-files -- '*.sops.yaml' '*.sops.yml' '*sops.env' | grep -v '^\.sops\.yaml$' | while read -r f; do
+          sops decrypt "$f" >/dev/null || { echo "FAIL $f"; exit 1; }
+          echo "ok $f"
+        done
 
   check:
     desc: Check SOPS files are encrypted
@@ -50,10 +92,10 @@ tasks:
     cmds:
       - sops --decrypt --in-place docker/net/sops.env docker/homelab/sops.env
 
-  rotate:
-    desc: Rotate the age key and re-encrypt all SOPS files
+  rekey:
+    desc: Re-encrypt all SOPS files to the recipients in .sops.yaml with a fresh data key
     interactive: true
-    cmd: "{{.SCRIPTS_DIR}}/sops-rotate.sh"
+    cmd: "{{.SCRIPTS_DIR}}/sops-rekey.sh"
 
   list:
     desc: List all sops files

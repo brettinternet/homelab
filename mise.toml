@@ -6,6 +6,7 @@ _.python.venv = { path = ".venv", create = true }
 [tools]
 age = "latest"
 age-plugin-yubikey = "latest"
+"github:remko/age-plugin-se" = { version = "latest", os = ["macos"], asset_pattern = "age-plugin-se-*-macos.zip" }
 betterleaks = "latest"
 bun = "latest"
 direnv = "latest"
