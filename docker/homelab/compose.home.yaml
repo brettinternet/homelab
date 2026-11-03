@@ -17,10 +17,6 @@ services:
     #   - CAP_NET_BIND_SERVICE
     #   - CAP_NET_ADMIN
     #   - CAP_SYS_ADMIN
-    environment:
-      <<: *environment
-      PUID: "${PUID}"
-      PGID: "${PGID}"
     volumes:
       - "${CONFIG_DIR}/homeassistant:/config"
       - /var/run/dbus:/var/run/dbus

@@ -52,7 +52,6 @@ services:
     <<: *options
     image: mazzolino/restic:latest
     container_name: restic-remote-backup
-    cap_add: [SYS_ADMIN]
     environment:
       <<: *remote-environment
       # RUN_ON_STARTUP: "true"

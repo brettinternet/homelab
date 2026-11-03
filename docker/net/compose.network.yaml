@@ -52,6 +52,7 @@ services:
       traefik.http.services.adguard.loadbalancer.passHostHeader: "true"
       traefik.tcp.routers.adguard-tls.rule: HostSNI(`dns.${PRIVATE_DOMAIN}`)
       traefik.tcp.routers.adguard-tls.tls: "true"
+      traefik.tcp.routers.adguard-tls.tls.certresolver: leresolver
       traefik.tcp.routers.adguard-tls.entrypoints: dot
       traefik.tcp.services.adguard-tls.loadbalancer.server.port: 53
 

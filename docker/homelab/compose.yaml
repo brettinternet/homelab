@@ -25,6 +25,8 @@ services:
       CONTAINERS: 1
       IMAGES: 1 # diun
       ALLOW_RESTARTS: 1 # autoheal
+    ports:
+      - 127.0.0.1:2375:2375 # beszel-agent runs on the host network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     read_only: true
@@ -97,7 +99,6 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 7687:7687
     volumes:
       - "${CONFIG_DIR}/traefik/conf:/etc/traefik"
       - "${CONFIG_DIR}/traefik/log:/var/log"

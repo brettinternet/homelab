@@ -46,6 +46,7 @@ services:
       - -c
       - |
         set -e
+        rm -f /out/*.toml # drop monitors whose template was removed
         n=0
         for f in /templates/*.toml; do
           [ -e "$$f" ] || continue

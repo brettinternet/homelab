@@ -96,7 +96,6 @@ services:
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --entrypoints.dot.address=:853
-      - --entrypoints.dot.http.tls.certResolver=leresolver
       # - --entrypoints.dot.http.tls.domains[0].main=${PRIVATE_DOMAIN}
       # - --entrypoints.dot.http.tls.domains[0].sans=*.${PRIVATE_DOMAIN}
       - --entrypoints.websecure.address=:443
@@ -124,5 +123,5 @@ services:
       traefik.http.routers.traefik.rule: Host(`traefik.${PRIVATE_DOMAIN}`)
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.entrypoints: websecure
-      traefik.tls.option.default.alpnProtocols: http/1.1,h2,dot
+      traefik.http.routers.traefik.middlewares: basicAuth
       traefik.http.middlewares.basicAuth.basicauth.users: "${BASIC_AUTH_USERS}"

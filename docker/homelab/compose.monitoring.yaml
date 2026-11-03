@@ -55,7 +55,7 @@ services:
       KEY: "${BESZEL_KEY}"
       TOKEN: "${BESZEL_TOKEN}"
       SYSTEM_NAME: harambe
-      DOCKER_HOST: tcp://127.0.0.1:2375 # publish socket-proxy on loopback, as in docker/net
+      DOCKER_HOST: tcp://127.0.0.1:2375 # socket-proxy, published on loopback
     volumes:
       - "${CONFIG_DIR}/beszel-agent:/var/lib/beszel-agent"
       # extra filesystems (usage shows in the hub); add more disk mountpoints as desired

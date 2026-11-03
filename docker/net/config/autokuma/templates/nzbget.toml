@@ -1,6 +1,6 @@
 type = "http"
-name = "SABnzbd"
-url = "https://nzb.@@HOMELAB_PRIVATE_DOMAIN@@"
+name = "NZBGet"
+url = "https://nzbget.@@HOMELAB_PRIVATE_DOMAIN@@"
 parent_name = "group-media"
 interval = 60
 max_retries = 3
