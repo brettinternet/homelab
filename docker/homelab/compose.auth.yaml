@@ -23,6 +23,13 @@ services:
       traefik.enable: "true"
       traefik.http.routers.vaultwarden.rule: Host(`vault.${PRIVATE_DOMAIN}`)
       traefik.http.routers.vaultwarden.entrypoints: websecure
+      traefik.http.routers.vaultwarden.service: vaultwarden
+      traefik.http.routers.vaultwarden-admin.rule: Host(`vault.${PRIVATE_DOMAIN}`) && PathPrefix(`/admin`)
+      traefik.http.routers.vaultwarden-admin.entrypoints: websecure
+      traefik.http.routers.vaultwarden-admin.service: vaultwarden
+      traefik.http.routers.vaultwarden-admin.middlewares: vaultwarden-admin-allowlist
+      # Matches the connecting IP, so tunnel traffic (from DOCKER_SUBNET) is always rejected
+      traefik.http.middlewares.vaultwarden-admin-allowlist.ipallowlist.sourcerange: "${VAULTWARDEN_ADMIN_ALLOWED_NETWORKS:?err}"
       traefik.http.services.vaultwarden.loadbalancer.server.port: 80
 
   vaultwarden-backup:
