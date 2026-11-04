@@ -12,8 +12,8 @@ tasks:
     desc: Add a Secure Enclave age identity for this Mac
     platforms: [darwin]
     cmds:
-      - mkdir -p {{.AGE_DIR}}
-      - (umask 077; age-plugin-se keygen --access-control=any-biometry-or-passcode >> {{.AGE_FILE}})
+      - mkdir -p {{.AGE_DIR}} && touch {{.AGE_FILE}} && chmod 600 {{.AGE_FILE}}
+      - age-plugin-se keygen --access-control=any-biometry-or-passcode >> {{.AGE_FILE}}
       - echo "Add to .sops.yaml, then run task sops:rekey:"
       - grep '^AGE-PLUGIN-SE-' {{.AGE_FILE}} | age-plugin-se recipients
     status:
@@ -23,13 +23,12 @@ tasks:
     desc: Add the connected YubiKey's age identity, generating one if needed (one YubiKey at a time)
     interactive: true
     cmds:
-      - mkdir -p {{.AGE_DIR}}
+      - mkdir -p {{.AGE_DIR}} && touch {{.AGE_FILE}} && chmod 600 {{.AGE_FILE}}
       - |-
         if [ -z "$(age-plugin-yubikey --list)" ]; then
           age-plugin-yubikey --generate --pin-policy once --touch-policy cached
         fi
       - |-
-        umask 077
         age-plugin-yubikey --identity | grep '^AGE-PLUGIN-YUBIKEY-' | while read -r id; do
           grep -qxF "$id" {{.AGE_FILE}} 2>/dev/null || echo "$id" >> {{.AGE_FILE}}
         done
@@ -42,7 +41,7 @@ tasks:
   recovery:
     desc: Generate an offline recovery age key, eg "task sops:recovery file=/Volumes/USB/homelab-age.txt"
     cmds:
-      - (umask 077; age-keygen -o {{.file}})
+      - age-keygen -o {{.file}}
       - echo "Add the public key to .sops.yaml, then run task sops:rekey"
     requires:
       vars: [file]
