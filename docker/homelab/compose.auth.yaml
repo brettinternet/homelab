@@ -36,6 +36,13 @@ services:
     <<: *options
     image: ttionya/vaultwarden-backup:1.27.2
     container_name: vaultwarden-backup
+    # The image's startup check greps `rclone config show`, which omits env-only remotes;
+    # a stub section makes it visible while the RCLONE_CONFIG_VAULTWARDEN_* env still supplies the settings.
+    entrypoint:
+      - sh
+      - -c
+      - mkdir -p /config/rclone && printf '[vaultwarden]\n' > /config/rclone/rclone.conf && exec /app/entrypoint.sh "$$@"
+      - sh
     depends_on:
       vaultwarden:
         condition: service_healthy
