@@ -1,22 +1,34 @@
 ---
-- name: Install atuin
-  community.general.pacman:
-    name: atuin
-    state: present
-
-- name: Ensure configuration directory exists
+# atuin is installed by zinit, so it's only on PATH after sourcing .zshrc.
+- name: Check if atuin is installed
   become: true
   become_user: "{{ ansible_user }}"
-  ansible.builtin.file:
-    path: "$HOME/.config/atuin"
-    state: directory
-    mode: "0700"
+  ansible.builtin.shell:
+    cmd: |
+      if [ -f "$HOME/.zshrc" ]; then
+        . "$HOME/.zshrc"
+      fi
+      command -v atuin
+    executable: /bin/zsh
+  register: atuin__installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
 
-- name: Copy client configuration
+- name: Configure atuin
+  when: atuin__installed.rc == 0
   become: true
   become_user: "{{ ansible_user }}"
-  ansible.builtin.template:
-    dest: "$HOME/.config/atuin/config.toml"
-    src: config.toml.j2
-    mode: "0640"
-    force: false
+  block:
+    - name: Ensure configuration directory exists
+      ansible.builtin.file:
+        path: "$HOME/.config/atuin"
+        state: directory
+        mode: "0700"
+
+    - name: Copy client configuration
+      ansible.builtin.template:
+        dest: "$HOME/.config/atuin/config.toml"
+        src: config.toml.j2
+        mode: "0640"
+        force: false
