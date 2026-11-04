@@ -1,6 +1,6 @@
 type = "http"
 name = "Plex"
-url = "https://plex.@@HOMELAB_PUBLIC_DOMAIN@@"
+url = "https://plex.@@HOMELAB_PUBLIC_DOMAIN@@/identity" # / needs a Plex token
 parent_name = "group-media"
 interval = 60
 max_retries = 3

@@ -1,6 +1,7 @@
 type = "http"
 name = "NZBGet"
 url = "https://nzbget.@@HOMELAB_PRIVATE_DOMAIN@@"
+accepted_statuscodes = ["200-299", "401"] # every route needs basic auth; 401 proves it is serving
 parent_name = "group-media"
 interval = 60
 max_retries = 3

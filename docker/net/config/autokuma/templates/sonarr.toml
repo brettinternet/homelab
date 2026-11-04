@@ -1,6 +1,6 @@
 type = "http"
 name = "Sonarr"
-url = "https://sonarr.@@HOMELAB_PRIVATE_DOMAIN@@"
+url = "https://sonarr.@@HOMELAB_PRIVATE_DOMAIN@@/ping" # unauthenticated health route
 parent_name = "group-media"
 interval = 60
 max_retries = 3
