@@ -83,6 +83,16 @@ tasks:
       vars: [SECRETS_FILE]
     preconditions: *preconditions
 
+  compose:
+    dir: "/{{.PROJECT_DIR}}"
+    vars: *dynamic-vars
+    desc: Run the compose command given after `--` on host
+    cmds:
+      - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} {{.CLI_ARGS}}'"
+    requires:
+      vars: [SECRETS_FILE, CLI_ARGS]
+    preconditions: *preconditions
+
   stop:
     dir: "/{{.PROJECT_DIR}}"
     vars: *dynamic-vars

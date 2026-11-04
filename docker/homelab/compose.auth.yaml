@@ -6,6 +6,18 @@ x-options: &options
     TZ: "${TIMEZONE}"
   restart: unless-stopped
 
+x-rclone-environment: &rclone-environment
+  RCLONE_REMOTE_NAME: vaultwarden
+  RCLONE_REMOTE_DIR: "/${VAULTWARDEN_BACKUP_R2_BUCKET:?err}/"
+  RCLONE_CONFIG_VAULTWARDEN_TYPE: s3
+  RCLONE_CONFIG_VAULTWARDEN_PROVIDER: Cloudflare
+  RCLONE_CONFIG_VAULTWARDEN_ACCESS_KEY_ID: "${VAULTWARDEN_BACKUP_R2_ACCESS_KEY_ID:?err}"
+  RCLONE_CONFIG_VAULTWARDEN_SECRET_ACCESS_KEY: "${VAULTWARDEN_BACKUP_R2_SECRET_ACCESS_KEY:?err}"
+  RCLONE_CONFIG_VAULTWARDEN_REGION: auto
+  RCLONE_CONFIG_VAULTWARDEN_ENDPOINT: "https://${VAULTWARDEN_BACKUP_R2_ACCOUNT_ID:?err}.r2.cloudflarestorage.com"
+  RCLONE_CONFIG_VAULTWARDEN_ACL: private
+  RCLONE_CONFIG_VAULTWARDEN_NO_CHECK_BUCKET: "true"
+
 services:
   vaultwarden:
     <<: *options
@@ -47,7 +59,7 @@ services:
       vaultwarden:
         condition: service_healthy
     environment:
-      <<: *environment
+      <<: [*environment, *rclone-environment]
       TIMEZONE: "${TIMEZONE}"
       DATA_DIR: /bitwarden/data
       CRON: "15 3 * * *"
@@ -56,18 +68,62 @@ services:
       ZIP_PASSWORD: "${VAULTWARDEN_BACKUP_ZIP_PASSWORD:?err}"
       BACKUP_FILE_SUFFIX: "%Y%m%d-%H%M%S"
       BACKUP_KEEP_DAYS: 30
-      RCLONE_REMOTE_NAME: vaultwarden
-      RCLONE_REMOTE_DIR: "/${VAULTWARDEN_BACKUP_R2_BUCKET:?err}/"
-      RCLONE_CONFIG_VAULTWARDEN_TYPE: s3
-      RCLONE_CONFIG_VAULTWARDEN_PROVIDER: Cloudflare
-      RCLONE_CONFIG_VAULTWARDEN_ACCESS_KEY_ID: "${VAULTWARDEN_BACKUP_R2_ACCESS_KEY_ID:?err}"
-      RCLONE_CONFIG_VAULTWARDEN_SECRET_ACCESS_KEY: "${VAULTWARDEN_BACKUP_R2_SECRET_ACCESS_KEY:?err}"
-      RCLONE_CONFIG_VAULTWARDEN_REGION: auto
-      RCLONE_CONFIG_VAULTWARDEN_ENDPOINT: "https://${VAULTWARDEN_BACKUP_R2_ACCOUNT_ID:?err}.r2.cloudflarestorage.com"
-      RCLONE_CONFIG_VAULTWARDEN_ACL: private
-      RCLONE_CONFIG_VAULTWARDEN_NO_CHECK_BUCKET: "true"
       PING_URL_WHEN_START: "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_VAULTWARDEN_BACKUP_UUID:?err}/start"
       PING_URL_WHEN_SUCCESS: "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_VAULTWARDEN_BACKUP_UUID:?err}"
       PING_URL_WHEN_FAILURE: "https://hc.${NET_DOMAIN}/ping/${HEALTHCHECKS_VAULTWARDEN_BACKUP_UUID:?err}/fail"
     volumes:
       - "${CONFIG_DIR}/vaultwarden:/bitwarden/data"
+
+  # Restore drill: `task docker:homelab run=compose -- up -d vaultwarden-restore-server`,
+  # then log in at https://vault-restore.${PRIVATE_DOMAIN} (same networks as the live /admin allowlist).
+  # Tear down with `task docker:homelab run=compose -- rm -sf vaultwarden-restore-server vaultwarden-restore`.
+  vaultwarden-restore:
+    <<: *options
+    profiles: [vaultwarden-restore]
+    image: ttionya/vaultwarden-backup:1.27.2
+    container_name: vaultwarden-restore
+    environment:
+      <<: [*environment, *rclone-environment]
+      DATA_DIR: /bitwarden/data
+      ZIP_PASSWORD: "${VAULTWARDEN_BACKUP_ZIP_PASSWORD:?err}"
+    entrypoint: [sh, -euc]
+    # The image's restore always exits 0, so the restored files are checked explicitly.
+    command:
+      - |
+        mkdir -p /config/rclone /bitwarden/restore
+        printf '[vaultwarden]\n' > /config/rclone/rclone.conf
+        find /bitwarden/data -mindepth 1 -delete
+        file=$$(rclone lsf "vaultwarden:$$RCLONE_REMOTE_DIR" --include 'backup.*.7z' | sort | tail -n 1)
+        test -n "$$file"
+        echo "Restoring $$file"
+        rclone copy "vaultwarden:$$RCLONE_REMOTE_DIR$$file" /bitwarden/restore
+        /app/entrypoint.sh restore --force-restore --zip-file "$$file" --password "$$ZIP_PASSWORD"
+        test -f /bitwarden/data/rsa_key.pem
+        test -d /bitwarden/data/attachments
+        test "$$(sqlite3 /bitwarden/data/db.sqlite3 'PRAGMA integrity_check')" = ok
+        sqlite3 /bitwarden/data/db.sqlite3 "SELECT 'users: ' || count(*) FROM users; SELECT 'ciphers: ' || count(*) FROM ciphers;"
+    volumes:
+      - "${CONFIG_DIR}/vaultwarden-restore:/bitwarden/data"
+    restart: "no"
+
+  vaultwarden-restore-server:
+    <<: *options
+    profiles: [vaultwarden-restore]
+    image: vaultwarden/server:1.37.5
+    container_name: vaultwarden-restore-server
+    depends_on:
+      vaultwarden-restore:
+        condition: service_completed_successfully
+    environment:
+      <<: *environment
+      DOMAIN: "https://vault-restore.${PRIVATE_DOMAIN}"
+      SIGNUPS_ALLOWED: "false"
+    volumes:
+      - "${CONFIG_DIR}/vaultwarden-restore:/data"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.vaultwarden-restore.rule: Host(`vault-restore.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.vaultwarden-restore.entrypoints: websecure
+      traefik.http.routers.vaultwarden-restore.middlewares: vaultwarden-admin-allowlist@docker
+      traefik.http.services.vaultwarden-restore.loadbalancer.server.port: 80
+    restart: "no"
