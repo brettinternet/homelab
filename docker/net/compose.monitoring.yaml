@@ -27,7 +27,7 @@ services:
   # volume, substituting the real domains from sops env. Keeps plaintext domains
   # out of git. Mirrors the larapaper-permissions init-container pattern.
   # Templates live in this repo at docker/net/config/autokuma/templates and are
-  # shipped to ${CONFIG_DIR}/autokuma/templates by the `sync-config` task on `up`.
+  # shipped to ${CONFIG_DIR}/autokuma/templates by the docker `up` task.
   autokuma-render:
     image: busybox
     container_name: autokuma-render

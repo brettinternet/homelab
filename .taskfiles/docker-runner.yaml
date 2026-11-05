@@ -8,6 +8,11 @@ x-dynamic-vars: &dynamic-vars
     sh: find {{.PROJECT_DIR}} -type f -iname "compose*.yaml" -exec basename {} ';' | sort -r
   COMPOSE_FILES_ARGS: -f {{.COMPOSE_FILES | splitLines | join " -f "}}
   COMPOSE_COMMAND: docker compose --parallel 5 -p $COMPOSE_PROJECT {{.COMPOSE_FILES_ARGS}}
+  # Push git-tracked config/ to the host's $CONFIG_DIR (overlay, no delete).
+  # tar over ssh: no remote dependency beyond tar; COPYFILE_DISABLE keeps macOS ._ files out
+  SYNC_CONFIG_COMMAND: >-
+    [ ! -d config ] || { COPYFILE_DISABLE=1 tar -C config --no-xattrs --no-acls -cf - .
+    | ssh {{.HOSTNAME}} "mkdir -p \"$CONFIG_DIR\" && tar -C \"$CONFIG_DIR\" --no-same-owner -xf -"; }
 
 vars:
   SECRETS_FILE: sops.env
@@ -49,38 +54,17 @@ tasks:
       vars: [SECRETS_FILE]
     preconditions: *preconditions
 
-  sync-config:
-    dir: "/{{.PROJECT_DIR}}"
-    vars: *dynamic-vars
-    desc: Push git-tracked config/ to the host's $CONFIG_DIR (overlay, no delete)
-    # tar over ssh: no remote dependency beyond tar; COPYFILE_DISABLE keeps macOS ._ files out
-    cmds:
-      - >-
-        {{.SOPS_COMMAND}} 'COPYFILE_DISABLE=1 tar -C config --no-xattrs --no-acls -cf - .
-        | ssh {{.HOSTNAME}} "mkdir -p \"$CONFIG_DIR\" && tar -C \"$CONFIG_DIR\" --no-same-owner -xf -"'
-    status:
-      # skip when this stack has no committed config/ tree
-      - test ! -d config
-    requires:
-      vars: [SECRETS_FILE, HOSTNAME]
-    preconditions:
-      - command -v tar
-      - test -f sops.env
-
   up:
     dir: "/{{.PROJECT_DIR}}"
     vars: *dynamic-vars
     desc: Deploy compose files to hosts
     aliases: [start, deploy]
     cmds:
-      - task: sync-config
-        vars:
-          PROJECT: "{{.PROJECT}}"
-          HOSTNAME: "{{.HOSTNAME}}"
       - echo "Deploying '$COMPOSE_PROJECT' profiles '$COMPOSE_PROFILES' to '$DOCKER_HOST'"
-      - "{{.SOPS_COMMAND}} '{{.COMPOSE_COMMAND}} up -d --remove-orphans'"
+      # One decrypt (one Touch ID) for both the config sync and compose up
+      - "{{.SOPS_COMMAND}} '{{.SYNC_CONFIG_COMMAND}} && {{.COMPOSE_COMMAND}} up -d --remove-orphans'"
     requires:
-      vars: [SECRETS_FILE]
+      vars: [SECRETS_FILE, HOSTNAME]
     preconditions: *preconditions
 
   compose:
