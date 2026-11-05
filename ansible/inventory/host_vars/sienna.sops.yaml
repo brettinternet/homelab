@@ -1,23 +1,48 @@
 kind: Secret
-ansible_user: ENC[AES256_GCM,data:eK7TO6o=,iv:sSOYs2VdsuXQWWQvFLVL4MhFE/8twmcGredU5CFQeog=,tag:BB5eBWlbWI/yA+c6u4l63g==,type:str]
-ansible_become_pass: ENC[AES256_GCM,data:3se2seDKwR339Pod,iv:WDQ6QDE/HYljoUbF/xtFQgQv0L0xDTFm2jYDombovSY=,tag:Vji6nRJOiijcMsv/lu/iwQ==,type:str]
+ansible_user: ENC[AES256_GCM,data:1Gw0SUk=,iv:sSOYs2VdsuXQWWQvFLVL4MhFE/8twmcGredU5CFQeog=,tag:gZwHF8NkUEmqo1mK1Bv7pw==,type:str]
+ansible_become_pass: ENC[AES256_GCM,data:VsTu0+L0Y8lgHeHd,iv:WDQ6QDE/HYljoUbF/xtFQgQv0L0xDTFm2jYDombovSY=,tag:iUcYOnFYX8bmjkexTzTVHg==,type:str]
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
-        - recipient: age148wprsnqjq8jughvywnzmvs8gffhrkendpr7g60q8u4rdsj4jvuqk7ltrs
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBta05nZ295WXZLOFhSbC8w
-            RnM3ZWR1Tjdsa1hvZ2xOcnRycnYzM0lsV2pvCnB5dnpiUjZnTDNJYVVCN1pEWnd1
-            RFNqNGFBU05xVHNYT3IrakJnUERmMjgKLS0tIEErTzh1SjM4NzVmMmxFdlc2T1lH
-            UHFQQ094SnhrMm9WQjN3UlVUV3ZaZ2cKW3WDDv0wk8pFW/rRkGhDkCkUex5J7y0A
-            d/WhljY5gj7U/ldoT3/JHyB1pJ2UeNXMD4tgPvksFyW1G3rECyXYfw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHBpdi1wMjU2IFpyNmhHZyBBL2VlK3po
+            K05EaFdjcE1XdGlIOTZCZmw1RXJwUldHeXM5ZjdwdW5ROVNMcgp3RUlkdFlLN2dF
+            cUVLTVF2aVRHUm03VENURVJDQjg1WTRxcFNyVWo0ZXlrCi0tLSBuOWEzeHpha1ox
+            UjZUOEkzekJLL0FncVZiSUVyNXN3elNiQjI5VjZocXJFCmErO9a8/1KlFByfD6Ro
+            qMBr6vy3c5hrx5+ldcqKMhSM1jirMYTEHo+7teZRGagREBntVqNVqySWoMdAsvXk
+            fUo=
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-11-19T20:38:19Z"
-    mac: ENC[AES256_GCM,data:/6f2emYACnaEZeIX7x92V7kVODaoWCPVtqG4RXXhnYuvHhS28hlwAbzHueLszNd/4GdEQIlfaN/wM5FGDdcXymZtWD9Zl11IOFedy8YXu3sgSWOkuvsEU5UjuFGxoxd418E2taTMbqm5fKqIvB7p0qE4kLS7aGGjZM/2VJXJL1g=,iv:xVZ5DaOkvyWDSXyKbh+4e0oXMp4KPfWzrEKwoIBja5M=,tag:Gbg+67GJlfx5Yg4rhDidPA==,type:str]
-    pgp: []
+          recipient: age1se1qf5awtzj48n66wsdywkunefytmdurtvpr3h55acyxpqeshs2cjul749f0qx
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHBpdi1wMjU2IHFjRFhrZyBBdkR2MkE0
+            NFlMNEhOOVNoMnBWSTdBd3p0OTJrOWs4RmV6S2wrdDBmdG96ZwpqckNkRWl3RWVn
+            aDNmemNrSndFK0tyUjNLbWJKcjJkeUxQelVxbTJmQjRrCi0tLSA0UC8wS0ZvM0hK
+            YkpVM1E5MjNvVkhYOEgzZXpGY1VYSEVWUXBEcmJOS3dzCvwBukTZfmi4WktuDgb+
+            8y5PxtR40XFVmWKgcl0UX0DKCWwMwyqpT0WFZwMGoospXAyoG4pE2brFAe96p+hd
+            Aoo=
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1yubikey1qw00tzcpqkv72ft6pzd5e8qvffj6yakrz3pjzdek8gjxdeurhv9uwapp9fh
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHBpdi1wMjU2IEdFZUVPUSBBdU80dENH
+            bUFucDU0Q3lwUHFOTjEyb2U4ajZTMFlLN0lmMk5rdVdpV2paSApQeDZzNzZ3aGc3
+            dnNZWWFmZ2Q4cE1uazQ2V2RYRXo0VGxaSG5pYUtLTzNBCi0tLSBDb1dXeW5EcGJv
+            KzFpSmVic0NxQjBOc09JVno5RVQzcHpacytoeHpiQjMwCoG9PFvcrBniZ8LpApyb
+            HkLZAYQiOtyFy0Nl+tvAwyfyf/RDO8slQWOnVI04ZNhEkAtlsEqaRho74dowrsu9
+            4n8=
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1yubikey1q20q9393gnsm93ye2jnnwmqv7zlslxu9dqlsr95qx5thjqmehfrw676rac5
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0emRHTTdKQUVQNHlNZm5a
+            TVZmYVd2TmMxNE13ODhDTUFvdmlxV2ppSkU0CkhIaTRTZEN5VmZnRjAzZDZXWndS
+            YXlDblhJV0YwRnFIbmc0Q2IwWkZPeW8KLS0tIC9NcnhtMjRZTGV4Y0FZYW5Sc3l2
+            N0t2ZHJUUjdkVXI0Um40YVRiMFo2RTQKVkIF2cGviCjawBx/Ldlk/Uhk66ABmakE
+            s0ncHHkKuxMrJTPq85GPUEGjopxItMTGEYF7640d7E2yMqWtT/vfaA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1h3m2rtad8peetdqe26chwgprzpy5jrjercldww0ameyq0d2urftqxg65nc
+    lastmodified: "2026-11-05T16:04:07Z"
+    mac: ENC[AES256_GCM,data:ZFYc01z5ZZMIlJi7VyFxzOkQB54E/reZVPMfTkLkxLJfxQo4gOxRfO2MS4ksbuBh2AuULlpC4QqKSq1QOvlvFPy0720ZN0kDEr7lX5qau/ixKSDhPG8QECPOvoDFK7UF83gRlO1hpHouI03p4faBOb1mypeQEgKKRyRw5MFCL2k=,iv:DdQx960oi96UUqhgWe6ZwvvHrBj/S/WE2c+cYcuEyZg=,tag:F5edfhE+aUh5QM9ILOByEg==,type:str]
     unencrypted_regex: ^(kind)$
     version: 3.9.1
