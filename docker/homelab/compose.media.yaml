@@ -102,7 +102,7 @@ services:
       # Remote access will look at `ADVERTISE_IP`, but because it's behind a proxy, it's likely that
       # the dashboard will say "Not available outside your network" even though it is... >:(
       # The local IP is also required for direct play with some apps (such as the Apple TV apparently)
-      ADVERTISE_IP: "https://plex.${PUBLIC_DOMAIN},http://${PLEX_HOST_IP}:32400"
+      ADVERTISE_IP: "https://plex.${PUBLIC_DOMAIN}:443,http://${PLEX_HOST_IP}:32400"
       ALLOWED_NETWORKS: "${PLEX_ALLOWED_NETWORKS}"
     cap_add:
       - CAP_NET_RAW
