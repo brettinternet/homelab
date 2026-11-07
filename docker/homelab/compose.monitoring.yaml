@@ -9,7 +9,7 @@ x-options: &options
 services:
   scrutiny:
     <<: *options
-    image: ghcr.io/analogj/scrutiny:v0.9.2-omnibus
+    image: ghcr.io/analogj/scrutiny:v0.10.0-omnibus
     container_name: scrutiny
     cap_add:
       - SYS_RAWIO
