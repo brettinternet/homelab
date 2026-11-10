@@ -125,3 +125,7 @@ services:
       traefik.http.routers.traefik.entrypoints: websecure
       traefik.http.routers.traefik.middlewares: basicAuth
       traefik.http.middlewares.basicAuth.basicauth.users: "${BASIC_AUTH_USERS}"
+      vesper.traefik.name: Traefik
+      vesper.traefik.icon: traefik
+      vesper.traefik.checks.ping.url: http://traefik:8080/ping
+      vesper.traefik.checks.ping.body_contains: OK

@@ -55,6 +55,10 @@ services:
       traefik.tcp.routers.adguard-tls.tls.certresolver: leresolver
       traefik.tcp.routers.adguard-tls.entrypoints: dot
       traefik.tcp.services.adguard-tls.loadbalancer.server.port: 53
+      vesper.adguard.name: AdGuard Home
+      vesper.adguard.icon: adguard-home
+      vesper.adguard.checks.dns.host: adguard
+      vesper.adguard.checks.dns.port: 53
 
   smokeping:
     <<: *options
@@ -118,3 +122,6 @@ services:
       traefik.http.routers.healthchecks.rule: Host(`hc.${PRIVATE_DOMAIN}`)
       traefik.http.routers.healthchecks.entrypoints: websecure
       traefik.http.services.healthchecks.loadbalancer.server.port: 8000
+      vesper.healthchecks.name: Healthchecks
+      vesper.healthchecks.checks.web.host: healthchecks
+      vesper.healthchecks.checks.web.port: 8000

@@ -1,0 +1,5 @@
+# Vesper demo inventory. Machines live in machines/; sienna's services are
+# generated from vesper.* container labels (Docker discovery), so don't add them here.
+# Container names resolve to the net stack's Docker subnet, so allow all private ranges.
+network:
+  allowed_cidrs: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16]

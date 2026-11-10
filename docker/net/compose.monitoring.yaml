@@ -22,6 +22,10 @@ services:
       traefik.http.routers.uptime-kuma.rule: Host(`uptime.${PRIVATE_DOMAIN}`)
       traefik.http.routers.uptime-kuma.entrypoints: websecure
       traefik.http.services.uptime-kuma.loadbalancer.server.port: 3001
+      vesper.uptime-kuma.name: Uptime Kuma
+      vesper.uptime-kuma.icon: uptime-kuma
+      vesper.uptime-kuma.checks.web.host: uptime-kuma
+      vesper.uptime-kuma.checks.web.port: 3001
 
   # Renders committed monitor templates (@@DOMAIN@@ placeholders) into a shared
   # volume, substituting the real domains from sops env. Keeps plaintext domains
@@ -81,6 +85,38 @@ services:
       - autokuma-monitors:/static-monitors:ro
       - "${CONFIG_DIR}/autokuma/data:/data"
 
+  # Status monitor demo. No built-in login, so Traefik basicAuth guards it.
+  # sienna's services come from vesper.* container labels, read through
+  # socket-proxy and written to config/machines/sienna/services/ (so config is
+  # writable). Runs as PUID so it owns the dirs the config sync creates.
+  vesper:
+    <<: *options
+    image: ghcr.io/cfbender/vesper:latest # linux/amd64 only
+    container_name: vesper
+    depends_on: [socket-proxy]
+    user: "${PUID}:${PGID}"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=16m,mode=1777,noexec,nosuid,nodev
+    environment:
+      <<: *environment
+      VESPER_PUBLIC_URL: "https://vesper.${PRIVATE_DOMAIN}"
+      VESPER_TRUSTED_PROXIES: "${DOCKER_SUBNET}" # Traefik's peer address is dynamic
+      VESPER_DISCOVER_DOCKER: sienna=tcp://socket-proxy:2375
+    volumes:
+      - "${CONFIG_DIR}/vesper/config:/config"
+      - "${CONFIG_DIR}/vesper/data:/data"
+    # image ships its own HEALTHCHECK (vesper healthcheck); just enable autoheal
+    labels:
+      autoheal: "true"
+      traefik.enable: "true"
+      traefik.http.routers.vesper.rule: Host(`vesper.${PRIVATE_DOMAIN}`)
+      traefik.http.routers.vesper.entrypoints: websecure
+      traefik.http.routers.vesper.middlewares: basicAuth
+      traefik.http.services.vesper.loadbalancer.server.port: 8080
+
   # Beszel hub (web UI). First boot: create admin, then copy the hub public KEY
   # and a universal TOKEN (/settings/tokens) into both hosts' sops.env so the
   # agents can register.
@@ -98,6 +134,8 @@ services:
       traefik.http.routers.beszel.rule: Host(`beszel.${PRIVATE_DOMAIN}`)
       traefik.http.routers.beszel.entrypoints: websecure
       traefik.http.services.beszel.loadbalancer.server.port: 8090
+      vesper.beszel.name: Beszel
+      vesper.beszel.checks.health.url: http://beszel:8090/api/health
 
   # Beszel agent for this host (sienna).
   beszel-agent:

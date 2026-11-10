@@ -1,0 +1,3 @@
+# Services are discovered from vesper.* labels and written to services/ at runtime.
+name: sienna
+description: Network services host.

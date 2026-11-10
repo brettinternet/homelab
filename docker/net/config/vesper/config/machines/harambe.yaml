@@ -1,0 +1,18 @@
+# Not discovered: harambe's socket-proxy only listens on its loopback.
+name: harambe
+description: Main homelab host.
+services:
+  host:
+    name: Host
+    icon: linux
+    checks:
+      ssh:
+        kind: tcp
+        name: SSH
+        host: 10.1.2.4
+        port: 22
+      https:
+        kind: tcp
+        name: Traefik HTTPS
+        host: 10.1.2.4
+        port: 443
