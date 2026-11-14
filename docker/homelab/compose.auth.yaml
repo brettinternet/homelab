@@ -46,7 +46,7 @@ services:
 
   vaultwarden-backup:
     <<: *options
-    image: ttionya/vaultwarden-backup:1.27.2
+    image: ttionya/vaultwarden-backup:1.27.3
     container_name: vaultwarden-backup
     # The image's startup check greps `rclone config show`, which omits env-only remotes;
     # a stub section makes it visible while the RCLONE_CONFIG_VAULTWARDEN_* env still supplies the settings.
@@ -80,7 +80,7 @@ services:
   vaultwarden-restore:
     <<: *options
     profiles: [vaultwarden-restore]
-    image: ttionya/vaultwarden-backup:1.27.2
+    image: ttionya/vaultwarden-backup:1.27.3
     container_name: vaultwarden-restore
     environment:
       <<: [*environment, *rclone-environment]
