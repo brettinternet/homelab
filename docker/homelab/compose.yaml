@@ -60,7 +60,7 @@ services:
 
   cloudflared-tunnel:
     <<: *service
-    image: cloudflare/cloudflared:2026.10.7
+    image: cloudflare/cloudflared:2026.11.0
     container_name: cloudflared-tunnel
     environment:
       <<: *environment
